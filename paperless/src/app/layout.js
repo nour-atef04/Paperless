@@ -1,5 +1,16 @@
-import Sidebar from "./_components/Sidebar";
+import Sidebar from "./_components/sidebar/Sidebar";
+import { Crimson_Pro, Google_Sans } from "next/font/google";
 import "./globals.css";
+
+const crimson = Crimson_Pro({
+  subsets: ["latin"],
+  variable: "--font-crimson",
+});
+
+const gsans = Google_Sans({
+  subsets: ["latin"],
+  variable: "--font-gsans",
+});
 
 export const metadata = {
   title: "Paperless",
@@ -8,9 +19,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen">
-        <div className="grid min-h-screen gap-3 p-3 md:grid-cols-[200px_1fr]">
+    <html lang="en" className={`${gsans.variable} ${crimson.variable}`}>
+      <body className="min-h-screen font-sans antialiased">
+        <div className="grid min-h-screen grid-cols-1 gap-3 p-3 md:grid-cols-[250px_1fr]">
           <Sidebar />
           <main>{children}</main>
         </div>
