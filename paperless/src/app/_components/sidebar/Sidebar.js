@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
-import { FaBars, FaTimes, FaRegBookmark } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
+import { FaBars, FaRegBookmark, FaTimes } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
-import Panel from "../Panel";
+import { MdOutlineDashboard } from "react-icons/md";
+import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
-import { useState } from "react";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <Panel
       ariaLabel="Main sidebar"
-      className={`${isOpen ? "h-44" : "h-20"} flex flex-wrap items-center gap-4 gap-y-4 overflow-hidden p-4 transition-all duration-300 md:static md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
+      className={`${isOpen ? "h-44" : "h-20"} flex flex-wrap items-center gap-4 overflow-hidden p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
     >
       {/* Toggle and logo */}
       <div className="flex items-center gap-4 md:w-full">
@@ -45,7 +45,7 @@ export default function Sidebar() {
             width={120}
             height={40}
             priority
-            className={"hidden shrink-0 object-contain sm:inline"}
+            className={"hidden shrink-0 object-contain md:inline"}
           />
         </header>
       </div>
