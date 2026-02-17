@@ -1,6 +1,6 @@
-export default function Panel({ children, className }) {
+export default function Panel({ ariaLabel, children, className }) {
   return (
-    <section className={`bg-surface rounded-md shadow-sm ${className || ""} `}>
+    <section aria-label={ariaLabel} className={`bg-surface rounded-md shadow-sm ${className || ""} `}>
       {children}
     </section>
   );

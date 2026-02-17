@@ -4,11 +4,12 @@ import { usePathname } from "next/navigation";
 
 export default function NavLink({ href, children }) {
   const pathname = usePathname();
+  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <Link
       href={href}
-      className={`${pathname === href ? "text-brand" : "text-brand-light"} hover:text-brand flex items-center gap-2 transition`}
+      className={`${isActive ? "text-brand" : "text-brand-light"} focus-ring-primary hover:text-brand flex items-center gap-2 rounded-sm transition`}
     >
       {children}
     </Link>

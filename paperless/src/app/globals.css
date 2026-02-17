@@ -38,4 +38,12 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  .btn-primary {
+    @apply bg-brand cursor-pointer text-white transition hover:opacity-90 active:scale-95;
+  }
+
+  .focus-ring-primary {
+    @apply focus-visible:ring-brand-light focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none;
+  }
 }
