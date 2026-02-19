@@ -45,7 +45,7 @@ export default function Sidebar() {
             width={120}
             height={40}
             priority
-            className={"hidden shrink-0 object-contain md:inline"}
+            className={"hidden shrink-0 object-contain sm:inline"}
           />
         </header>
       </div>
