@@ -8,9 +8,20 @@ export default async function NotesPage() {
   return (
     <div className="flex flex-col gap-6">
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
-      <Panel className="flex flex-col gap-10 p-6">
-        <PanelTitle>Dashboard</PanelTitle>
-        <Suspense fallback={<p>Loading notes...</p>}>
+      <Panel
+        ariaLabelledBy="dashboard-title"
+        className="flex flex-col gap-10 p-6"
+      >
+        <PanelTitle level={1} id="dashboard-title">
+          Dashboard
+        </PanelTitle>
+        <Suspense
+          fallback={
+            <p role="status" aria-live="polite">
+              Loading notes...
+            </p>
+          }
+        >
           <NotesList />
         </Suspense>
       </Panel>

@@ -5,10 +5,12 @@ export default async function NotesList() {
   const notes = await getNotes();
 
   return (
-    <section className="grid w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+    <ul className="grid w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
       {notes.map((note) => (
-        <NoteCard key={note.id} note={note} />
+        <li key={note.id} className="list-none">
+          <NoteCard note={note} />
+        </li>
       ))}
-    </section>
+    </ul>
   );
 }

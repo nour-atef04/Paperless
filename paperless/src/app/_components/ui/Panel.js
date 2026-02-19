@@ -1,7 +1,19 @@
-export default function Panel({ ariaLabel, children, className }) {
+export default function Panel({
+  ariaLabel,
+  ariaLabelledBy,
+  children,
+  className,
+  as: Component = "section",
+  ...props
+}) {
   return (
-    <section aria-label={ariaLabel} className={`bg-surface rounded-md shadow-sm ${className || ""} `}>
+    <Component
+      {...props}
+      className={`bg-surface rounded-md shadow-sm ${className || ""} `}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
+    >
       {children}
-    </section>
+    </Component>
   );
 }

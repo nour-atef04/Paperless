@@ -30,7 +30,7 @@
   --color-foreground: var(--foreground);
   --color-surface: var(--card); /* cards */
 
-  --font-sans: var(--font-gsans);
+  --font-sans: var(--font-inter);
   --font-serif: var(--font-crimson);
 }
 

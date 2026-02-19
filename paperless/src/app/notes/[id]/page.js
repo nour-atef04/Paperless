@@ -13,8 +13,8 @@ export default async function Note({ params }) {
 
   const { title, content } = note;
   return (
-    <Panel className="p-6 flex flex-col gap-10">
-      <PanelTitle>{title}</PanelTitle>
+    <Panel ariaLabelledBy="note-title" className="flex flex-col gap-10 p-6">
+      <PanelTitle level={1} id="note-title">{title}</PanelTitle>
       <p>{content}</p>
     </Panel>
   );

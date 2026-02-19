@@ -1,3 +1,13 @@
-export default function PanelTitle({children}){
-    return <h1 className="text-3xl font-bold text-brand">{children}</h1>
+export default function PanelTitle({
+  children,
+  id,
+  level = 1,
+  className = "",
+}) {
+  const Tag = `h${level}`; // dynamically render h1, h2, h3, ...
+  return (
+    <Tag className={`text-brand text-3xl font-bold ${className}`}>
+      {children}
+    </Tag>
+  );
 }
