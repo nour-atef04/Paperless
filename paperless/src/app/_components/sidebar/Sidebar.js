@@ -9,6 +9,7 @@ import { MdOutlineDashboard } from "react-icons/md";
 import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
+import Link from "next/link";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,23 +31,28 @@ export default function Sidebar() {
           {isOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        <header className="md:border-b-background flex flex-1 items-center gap-2 md:border-b-2 md:pb-6">
-          <Image
-            src="/logo.png"
-            alt="Paperless logo"
-            width={40}
-            height={40}
-            priority
-            className="shrink-0 object-contain"
-          />
-          <Image
-            src="/logo-title.png"
-            alt="Paperless logo title"
-            width={120}
-            height={40}
-            priority
-            className={"hidden shrink-0 object-contain sm:inline"}
-          />
+        <header>
+          <Link
+            href="/"
+            className="md:border-b-background flex flex-1 items-center gap-2 md:border-b-2 md:pb-6"
+          >
+            <Image
+              src="/logo.png"
+              alt="Paperless logo"
+              width={40}
+              height={40}
+              priority
+              className="shrink-0 object-contain"
+            />
+            <Image
+              src="/logo-title.png"
+              alt="Paperless logo title"
+              width={120}
+              height={40}
+              priority
+              className={"hidden shrink-0 object-contain sm:inline"}
+            />
+          </Link>
         </header>
       </div>
 
@@ -70,11 +76,12 @@ export default function Sidebar() {
         onClick={() => setIsOpen(false)}
         className={`${isOpen ? "flex" : "hidden"} border-brand-light/10 order-4 flex w-full flex-row items-center justify-around border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
       >
-        <NavLink href="/">
+        <NavLink href="/notes">
           <MdOutlineDashboard /> Dashboard
         </NavLink>
-        <NavLink href="/notes">
-          <CgNotes /> Notes
+        <NavLink href="/my-notes">
+          <CgNotes />
+          My Notes
         </NavLink>
         <NavLink href="/saved">
           <FaRegBookmark /> Saved
