@@ -8,6 +8,7 @@ export default function NavLink({ href, children }) {
 
   return (
     <Link
+      aria-current={isActive ? "page" : undefined}
       href={href}
       className={`${isActive ? "text-brand" : "text-brand-light"} focus-ring-primary hover:text-brand flex items-center gap-2 rounded-sm transition`}
     >

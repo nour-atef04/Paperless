@@ -58,10 +58,11 @@ export default function Sidebar() {
 
       {/* New note btn */}
       <button
+        aria-label="Create new note"
         type="button"
         className="btn-primary ml-auto flex shrink-0 items-center gap-2 rounded-full p-2 sm:rounded-md md:ml-0 md:w-full md:rounded-md md:px-4 md:py-2"
       >
-        <FaPlus />
+        <FaPlus aria-hidden="true" />
         <span className="hidden sm:inline">New Note</span>
       </button>
 
@@ -77,14 +78,14 @@ export default function Sidebar() {
         className={`${isOpen ? "flex" : "hidden"} border-brand-light/10 order-4 flex w-full flex-row items-center justify-around border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
       >
         <NavLink href="/notes">
-          <MdOutlineDashboard /> Dashboard
+          <MdOutlineDashboard aria-hidden="true" /> Dashboard
         </NavLink>
         <NavLink href="/my-notes">
-          <CgNotes />
+          <CgNotes aria-hidden="true" />
           My Notes
         </NavLink>
         <NavLink href="/saved">
-          <FaRegBookmark /> Saved
+          <FaRegBookmark aria-hidden="true" /> Saved
         </NavLink>
       </nav>
     </Panel>

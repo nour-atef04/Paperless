@@ -1,4 +1,12 @@
 export default function Loader() {
-  // TO DO: UI SPINNER
-  return <p>Loading...</p>;
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex items-center justify-center"
+    >
+      {/* TO DO: UI SPINNER */}
+      <p>Loading content...</p>
+    </div>
+  );
 }

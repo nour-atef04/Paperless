@@ -2,15 +2,8 @@ import { Crimson_Pro, Inter } from "next/font/google";
 import Sidebar from "./_components/sidebar/Sidebar";
 import "./globals.css";
 
-const crimson = Crimson_Pro({
-  subsets: ["latin"],
-  variable: "--font-crimson",
-});
+const crimson = Crimson_Pro({ subsets: ["latin"], variable: "--font-crimson" });
 
-// const gsans = Google_Sans({
-//   subsets: ["latin"],
-//   variable: "--font-gsans",
-// });
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata = {
