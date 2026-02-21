@@ -4,7 +4,9 @@ import PanelTitle from "../_components/ui/PanelTitle";
 import SearchBarPanel from "../_components/ui/SearchBarPanel";
 import NotesList from "./NotesList";
 
-export default async function NotesPage() {
+export default async function NotesPage({ searchParams }) {
+  const query = (await searchParams)?.query || "";
+
   return (
     <div className="flex flex-col gap-6">
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
@@ -16,13 +18,18 @@ export default async function NotesPage() {
           Dashboard
         </PanelTitle>
         <Suspense
+          key={query}
           fallback={
-            <p role="status" aria-live="polite">
+            <p
+              className="text-brand-light mb-8 text-center"
+              role="status"
+              aria-live="polite"
+            >
               Loading notes...
             </p>
           }
         >
-          <NotesList />
+          <NotesList query={query} />
         </Suspense>
       </Panel>
     </div>

@@ -1,11 +1,20 @@
 import { createSupabaseServerClient } from "./supabase";
 
-export async function getNotes() {
+export async function getNotes(query) {
   const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase
+
+  let supabaseQuery = supabase
     .from("notes")
     .select("*")
     .order("created_at", { ascending: false });
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(
+      `title.ilike.%${query}%, content.ilike.%${query}%`,
+    );
+  }
+
+  const { data, error } = await supabaseQuery;
   if (error) throw error;
   return data;
 }
