@@ -10,6 +10,7 @@ import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
 import Link from "next/link";
+import Logo from "../ui/Logo";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,22 +37,7 @@ export default function Sidebar() {
             href="/"
             className="md:border-b-background flex flex-1 items-center gap-2 md:border-b-2 md:pb-6"
           >
-            <Image
-              src="/logo.png"
-              alt="Paperless logo"
-              width={40}
-              height={40}
-              priority
-              className="shrink-0 object-contain"
-            />
-            <Image
-              src="/logo-title.png"
-              alt="Paperless logo title"
-              width={120}
-              height={40}
-              priority
-              className={"hidden shrink-0 object-contain sm:inline"}
-            />
+            <Logo />
           </Link>
         </header>
       </div>

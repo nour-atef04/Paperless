@@ -1,15 +1,21 @@
 export default function FormInput({
   className,
   placeholder,
-  ariaLabel,
+  label,
+  id,
   ...props
 }) {
   return (
-    <input
-      className={`${className} focus-ring-primary placeholder:text-brand-light rounded-xs focus-visible:ring-offset-8`}
-      placeholder={placeholder}
-      aria-label={ariaLabel}
-      {...props}
-    />
+    <>
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
+      <input
+        id={id}
+        className={`${className} bg-surface focus-ring-primary placeholder:text-brand-light rounded-4xl shadow-sm`}
+        placeholder={placeholder}
+        {...props}
+      />
+    </>
   );
 }

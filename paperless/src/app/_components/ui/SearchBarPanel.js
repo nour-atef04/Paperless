@@ -23,16 +23,16 @@ export default function SearchBarPanel({ className }) {
 
   return (
     <search className={className}>
-      <Panel as="form" className="flex items-center gap-3 p-4">
+      <div className="flex items-center gap-3">
         <IoMdSearch aria-hidden="true" className="text-brand-light text-2xl" />
         <FormInput
           aria-label="Search notes"
-          className="w-full"
+          className="w-full rounded-4xl p-3"
           placeholder="Search notes..."
           defaultValue={searchParams.get("query")?.toString()}
           onChange={(e) => handleSearch(e.target.value)}
         />
-      </Panel>
+      </div>
     </search>
   );
 }

@@ -1,4 +1,4 @@
-import { getNotes } from "../_lib/data-service";
+import { getNotes } from "../../_lib/data-service";
 import NoteCard from "./NoteCard";
 
 export default async function NotesList({ query }) {

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Panel from "../_components/ui/Panel";
-import PanelTitle from "../_components/ui/PanelTitle";
-import SearchBarPanel from "../_components/ui/SearchBarPanel";
+import Panel from "../../_components/ui/Panel";
+import PanelTitle from "../../_components/ui/PanelTitle";
+import SearchBarPanel from "../../_components/ui/SearchBarPanel";
 import NotesList from "./NotesList";
 
 export default async function NotesPage({ searchParams }) {
