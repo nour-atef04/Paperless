@@ -3,6 +3,8 @@ import PanelTitle from "@/app/_components/ui/PanelTitle";
 import { getNoteById } from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";
 
+// TO DO: SSG
+
 export default async function Note({ params }) {
   const { id } = await params;
   const note = await getNoteById(id);

@@ -12,7 +12,7 @@ import UserAccount from "./UserAccount";
 import Link from "next/link";
 import Logo from "../ui/Logo";
 
-export default function Sidebar() {
+export default function Sidebar({ userName, userAvatar }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -54,7 +54,7 @@ export default function Sidebar() {
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">
-        <UserAccount image="/default-user.jpg" name="Nour Atef" />
+        <UserAccount image={userAvatar} name={userName} />
       </div>
 
       {/* Navigation */}
