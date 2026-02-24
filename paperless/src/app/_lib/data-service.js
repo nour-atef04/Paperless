@@ -31,10 +31,11 @@ export async function getDashboardNotes(query) {
     .select(
       `
     *,
-    profiles (
+    profiles!user_id (
       full_name,
       avatar_url
-    )
+    ),
+    user_saves ( user_id )
   `,
     )
     .neq("user_id", user.id)
@@ -57,10 +58,11 @@ export async function getMyNotes(query) {
     .select(
       `
     *,
-    profiles (
+    profiles!user_id (
       full_name,
       avatar_url
-    )
+    ),
+    user_saves ( user_id )
   `,
     )
     .eq("user_id", user.id)
