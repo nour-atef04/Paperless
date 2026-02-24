@@ -27,7 +27,7 @@ export default function SearchBarPanel({ className }) {
         <IoMdSearch aria-hidden="true" className="text-brand-light text-2xl" />
         <FormInput
           aria-label="Search notes"
-          className="w-full rounded-4xl p-3"
+          className="w-full rounded-4xl p-3 px-5"
           placeholder="Search notes..."
           defaultValue={searchParams.get("query")?.toString()}
           onChange={(e) => handleSearch(e.target.value)}
