@@ -1,6 +1,6 @@
 "use client";
 import { useActionState } from "react";
-import { logoutAction } from "../_lib/actions";
+import { logoutAction } from "../../_lib/actions";
 
 export default function ProfilePage() {
   const [state, formAction, isPending] = useActionState(logoutAction, null);
