@@ -1,44 +1,19 @@
 "use client";
 
-import { toggleSaveNote } from "@/app/_lib/actions";
+import SaveBtn from "@/app/_components/ui/SaveBtn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
+import { useTransition } from "react";
 
 export default function NoteCard({ note }) {
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();
-  const [isSaving, startSaving] = useTransition();
-
-  const initiallySaved = note.user_saves?.length > 0;
-
-  // local state for instant UI updates (optimistic ui)
-  const [isSaved, setIsSaved] = useState(initiallySaved);
 
   const handleNavigation = (e) => {
     e.preventDefault();
     startNavigation(() => {
       // startTransition stays "true" until the next page is fully ready
       router.push(`/notes/${note.id}`);
-    });
-  };
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setIsSaved(!isSaved);
-
-    startSaving(async () => {
-      try {
-        await toggleSaveNote(note.id);
-      } catch (error) {
-        console.error("Failed to save note: ", error);
-        // revert heart back to original if saving failed
-        setIsSaved(initiallySaved);
-        // TODO: SHOW A TOAST NOTIF
-      }
     });
   };
 
@@ -65,29 +40,14 @@ export default function NoteCard({ note }) {
       <p className="text-brand-light mt-4 line-clamp-4">{note.content}</p>
 
       <div className="mt-auto flex w-full items-center justify-between">
-        <p className="text-brand-light text-sm opacity-80">
-          By: {note.profiles?.full_name}
-        </p>
+        <div className="text-brand-light flex flex-col text-sm opacity-80">
+          <span>By: {note.profiles?.full_name}</span>
+          <time dateTime={note.created_at}>
+            {new Date(note.created_at).toLocaleDateString()}
+          </time>
+        </div>
 
-        <button
-          aria-label="Save note"
-          disabled={isSaving}
-          // "z-10" so it sits ABOVE the Link's invisible overlay
-          className="focus-visible:ring-brand relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm focus:outline-none focus-visible:ring-2"
-          onClick={handleSave}
-        >
-          {!isSaved ? (
-            <BsBookmark
-              aria-hidden="true"
-              className="text-brand-light absolute text-2xl transition-transform hover:scale-110"
-            />
-          ) : (
-            <BsBookmarkFill
-              aria-hidden="true"
-              className="text-brand absolute text-2xl transition-transform hover:scale-110"
-            />
-          )}
-        </button>
+        <SaveBtn note={note} />
       </div>
     </article>
   );

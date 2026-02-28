@@ -115,7 +115,13 @@ export async function getNoteById(id) {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("notes")
-    .select("*")
+    .select(`
+      *,
+      profiles!user_id (
+      full_name,
+      avatar_url
+    ),
+    user_saves ( user_id )`)
     .eq("id", id)
     .maybeSingle();
   if (error) throw new Error(error.message);
