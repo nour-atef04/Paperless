@@ -1,16 +1,16 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaBars, FaRegBookmark, FaTimes } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { MdOutlineDashboard } from "react-icons/md";
+import Logo from "../ui/Logo";
 import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
-import Link from "next/link";
-import Logo from "../ui/Logo";
+import NewNoteButton from "../ui/NewNoteButton";
 
 export default function Sidebar({ userName, userAvatar }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,14 +43,7 @@ export default function Sidebar({ userName, userAvatar }) {
       </div>
 
       {/* New note btn */}
-      <button
-        aria-label="Create new note"
-        type="button"
-        className="btn-primary ml-auto flex shrink-0 items-center gap-2 rounded-full p-2 sm:rounded-md md:ml-0 md:w-full md:rounded-md md:px-4 md:py-2"
-      >
-        <FaPlus aria-hidden="true" />
-        <span className="hidden sm:inline">New Note</span>
-      </button>
+      <NewNoteButton />
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">

@@ -7,7 +7,7 @@ export default async function AuthenticatedLayout({ children }) {
   const userAvatar = profile?.avatar_url || "/default-user.jpg";
 
   return (
-    <div className="grid h-screen grid-cols-1 md:grid-cols-[250px_1fr]">
+    <div className="grid h-screen grid-rows-[auto_1fr] md:grid-cols-[250px_1fr] md:grid-rows-none">
       <a href="#main-content" className="sr-only">
         Skip to content
       </a>

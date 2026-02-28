@@ -73,4 +73,26 @@ export async function toggleSaveNote(noteId) {
   revalidatePath("/saved");
 }
 
+export async function postNewNote(prevState, formData) {
+  const title = formData.get("new-note-title");
+  const content = formData.get("new-note-content");
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("You must be logged in to add notes.");
+
+  const { error } = await supabase
+    .from("notes")
+    .insert({ user_id: user.id, title, content });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/notes");
+  redirect("/my-notes");
+}
+
 // TO DO: GOOGLE AUTH

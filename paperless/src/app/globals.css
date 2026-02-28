@@ -44,6 +44,10 @@
     @apply bg-brand cursor-pointer text-white transition hover:opacity-90 active:scale-95;
   }
 
+  .btn-disabled {
+    @apply bg-brand-light cursor-not-allowed text-white transition;
+  }
+
   .focus-ring-primary {
     @apply focus-visible:ring-brand-light focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none;
   }
