@@ -19,17 +19,9 @@ export async function getUserProfile() {
   return profile;
 }
 
-export async function getDashboardNotes(query) {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-
-  let supabaseQuery = supabase
-    .from("notes")
-    .select(
-      `
+function getAllNotes(supabase) {
+  return supabase.from("notes").select(
+    `
     *,
     profiles!user_id (
       full_name,
@@ -37,9 +29,25 @@ export async function getDashboardNotes(query) {
     ),
     user_saves ( user_id )
   `,
-    )
+  );
+}
+
+export async function getDashboardNotes(query) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  let supabaseQuery = getAllNotes(supabase)
     .neq("user_id", user.id)
     .order("created_at", { ascending: false });
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(
+      `title.ilike.%${query}%, content.ilike.%${query}%`,
+    );
+  }
 
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
@@ -53,18 +61,7 @@ export async function getMyNotes(query) {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  let supabaseQuery = supabase
-    .from("notes")
-    .select(
-      `
-    *,
-    profiles!user_id (
-      full_name,
-      avatar_url
-    ),
-    user_saves ( user_id )
-  `,
-    )
+  let supabaseQuery = getAllNotes(supabase)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
