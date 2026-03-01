@@ -29,7 +29,7 @@ export default async function NotesList({
     <ul className="grid w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
       {notes.map((note) => (
         <li key={note.id} className="list-none">
-          <NoteCard note={note} userId={userId} />
+          <NoteCard note={note} userId={userId} page={page} />
         </li>
       ))}
     </ul>

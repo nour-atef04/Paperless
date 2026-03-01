@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import DeleteNoteBtn from "./DeleteNoteBtn";
 
-export default function NoteCard({ note, userId }) {
+export default function NoteCard({ note, userId, page }) {
   const isMine = note.user_id === userId;
+  const showDeleteBtn = isMine && page === "my-notes";
 
   console.log(note.user_id);
 
@@ -42,7 +43,9 @@ export default function NoteCard({ note, userId }) {
         </Link>
       </h2>
 
-      <p className="text-brand-light mt-4 line-clamp-4">{note.content}</p>
+      <p className="text-brand-light mt-4 line-clamp-6 w-full">
+        {note.content}
+      </p>
 
       <div className="mt-auto flex w-full items-center justify-between">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
@@ -54,9 +57,7 @@ export default function NoteCard({ note, userId }) {
 
         <div className="flex flex-wrap items-center">
           <SaveNoteBtn note={note} />
-          {isMine && (
-            <DeleteNoteBtn noteId={note.id} />
-          )}
+          {showDeleteBtn && <DeleteNoteBtn note={note} />}
         </div>
       </div>
     </article>

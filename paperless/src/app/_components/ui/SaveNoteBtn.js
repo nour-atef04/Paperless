@@ -3,6 +3,7 @@
 import { toggleSaveNote } from "@/app/_lib/actions";
 import { useState, useTransition } from "react";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
+import { FaSpinner } from "react-icons/fa6";
 
 export default function SaveBtn({ note }) {
   const [isSaving, startSaving] = useTransition();
@@ -32,13 +33,15 @@ export default function SaveBtn({ note }) {
 
   return (
     <button
-      aria-label="Save note"
+      aria-label={`Save note: ${note.title}`}
       disabled={isSaving}
       // "z-10" so it sits ABOVE the Link's invisible overlay
       className="focus-ring-primary relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm"
       onClick={handleSave}
     >
-      {!isSaved ? (
+      {isSaving ? (
+        <FaSpinner className="text-brand animate-spin text-xl" />
+      ) : !isSaved ? (
         <BsBookmark
           aria-hidden="true"
           className="text-brand-light absolute text-2xl transition-transform hover:scale-110"
