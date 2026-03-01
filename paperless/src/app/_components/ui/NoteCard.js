@@ -1,11 +1,16 @@
 "use client";
 
-import SaveBtn from "@/app/_components/ui/SaveBtn";
+import SaveNoteBtn from "@/app/_components/ui/SaveNoteBtn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import DeleteNoteBtn from "./DeleteNoteBtn";
 
-export default function NoteCard({ note }) {
+export default function NoteCard({ note, userId }) {
+  const isMine = note.user_id === userId;
+
+  console.log(note.user_id);
+
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();
 
@@ -47,7 +52,12 @@ export default function NoteCard({ note }) {
           </time>
         </div>
 
-        <SaveBtn note={note} />
+        <div className="flex flex-wrap items-center">
+          <SaveNoteBtn note={note} />
+          {isMine && (
+            <DeleteNoteBtn noteId={note.id} />
+          )}
+        </div>
       </div>
     </article>
   );

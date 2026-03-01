@@ -95,4 +95,15 @@ export async function postNewNote(prevState, formData) {
   redirect("/my-notes");
 }
 
+export async function deleteNote(noteId) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("notes").delete().eq("id", noteId);
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/notes");
+  redirect("/my-notes");
+}
+
 // TO DO: GOOGLE AUTH

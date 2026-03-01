@@ -1,6 +1,6 @@
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
-import SaveBtn from "@/app/_components/ui/SaveBtn";
+import SaveBtn from "@/app/_components/ui/SaveNoteBtn";
 import { getNoteById } from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";
 

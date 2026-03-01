@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { toggleSaveNote } from "@/app/_lib/actions";
 import { useState, useTransition } from "react";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 
-export default function SaveBtn({note}) {
+export default function SaveBtn({ note }) {
   const [isSaving, startSaving] = useTransition();
 
   const initiallySaved = note.user_saves?.length > 0;
@@ -35,7 +35,7 @@ export default function SaveBtn({note}) {
       aria-label="Save note"
       disabled={isSaving}
       // "z-10" so it sits ABOVE the Link's invisible overlay
-      className="focus-visible:ring-brand relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm focus:outline-none focus-visible:ring-2"
+      className="focus-ring-primary relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm"
       onClick={handleSave}
     >
       {!isSaved ? (
