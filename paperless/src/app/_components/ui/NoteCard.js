@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import DeleteNoteBtn from "./DeleteNoteBtn";
+import EditNoteBtn from "./EditNoteBtn";
 
 export default function NoteCard({ note, userId, page }) {
   const isMine = note.user_id === userId;
@@ -57,7 +58,12 @@ export default function NoteCard({ note, userId, page }) {
 
         <div className="flex flex-wrap items-center">
           <SaveNoteBtn note={note} />
-          {showDeleteBtn && <DeleteNoteBtn note={note} />}
+          {showDeleteBtn && (
+            <>
+              <EditNoteBtn note={note} />
+              <DeleteNoteBtn note={note} />
+            </>
+          )}
         </div>
       </div>
     </article>
