@@ -1,17 +1,15 @@
 "use client";
 
-import SaveNoteBtn from "@/app/_components/ui/SaveNoteBtn";
+import SaveNoteBtn from "@/app/_components/buttons/SaveNoteBtn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import DeleteNoteBtn from "./DeleteNoteBtn";
-import EditNoteBtn from "./EditNoteBtn";
+import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
+import EditNoteBtn from "../buttons/EditNoteBtn";
 
 export default function NoteCard({ note, userId, page }) {
   const isMine = note.user_id === userId;
   const showDeleteBtn = isMine && page === "my-notes";
-
-  console.log(note.user_id);
 
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();

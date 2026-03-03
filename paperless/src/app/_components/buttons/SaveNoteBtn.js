@@ -36,7 +36,7 @@ export default function SaveBtn({ note }) {
       aria-label={`Save note: ${note.title}`}
       disabled={isSaving}
       // "z-10" so it sits ABOVE the Link's invisible overlay
-      className="focus-ring-primary relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm"
+      className="focus-ring-primary relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-sm"
       onClick={handleSave}
     >
       {isSaving ? (
@@ -44,12 +44,12 @@ export default function SaveBtn({ note }) {
       ) : !isSaved ? (
         <BsBookmark
           aria-hidden="true"
-          className="text-brand-light absolute text-2xl transition-transform hover:scale-110"
+          className="text-brand-light absolute text-xl transition-transform hover:scale-110"
         />
       ) : (
         <BsBookmarkFill
           aria-hidden="true"
-          className="text-brand absolute text-2xl transition-transform hover:scale-110"
+          className="text-brand absolute text-xl transition-transform hover:scale-110"
         />
       )}
     </button>

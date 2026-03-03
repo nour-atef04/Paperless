@@ -1,8 +1,9 @@
 "use client";
 
+// TO DO -> USE NOTEFORM
 import PanelTitle from "@/app/_components/ui/PanelTitle";
 import { postNewNote } from "@/app/_lib/actions";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 
 export default function NewNotePage() {
   const [state, formAction, isPending] = useActionState(postNewNote, null);

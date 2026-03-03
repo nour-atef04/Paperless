@@ -4,13 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
 import { FaBars, FaRegBookmark, FaTimes } from "react-icons/fa";
-import { FaPlus } from "react-icons/fa6";
 import { MdOutlineDashboard } from "react-icons/md";
+import NewNoteBtn from "../buttons/NewNoteBtn";
 import Logo from "../ui/Logo";
 import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
-import NewNoteButton from "../ui/NewNoteButton";
 
 export default function Sidebar({ userName, userAvatar }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +33,7 @@ export default function Sidebar({ userName, userAvatar }) {
 
         <header>
           <Link
-            href="/"
+            href="/notes"
             className="md:border-b-background flex flex-1 items-center gap-2 md:border-b-2 md:pb-6"
           >
             <Logo />
@@ -43,7 +42,7 @@ export default function Sidebar({ userName, userAvatar }) {
       </div>
 
       {/* New note btn */}
-      <NewNoteButton />
+      <NewNoteBtn />
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">

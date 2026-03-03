@@ -4,7 +4,7 @@ import { deleteNote } from "@/app/_lib/actions";
 import { useState, useTransition } from "react";
 import { IoTrashOutline } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa6";
-import Modal from "./Modal";
+import Modal from "../ui/Modal";
 
 export default function DeleteNoteBtn({ note }) {
   const [isDeleting, startDeleting] = useTransition();
@@ -36,14 +36,14 @@ export default function DeleteNoteBtn({ note }) {
         onClick={openModal}
         disabled={isDeleting}
         aria-label={`Delete note: ${note.title}`}
-        className="focus-ring-primary relative z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-sm"
+        className="focus-ring-primary relative z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-sm"
       >
         {isDeleting ? (
           <FaSpinner className="text-brand animate-spin text-xl" />
         ) : (
           <IoTrashOutline
             aria-hidden="true"
-            className="text-brand absolute text-2xl transition-transform hover:scale-110"
+            className="text-brand absolute text-xl transition-transform hover:scale-110"
           />
         )}
       </button>
