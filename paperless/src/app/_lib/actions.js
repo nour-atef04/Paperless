@@ -106,4 +106,30 @@ export async function deleteNote(noteId) {
   redirect("/my-notes");
 }
 
+export async function editNote(prevState, formData) {
+  const id = formData.get("note-id");
+  const title = formData.get("new-note-title");
+  const content = formData.get("new-note-content");
+
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("You must be logged in to edit notes.");
+
+  const { error } = await supabase
+    .from("notes")
+    .update({ title, content })
+    .match({ id: id, user_id: user.id });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/notes");
+  revalidatePath(`/notes/${id}`);
+  redirect("/my-notes");
+}
+
 // TO DO: GOOGLE AUTH

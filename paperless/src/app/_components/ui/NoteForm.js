@@ -4,10 +4,10 @@ import { useActionState } from "react";
 import PanelTitle from "./PanelTitle";
 
 export default function NoteForm({ serverAction, note }) {
-  // TO DO -> SERVER ACTION FOR EDIT + REFACTOR NEW NOTE PAGE TO USE THIS COMPONENT
+  // TO DO -> SERVER ACTION FOR EDIT + REFACTOR NEW NOTE PAGE TO USE THIS COMPONENT7
   const [state, formAction, isPending] = useActionState(serverAction, null);
 
-  const editMode = note ? true : false;
+  const editMode = !!note;
 
   return (
     <form
@@ -15,6 +15,7 @@ export default function NoteForm({ serverAction, note }) {
       className="bg-surface flex h-full flex-col rounded-md shadow-sm"
     >
       <PanelTitle level={1}>
+        {editMode && <input type="hidden" name="note-id" value={note.id} />}
         <label htmlFor="new-note-title" className="sr-only">
           {editMode ? "Edit" : "New"} Note Title
         </label>
@@ -40,11 +41,23 @@ export default function NoteForm({ serverAction, note }) {
           className="placeholder:text-brand-light/40 h-full w-full resize-none bg-transparent p-6 text-lg leading-relaxed focus-visible:outline-none"
         />
       </div>
+
+      {/* {state?.message && (
+        <p className="p-2 text-center text-sm text-red-500">{state.message}</p>
+      )} */}
+
       <button
+        type="submit"
         disabled={isPending}
         className={`${isPending ? "btn-disabled" : "btn-primary"} rounded-b-md p-3`}
       >
-        {editMode ? "Save Changes" : "Post Note"}
+        {editMode
+          ? isPending
+            ? "Saving Changes..."
+            : "Save Changes"
+          : isPending
+            ? "Posting Note..."
+            : "Post Note"}
       </button>
     </form>
   );

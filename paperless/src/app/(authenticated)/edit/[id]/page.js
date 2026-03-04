@@ -1,4 +1,5 @@
 import NoteForm from "@/app/_components/ui/NoteForm";
+import { editNote } from "@/app/_lib/actions";
 import { getNoteById } from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";
 
@@ -12,5 +13,5 @@ export default async function EditNotePage({ params }) {
 
   const { title, content } = note;
 
-  return <NoteForm note={note}/>;
+  return <NoteForm note={note} serverAction={editNote} />;
 }
