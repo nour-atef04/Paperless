@@ -5,6 +5,8 @@ import { useState, useTransition } from "react";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { FaSpinner } from "react-icons/fa6";
 
+// TO DO: REFACTOR TO USE A REUSABLE BTN IF POSSIBLE
+
 export default function SaveBtn({ note }) {
   const [isSaving, startSaving] = useTransition();
 
@@ -44,7 +46,7 @@ export default function SaveBtn({ note }) {
       ) : !isSaved ? (
         <BsBookmark
           aria-hidden="true"
-          className="text-brand-light absolute text-xl transition-transform hover:scale-110"
+          className="text-brand absolute text-xl transition-transform hover:scale-110"
         />
       ) : (
         <BsBookmarkFill

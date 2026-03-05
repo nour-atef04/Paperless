@@ -42,7 +42,7 @@ export default function NoteCard({ note, userId, page }) {
         </Link>
       </h2>
 
-      <p className="text-brand-light mt-4 line-clamp-6 w-full">
+      <p className="whitespace-pre-wrap text-brand-light mt-4 line-clamp-6 w-full">
         {note.content}
       </p>
 

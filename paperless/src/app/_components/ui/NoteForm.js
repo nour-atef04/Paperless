@@ -3,8 +3,9 @@
 import { useActionState } from "react";
 import PanelTitle from "./PanelTitle";
 
+// TO DO: HANDLE ERRORS
+
 export default function NoteForm({ serverAction, note }) {
-  // TO DO -> SERVER ACTION FOR EDIT + REFACTOR NEW NOTE PAGE TO USE THIS COMPONENT7
   const [state, formAction, isPending] = useActionState(serverAction, null);
 
   const editMode = !!note;
@@ -38,7 +39,7 @@ export default function NoteForm({ serverAction, note }) {
           name="new-note-content"
           id="new-note-content"
           placeholder="Start writing..."
-          className="placeholder:text-brand-light/40 h-full w-full resize-none bg-transparent p-6 text-lg leading-relaxed focus-visible:outline-none"
+          className="placeholder:text-brand-light/40 h-full w-full resize-none bg-transparent p-6 text-lg leading-relaxed whitespace-pre-wrap focus-visible:outline-none"
         />
       </div>
 
