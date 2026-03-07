@@ -1,5 +1,9 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+
 import SaveNoteBtn from "@/app/_components/buttons/SaveNoteBtn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -42,11 +46,17 @@ export default function NoteCard({ note, userId, page }) {
         </Link>
       </h2>
 
-      <p className="whitespace-pre-wrap text-brand-light mt-4 line-clamp-6 w-full">
-        {note.content}
-      </p>
+      <div className="text-brand-light mt-4 line-clamp-6 w-full whitespace-pre-wrap">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkBreaks]}
+          disallowedElements={["h1"]}
+          unwrapDisallowed={true}
+        >
+          {note.content}
+        </ReactMarkdown>
+      </div>
 
-      <div className="mt-auto flex w-full items-center justify-between">
+      <div className="border-brand-light/20 mt-auto flex w-full items-center justify-between border-t pt-3">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
           <span>By: {note.profiles?.full_name}</span>
           <time dateTime={note.created_at}>

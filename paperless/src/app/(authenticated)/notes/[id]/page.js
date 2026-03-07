@@ -1,3 +1,6 @@
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
 import SaveBtn from "@/app/_components/buttons/SaveNoteBtn";
@@ -17,7 +20,7 @@ export default async function Note({ params }) {
   const userId = await getUserId();
   const isMine = note.user_id === userId ? true : false;
 
-  const { title, content } = note;
+  const { title, content, created_at } = note;
   return (
     <Panel
       as="article"
@@ -31,9 +34,11 @@ export default async function Note({ params }) {
           </PanelTitle>
           <div className="text-brand-light mt-3 flex flex-col gap-x-2 sm:flex-row">
             <span>By: {note.profiles?.full_name}</span>
-            <span className="hidden sm:inline" aria-hidden="true">•</span>
-            <time dateTime={note.created_at}>
-              {new Date(note.created_at).toLocaleDateString()}
+            <span className="hidden sm:inline" aria-hidden="true">
+              •
+            </span>
+            <time dateTime={created_at}>
+              {new Date(created_at).toLocaleDateString()}
             </time>
           </div>
         </div>
@@ -48,8 +53,14 @@ export default async function Note({ params }) {
         </div>
       </header>
 
-      <div className="whitespace-pre-wrap prose prose-brand max-w-none leading-relaxed">
-        <p>{content}</p>
+      <div className="prose prose-brand max-w-none leading-relaxed whitespace-pre-wrap">
+        <ReactMarkdown
+          disallowedElements={["h1"]}
+          unwrapDisallowed={true}
+          remarkPlugins={[remarkGfm]}
+        >
+          {content}
+        </ReactMarkdown>
       </div>
     </Panel>
   );

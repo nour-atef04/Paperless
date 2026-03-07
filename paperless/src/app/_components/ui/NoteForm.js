@@ -38,7 +38,7 @@ export default function NoteForm({ serverAction, note }) {
           required
           name="new-note-content"
           id="new-note-content"
-          placeholder="Start writing..."
+          placeholder="Start writing... (Markdown is supported! Use **bold**, *italics*, ## Subheadings)"
           className="placeholder:text-brand-light/40 h-full w-full resize-none bg-transparent p-6 text-lg leading-relaxed whitespace-pre-wrap focus-visible:outline-none"
         />
       </div>
