@@ -83,21 +83,33 @@ export async function postNewNote(prevState, formData) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("You must be logged in to add notes.");
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("notes")
-    .insert({ user_id: user.id, title, content });
+    .insert({ user_id: user.id, title, content })
+    .select();
 
   if (error) {
     throw new Error(error.message);
   }
 
+  const noteId = data[0].id;
+
   revalidatePath("/notes");
-  redirect("/my-notes");
+  redirect(`/notes/${noteId}`);
 }
 
 export async function deleteNote(noteId) {
   const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.from("notes").delete().eq("id", noteId);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const { error } = await supabase
+    .from("notes")
+    .delete()
+    .match({ id: noteId, user_id: user.id });
   if (error) {
     throw new Error(error.message);
   }
@@ -121,7 +133,8 @@ export async function editNote(prevState, formData) {
   const { error } = await supabase
     .from("notes")
     .update({ title, content })
-    .match({ id: id, user_id: user.id });
+    .match({ id: id, user_id: user.id })
+    .select();
 
   if (error) {
     throw new Error(error.message);
@@ -129,7 +142,7 @@ export async function editNote(prevState, formData) {
 
   revalidatePath("/notes");
   revalidatePath(`/notes/${id}`);
-  redirect("/my-notes");
+  redirect(`/notes/${id}`);
 }
 
 // TO DO: GOOGLE AUTH

@@ -42,7 +42,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
     >
       <div className="border-brand-light/20 flex items-center justify-between border-b p-4">
         <h3 className="text-brand text-xl font-semibold">{title}</h3>
-        <button onClick={onClose} className="text-brand p-1" aria-label="Close">
+        <button onClick={onClose} className="cursor-pointer text-brand p-1" aria-label="Close">
           <IoClose size={24} />
         </button>
       </div>
