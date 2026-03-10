@@ -1,15 +1,25 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import PanelTitle from "./PanelTitle";
 import MarkdownGuide from "./MarkdownGuide";
-
-// TO DO: HANDLE ERRORS
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function NoteForm({ serverAction, note }) {
   const [state, formAction, isPending] = useActionState(serverAction, null);
-
+  const router = useRouter();
   const editMode = !!note;
+
+  useEffect(() => {
+    if (!state) return;
+    if (state.message && !state.success) {
+      toast.error(state.message);
+    } else if (state.success) {
+      toast.success(editMode ? "Note updated!" : "Note created!");
+      router.push(state.redirectTo);
+    }
+  }, [state, editMode, router]);
 
   return (
     <form
@@ -30,7 +40,7 @@ export default function NoteForm({ serverAction, note }) {
           className="text-brand border-brand-light/20 placeholder:text-brand-light/40 focus-visible:border-brand-light w-full border-b bg-transparent p-6 text-4xl font-semibold transition-colors duration-200 focus-visible:outline-none"
         />
       </PanelTitle>
-      <div className="flex flex-1 flex-col relative">
+      <div className="relative flex flex-1 flex-col">
         <label htmlFor="new-note-content" className="sr-only">
           {editMode ? "Edit" : "New"} Note Content
         </label>
@@ -42,14 +52,15 @@ export default function NoteForm({ serverAction, note }) {
           placeholder="Start writing... (Try **bold** or *italics*)"
           className="placeholder:text-brand-light/40 h-full w-full resize-none bg-transparent px-10 py-6 text-lg leading-relaxed whitespace-pre-wrap focus-visible:outline-none"
         />
+        {/* {state?.message && (
+          <span className="p-4 text-center text-sm text-red-700">
+            {state.message}
+          </span>
+        )} */}
         <div className="absolute right-4 bottom-4 z-10">
           <MarkdownGuide />
         </div>
       </div>
-
-      {/* {state?.message && (
-        <p className="p-2 text-center text-sm text-red-500">{state.message}</p>
-      )} */}
 
       <button
         type="submit"

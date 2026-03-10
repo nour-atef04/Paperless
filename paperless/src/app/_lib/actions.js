@@ -51,6 +51,8 @@ export async function toggleSaveNote(noteId) {
     throw new Error(fetchError.message);
   }
 
+  let wasSaved;
+
   if (!data) {
     const { error: insertError } = await supabase
       .from("user_saves")
@@ -58,6 +60,8 @@ export async function toggleSaveNote(noteId) {
 
     if (insertError) {
       throw new Error(insertError.message);
+    } else {
+      wasSaved = false;
     }
   } else {
     const { error: deleteError } = await supabase
@@ -66,11 +70,14 @@ export async function toggleSaveNote(noteId) {
       .match({ user_id: user.id, note_id: noteId });
     if (deleteError) {
       throw new Error(deleteError.message);
+    } else {
+      wasSaved = true;
     }
   }
 
   revalidatePath("/notes");
   revalidatePath("/saved");
+  return wasSaved;
 }
 
 export async function postNewNote(prevState, formData) {
@@ -95,7 +102,8 @@ export async function postNewNote(prevState, formData) {
   const noteId = data[0].id;
 
   revalidatePath("/notes");
-  redirect(`/notes/${noteId}`);
+  // redirect(`/notes/${noteId}`);
+  return { success: true, redirectTo: `/notes/${noteId}` };
 }
 
 export async function deleteNote(noteId) {
@@ -111,11 +119,12 @@ export async function deleteNote(noteId) {
     .delete()
     .match({ id: noteId, user_id: user.id });
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath("/notes");
-  redirect("/my-notes");
+  // redirect("/my-notes");
+  return { success: true, redirectTo: "/my-notes" };
 }
 
 export async function editNote(prevState, formData) {
@@ -142,7 +151,8 @@ export async function editNote(prevState, formData) {
 
   revalidatePath("/notes");
   revalidatePath(`/notes/${id}`);
-  redirect(`/notes/${id}`);
+  // redirect(`/notes/${id}`);
+  return { success: true, redirectTo: `/notes/${id}` };
 }
 
 // TO DO: GOOGLE AUTH

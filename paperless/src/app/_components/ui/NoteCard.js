@@ -46,7 +46,7 @@ export default function NoteCard({ note, userId, page }) {
         </Link>
       </h2>
 
-      <div className="text-brand-light mt-4 line-clamp-6 w-full whitespace-pre-wrap">
+      <div className="text-brand-light mt-4 line-clamp-6 text-sm w-full whitespace-pre-wrap">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkBreaks]}
           disallowedElements={["h1"]}

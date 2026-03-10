@@ -2,6 +2,7 @@
 
 import { toggleSaveNote } from "@/app/_lib/actions";
 import { useState, useTransition } from "react";
+import toast from "react-hot-toast";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { FaSpinner } from "react-icons/fa6";
 
@@ -23,12 +24,16 @@ export default function SaveBtn({ note }) {
 
     startSaving(async () => {
       try {
-        await toggleSaveNote(note.id);
+        const wasSaved = await toggleSaveNote(note.id);
+        if (wasSaved) {
+          toast.success("Note removed from saved!");
+        }
+        else toast.success("Note added to saved!");
       } catch (error) {
         console.error("Failed to save note: ", error);
         // revert heart back to original if saving failed
         setIsSaved(initiallySaved);
-        // TODO: SHOW A TOAST NOTIF
+        toast.error("Failed to save note.");
       }
     });
   };

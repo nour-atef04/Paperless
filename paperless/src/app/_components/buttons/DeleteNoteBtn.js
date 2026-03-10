@@ -5,10 +5,13 @@ import { useState, useTransition } from "react";
 import { IoTrashOutline } from "react-icons/io5";
 import { FaSpinner } from "react-icons/fa6";
 import Modal from "../ui/Modal";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function DeleteNoteBtn({ note }) {
   const [isDeleting, startDeleting] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   const openModal = (e) => {
     e.preventDefault();
@@ -18,14 +21,21 @@ export default function DeleteNoteBtn({ note }) {
 
   const confirmDelete = () => {
     startDeleting(async () => {
-      try {
-        // TODO: DELETE CONFIRMATION MODAL
-        await deleteNote(note.id);
+      const result = await deleteNote(note.id);
+
+      if (result?.error) {
         setIsModalOpen(false);
-      } catch (error) {
-        console.error("Failed to save note: ", error);
+        toast.error(error.message);
+        return;
+      }
+
+      if (result?.success) {
         setIsModalOpen(false);
-        // TODO: SHOW A TOAST NOTIF + GREY NOTE OUT
+        toast.success("Note deleted!");
+
+        if (result.redirectTo) {
+          router.push(result.redirectTo);
+        }
       }
     });
   };
