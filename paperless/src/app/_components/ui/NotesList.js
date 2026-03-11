@@ -9,16 +9,17 @@ import NoteCard from "./NoteCard";
 export default async function NotesList({
   query,
   page = "dashboard", // "dashboard" || "my-notes" || "saved"
+  sort = "most-relevant" // "most-relevant || "latest" || "oldest"
 }) {
   const userId = await getUserId();
 
   let notes;
   if (page === "dashboard") {
-    notes = await getDashboardNotes(query);
+    notes = await getDashboardNotes(query, sort);
   } else if (page === "my-notes") {
-    notes = await getMyNotes(query);
+    notes = await getMyNotes(query, sort);
   } else if (page === "saved") {
-    notes = await getSavedNotes(query);
+    notes = await getSavedNotes(query, sort);
   }
 
   if (!notes || notes.length === 0) {

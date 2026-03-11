@@ -14,17 +14,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${crimson.variable}`}>
-      <body className="min-h-screen font-sans antialiased">{children}</body>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          style: {
-            background: "#333",
-            color: "#fff",
-          },
-          
-        }}
-      />
+      <body className="min-h-screen font-sans antialiased">
+        {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: "#333",
+              color: "#fff",
+            },
+          }}
+        />
+      </body>
     </html>
   );
 }

@@ -9,6 +9,8 @@ import { notFound } from "next/navigation";
 import EditNoteBtn from "@/app/_components/buttons/EditNoteBtn";
 import DeleteNoteBtn from "@/app/_components/buttons/DeleteNoteBtn";
 
+// TO DO: SSG
+
 export default async function Note({ params }) {
   const { id } = await params;
   const note = await getNoteById(id);

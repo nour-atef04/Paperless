@@ -41,16 +41,29 @@ function getAllNotes(supabase) {
   );
 }
 
-export async function getDashboardNotes(query) {
+function applySorting(queryBuilder, sort) {
+  switch (sort) {
+    case "oldest":
+      return queryBuilder.order("created_at", { ascending: true });
+    case "most-relevant":
+      // TO DO: advanced PostgreSQL Full-Text Search
+      // For now, defaulting "relevant" to "latest"
+      return queryBuilder.order("created_at", { ascending: false });
+    case "latest":
+    default:
+      // Always fall back to latest if no sort is provided
+      return queryBuilder.order("created_at", { ascending: false });
+  }
+}
+
+export async function getDashboardNotes(query, sort) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  let supabaseQuery = getAllNotes(supabase)
-    .neq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  let supabaseQuery = getAllNotes(supabase).neq("user_id", user.id);
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -58,21 +71,21 @@ export async function getDashboardNotes(query) {
     );
   }
 
+  supabaseQuery = applySorting(supabaseQuery, sort);
+
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
   return data;
 }
 
-export async function getMyNotes(query) {
+export async function getMyNotes(query, sort) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  let supabaseQuery = getAllNotes(supabase)
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  let supabaseQuery = getAllNotes(supabase).eq("user_id", user.id);
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -80,12 +93,14 @@ export async function getMyNotes(query) {
     );
   }
 
+  supabaseQuery = applySorting(supabaseQuery, sort);
+
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
   return data;
 }
 
-export async function getSavedNotes(query) {
+export async function getSavedNotes(query, sort) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -106,14 +121,15 @@ export async function getSavedNotes(query) {
       )
     `,
     )
-    .eq("user_saves.user_id", user.id)
-    .order("created_at", { ascending: false });
+    .eq("user_saves.user_id", user.id);
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
       `title.ilike.%${query}%, content.ilike.%${query}%`,
     );
   }
+
+  supabaseQuery = applySorting(supabaseQuery, sort);
 
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);

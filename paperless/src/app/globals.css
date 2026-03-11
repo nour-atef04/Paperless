@@ -40,16 +40,24 @@
     @apply bg-background text-foreground font-sans;
   }
 
+  .focus-ring-primary {
+    @apply focus-visible:ring-brand-light focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none;
+  }
+
   .btn-primary {
-    @apply bg-brand cursor-pointer text-white transition hover:opacity-90 active:scale-95;
+    @apply bg-brand focus-visible:ring-brand-light cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-brand-light focus-visible:ring-brand cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border-brand-light text-brand-light focus-visible:ring-brand cursor-pointer border-2 transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
   }
 
   .btn-disabled {
     @apply bg-brand-light cursor-not-allowed text-white transition;
-  }
-
-  .focus-ring-primary {
-    @apply focus-visible:ring-brand-light focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none;
   }
 }
 

@@ -1,10 +1,11 @@
+import NotesList from "@/app/_components/ui/NotesList";
 import { Suspense } from "react";
 import Panel from "./Panel";
 import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
-import NotesList from "@/app/_components/ui/NotesList";
+import SortButtons from "../buttons/SortButtons";
 
-export default async function NotesTemplate({ query, page }) {
+export default async function NotesTemplate({ query, page, sort }) {
   const titles = {
     dashboard: "Dashboard",
     saved: "Saved Notes",
@@ -18,11 +19,16 @@ export default async function NotesTemplate({ query, page }) {
     <div className="flex flex-col gap-6">
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
       <Panel ariaLabelledBy={titleId} className="flex flex-col gap-10 p-6">
-        <PanelTitle level={1} id={titleId}>
-          {currentTitle}
-        </PanelTitle>
+        <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row">
+          <PanelTitle level={1} id={titleId}>
+            {currentTitle}
+          </PanelTitle>
+
+          <SortButtons />
+        </header>
+
         <Suspense
-          key={query}
+          key={`${query}-${sort}`}
           fallback={
             <div
               className="flex flex-col items-center py-10"
@@ -35,7 +41,7 @@ export default async function NotesTemplate({ query, page }) {
             </div>
           }
         >
-          <NotesList query={query} page={page} />
+          <NotesList query={query} page={page} sort={sort}/>
         </Suspense>
       </Panel>
     </div>
