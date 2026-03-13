@@ -1,9 +1,10 @@
 import NotesList from "@/app/_components/ui/NotesList";
 import { Suspense } from "react";
+import SortButtons from "../buttons/SortButtons";
 import Panel from "./Panel";
 import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
-import SortButtons from "../buttons/SortButtons";
+import FolderList from "./FolderList";
 
 export default async function NotesTemplate({ query, page, sort }) {
   const titles = {
@@ -24,25 +25,45 @@ export default async function NotesTemplate({ query, page, sort }) {
             {currentTitle}
           </PanelTitle>
 
-          <SortButtons />
+          {/* if not "my notes" page -> put buttons next to panel title */}
+          {page !== "my-notes" && <SortButtons />}
         </header>
-
-        <Suspense
-          key={`${query}-${sort}`}
-          fallback={
-            <div
-              className="flex flex-col items-center py-10"
-              role="status"
-              aria-live="polite"
-            >
-              <p className="text-brand-light animate-pulse">
-                Loading {currentTitle.toLowerCase()}...
-              </p>
+        {/* folders section in "my notes" page */}
+        {page === "my-notes" && (
+          <section className="flex flex-col gap-9">
+            <div className="flex items-center justify-between">
+              <h2 className="text-brand text-xl font-semibold">Folders</h2>
+              {/* <CreateFolderBtn /> will go here */}
             </div>
-          }
-        >
-          <NotesList query={query} page={page} sort={sort}/>
-        </Suspense>
+            <FolderList />
+          </section>
+        )}
+
+        <section className="flex flex-col gap-9 mt-10">
+          {/* notes section in "my notes" page */}
+          {page === "my-notes" && (
+            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+              <h2 className="text-brand text-xl font-semibold">All Notes</h2>
+              <SortButtons />
+            </div>
+          )}
+          <Suspense
+            key={`${query}-${sort}`}
+            fallback={
+              <div
+                className="flex flex-col items-center py-10"
+                role="status"
+                aria-live="polite"
+              >
+                <p className="text-brand-light animate-pulse">
+                  Loading {currentTitle.toLowerCase()}...
+                </p>
+              </div>
+            }
+          >
+            <NotesList query={query} page={page} sort={sort} />
+          </Suspense>
+        </section>
       </Panel>
     </div>
   );
