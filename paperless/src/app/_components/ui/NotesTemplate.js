@@ -6,6 +6,8 @@ import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
 import FolderList from "./FolderList";
 import { getFolderName, getMyFolders } from "@/app/_lib/data-service";
+import NewFolderBtn from "../buttons/NewFolderBtn";
+import NewNoteBtn from "../buttons/NewNoteBtn";
 
 export default async function NotesTemplate({ query, page, sort, folderId }) {
   const titles = {
@@ -44,8 +46,9 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
           <section className="flex flex-col gap-9">
             <div className="flex items-center justify-between">
               <h2 className="text-brand text-xl font-semibold">Folders</h2>
-              {/* <CreateFolderBtn /> will go here */}
+              {/* <NewFolderBtn />  */}
             </div>
+            
             <FolderList folders={folders} />
           </section>
         )}
@@ -60,6 +63,7 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
               <SortButtons />
             </div>
           )}
+
           <Suspense
             key={`${query}-${sort}-${folderId}`}
             fallback={

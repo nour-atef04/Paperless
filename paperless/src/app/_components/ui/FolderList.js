@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import NewFolderBtn from "../buttons/NewFolderBtn";
 
 export default function FolderList({folders}) {
 
@@ -19,6 +20,8 @@ export default function FolderList({folders}) {
     <>
       {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4"> */}
       <div className="flex flex-wrap gap-4">
+        {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
+        <NewFolderBtn />
         {visibleFolders.map((folder) => (
           <Link
             key={folder.id}
