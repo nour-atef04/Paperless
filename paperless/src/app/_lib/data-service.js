@@ -154,3 +154,8 @@ export async function getNoteById(id) {
   if (error) throw new Error(error.message);
   return data;
 }
+
+export async function getFolderName(id) {
+  if(!id) return null;
+  return "Architecture";
+}

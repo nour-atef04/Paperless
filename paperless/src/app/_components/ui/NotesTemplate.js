@@ -5,8 +5,9 @@ import Panel from "./Panel";
 import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
 import FolderList from "./FolderList";
+import { getFolderName } from "@/app/_lib/data-service";
 
-export default async function NotesTemplate({ query, page, sort }) {
+export default async function NotesTemplate({ query, page, sort, folderId }) {
   const titles = {
     dashboard: "Dashboard",
     saved: "Saved Notes",
@@ -16,10 +17,12 @@ export default async function NotesTemplate({ query, page, sort }) {
   const currentTitle = titles[page] || "Notes";
   const titleId = `${page}-title`;
 
+  const folderName = await getFolderName(folderId);
+
   return (
     <div className="flex flex-col gap-6">
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
-      <Panel ariaLabelledBy={titleId} className="flex flex-col gap-10 p-6">
+      <Panel ariaLabelledBy={titleId} className="flex flex-col gap-6 p-6">
         <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row">
           <PanelTitle level={1} id={titleId}>
             {currentTitle}
@@ -39,11 +42,13 @@ export default async function NotesTemplate({ query, page, sort }) {
           </section>
         )}
 
-        <section className="flex flex-col gap-9 mt-10">
+        <section className="mt-10 flex flex-col gap-9">
           {/* notes section in "my notes" page */}
           {page === "my-notes" && (
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              <h2 className="text-brand text-xl font-semibold">All Notes</h2>
+              <h2 className="text-brand text-xl font-semibold">
+                {folderName ? `Notes/${folderName}` : "All Notes"}
+              </h2>
               <SortButtons />
             </div>
           )}

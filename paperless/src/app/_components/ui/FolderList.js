@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function FolderList() {
@@ -26,8 +27,9 @@ export default function FolderList() {
       {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4"> */}
       <div className="flex flex-wrap gap-4">
         {visibleFolders.map((folder) => (
-          <button
+          <Link
             key={folder.id}
+            href={`/my-notes?folder=${folder.id}`}
             className="focus-visible:ring-brand-light group border-brand-light/20 flex shrink-0 cursor-pointer items-center gap-3 rounded-lg border p-3 pr-6 transition-all hover:-translate-y-1 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
             aria-label={`Open ${folder.name} folder`}
           >
@@ -43,7 +45,7 @@ export default function FolderList() {
             <span className="text-brand font-medium tracking-wide">
               {folder.name}
             </span>
-          </button>
+          </Link>
         ))}
 
         {hasMore && !isExpanded && (
