@@ -78,7 +78,7 @@ export async function getDashboardNotes(query, sort) {
   return data;
 }
 
-export async function getMyNotes(query, sort) {
+export async function getMyNotes(query, sort, folderId) {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -86,6 +86,10 @@ export async function getMyNotes(query, sort) {
   if (!user) return null;
 
   let supabaseQuery = getAllNotes(supabase).eq("user_id", user.id);
+
+  if(folderId){
+    supabaseQuery = supabaseQuery.eq("folder_id", folderId);
+  }
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -155,7 +159,29 @@ export async function getNoteById(id) {
   return data;
 }
 
+export async function getMyFolders() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from("folders")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("name", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export async function getFolderName(id) {
-  if(!id) return null;
-  return "Architecture";
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("folders")
+    .select("name")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data?.name || null;
 }

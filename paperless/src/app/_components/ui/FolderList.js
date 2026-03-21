@@ -4,23 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function FolderList() {
-  const fakeFolders = [
-    { id: 1, name: "Architecture Concepts" },
-    { id: 2, name: "Web Dev Snippets" },
-    { id: 3, name: "Personal Plans" },
-    { id: 4, name: "Web Dev Snippets" },
-    { id: 5, name: "Personal Plans" },
-    { id: 6, name: "Architecture Concepts" },
-    { id: 7, name: "Web Dev Snippets" },
-    { id: 8, name: "Personal Plans" },
-    { id: 9, name: "Architecture Concepts" },
-  ];
+export default function FolderList({folders}) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const visibleFolders = isExpanded ? fakeFolders : fakeFolders.slice(0, 7);
-  const hasMore = fakeFolders.length > 5;
+  if (!folders || folders.length === 0) {
+    return <p className="text-brand-light/70 text-sm">No folders created yet.</p>;
+  }
+
+  const visibleFolders = isExpanded ? folders : folders.slice(0, 5);
+  const hasMore = folders.length > 5;
 
   return (
     <>
@@ -53,7 +46,7 @@ export default function FolderList() {
             onClick={() => setIsExpanded(true)}
             className="text-brand-light hover:bg-brand-light/10 border-brand-light/40 flex cursor-pointer items-center justify-center rounded-lg border border-dashed p-3 transition-colors"
           >
-            + {fakeFolders.length - 5} More
+            + {folders.length - 5} More
           </button>
         )}
       </div>

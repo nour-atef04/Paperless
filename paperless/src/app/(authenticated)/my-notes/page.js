@@ -1,6 +1,6 @@
 import NotesTemplate from "@/app/_components/ui/NotesTemplate";
 
-export default async function myNotesPage({ searchParams }) {
+export default async function MyNotesPage({ searchParams }) {
 
   const params = await searchParams;
 

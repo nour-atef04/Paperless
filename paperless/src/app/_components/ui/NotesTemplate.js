@@ -5,7 +5,7 @@ import Panel from "./Panel";
 import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
 import FolderList from "./FolderList";
-import { getFolderName } from "@/app/_lib/data-service";
+import { getFolderName, getMyFolders } from "@/app/_lib/data-service";
 
 export default async function NotesTemplate({ query, page, sort, folderId }) {
   const titles = {
@@ -17,7 +17,15 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
   const currentTitle = titles[page] || "Notes";
   const titleId = `${page}-title`;
 
-  const folderName = await getFolderName(folderId);
+  let folderName;
+  if (folderId) {
+    folderName = await getFolderName(folderId);
+  }
+
+  let folders = [];
+  if (page === "my-notes") {
+    folders = await getMyFolders();
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -38,7 +46,7 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
               <h2 className="text-brand text-xl font-semibold">Folders</h2>
               {/* <CreateFolderBtn /> will go here */}
             </div>
-            <FolderList />
+            <FolderList folders={folders} />
           </section>
         )}
 
@@ -53,7 +61,7 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
             </div>
           )}
           <Suspense
-            key={`${query}-${sort}`}
+            key={`${query}-${sort}-${folderId}`}
             fallback={
               <div
                 className="flex flex-col items-center py-10"
@@ -66,7 +74,12 @@ export default async function NotesTemplate({ query, page, sort, folderId }) {
               </div>
             }
           >
-            <NotesList query={query} page={page} sort={sort} />
+            <NotesList
+              query={query}
+              page={page}
+              sort={sort}
+              folderId={folderId}
+            />
           </Suspense>
         </section>
       </Panel>

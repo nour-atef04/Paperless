@@ -9,7 +9,8 @@ import NoteCard from "./NoteCard";
 export default async function NotesList({
   query,
   page = "dashboard", // "dashboard" || "my-notes" || "saved"
-  sort = "most-relevant" // "most-relevant || "latest" || "oldest"
+  sort = "most-relevant", // "most-relevant || "latest" || "oldest"
+  folderId
 }) {
   const userId = await getUserId();
 
@@ -17,7 +18,7 @@ export default async function NotesList({
   if (page === "dashboard") {
     notes = await getDashboardNotes(query, sort);
   } else if (page === "my-notes") {
-    notes = await getMyNotes(query, sort);
+    notes = await getMyNotes(query, sort, folderId);
   } else if (page === "saved") {
     notes = await getSavedNotes(query, sort);
   }
