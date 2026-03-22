@@ -24,7 +24,7 @@ export default async function NotesList({
   }
 
   if (!notes || notes.length === 0) {
-    return <p className="text-brand pb-9 text-center">No notes found.</p>;
+    return <p className="text-brand py-9 text-center">No notes found.</p>;
   }
 
   return (
