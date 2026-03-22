@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { FaPlus, FaSpinner } from "react-icons/fa6";
 import Modal from "../ui/Modal";
 import toast from "react-hot-toast";
+import { createFolder } from "@/app/_lib/actions";
 
 export default function NewFolderBtn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,16 +16,15 @@ export default function NewFolderBtn() {
     if (!folderName.trim()) return;
 
     startTransition(async () => {
-      // 1. Call your server action (we will write this next)
-      // const result = await createFolder(folderName);
-      // 2. Handle the result
-      // if (result?.error) {
-      //   toast.error(result.error);
-      // } else {
-      //   toast.success("Folder created!");
-      //   setFolderName("");
-      //   setIsModalOpen(false);
-      // }
+      console.log(folderName);
+      const result = await createFolder(folderName);
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
+        toast.success("Folder created!");
+      }
+      setFolderName("");
+      setIsModalOpen(false);
     });
   };
 

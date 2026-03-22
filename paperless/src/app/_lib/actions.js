@@ -155,4 +155,22 @@ export async function editNote(prevState, formData) {
   return { success: true, redirectTo: `/notes/${id}` };
 }
 
+export async function createFolder(folderName) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to create a new folder." };
+
+  const { error } = await supabase.from("folders").insert({ name: folderName, user_id: user.id});
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/my-notes");
+
+  return { success: true };
+}
+
 // TO DO: GOOGLE AUTH
