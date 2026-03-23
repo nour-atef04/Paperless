@@ -1,5 +1,3 @@
-"use client";
-
 import NoteForm from "@/app/_components/ui/NoteForm";
 import { postNewNote } from "@/app/_lib/actions";
 

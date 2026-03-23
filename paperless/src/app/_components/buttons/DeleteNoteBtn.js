@@ -25,7 +25,7 @@ export default function DeleteNoteBtn({ note }) {
 
       if (result?.error) {
         setIsModalOpen(false);
-        toast.error(error.message);
+        toast.error(result.error);
         return;
       }
 

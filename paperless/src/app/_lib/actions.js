@@ -6,24 +6,22 @@ import { revalidatePath } from "next/cache";
 
 export async function loginAction(prevState, formData) {
   const supabase = await createSupabaseServerClient();
-  {
-    const email = formData.get("email");
-    const password = formData.get("password");
+  const email = formData.get("email");
+  const password = formData.get("password");
 
-    if (!email || !password) {
-      return { error: "Please enter email and password" };
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      return { error: error.message };
-    }
-    redirect("/");
+  if (!email || !password) {
+    return { error: "Please enter email and password" };
   }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+  redirect("/");
 }
 
 export async function logoutAction(prevState, formData) {
@@ -40,7 +38,7 @@ export async function toggleSaveNote(noteId) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be logged in to save notes.");
+  if (!user) return { error: "You must be logged in to save notes." };
 
   const { data, error: fetchError } = await supabase
     .from("user_saves")
@@ -48,7 +46,7 @@ export async function toggleSaveNote(noteId) {
     .match({ user_id: user.id, note_id: noteId })
     .maybeSingle();
   if (fetchError) {
-    throw new Error(fetchError.message);
+    return { error: fetchError.message };
   }
 
   let wasSaved;
@@ -59,7 +57,7 @@ export async function toggleSaveNote(noteId) {
       .insert({ user_id: user.id, note_id: noteId });
 
     if (insertError) {
-      throw new Error(insertError.message);
+      return { error: insertError.message };
     } else {
       wasSaved = false;
     }
@@ -69,7 +67,7 @@ export async function toggleSaveNote(noteId) {
       .delete()
       .match({ user_id: user.id, note_id: noteId });
     if (deleteError) {
-      throw new Error(deleteError.message);
+      return { error: deleteError.message };
     } else {
       wasSaved = true;
     }
@@ -88,7 +86,7 @@ export async function postNewNote(prevState, formData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be logged in to add notes.");
+  if (!user) return { error: "You must be logged in to add notes." };
 
   const { data, error } = await supabase
     .from("notes")
@@ -96,13 +94,13 @@ export async function postNewNote(prevState, formData) {
     .select();
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
-  const noteId = data[0].id;
+  const noteId = data?.[0]?.id;
+  if (!noteId) return { error: "Failed to retrieve the new note ID." };
 
   revalidatePath("/notes");
-  // redirect(`/notes/${noteId}`);
   return { success: true, redirectTo: `/notes/${noteId}` };
 }
 
@@ -112,7 +110,7 @@ export async function deleteNote(noteId) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user) return { error: "Unauthorized" };
 
   const { error } = await supabase
     .from("notes")
@@ -123,7 +121,6 @@ export async function deleteNote(noteId) {
   }
 
   revalidatePath("/notes");
-  // redirect("/my-notes");
   return { success: true, redirectTo: "/my-notes" };
 }
 
@@ -137,7 +134,7 @@ export async function editNote(prevState, formData) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("You must be logged in to edit notes.");
+  if (!user) return { error: "You must be logged in to edit notes." };
 
   const { error } = await supabase
     .from("notes")
@@ -145,9 +142,7 @@ export async function editNote(prevState, formData) {
     .match({ id: id, user_id: user.id })
     .select();
 
-  if (error) {
-    throw new Error(error.message);
-  }
+  if (error) return { error: error.message };
 
   revalidatePath("/notes");
   revalidatePath(`/notes/${id}`);
@@ -162,7 +157,9 @@ export async function createFolder(folderName) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "You must be logged in to create a new folder." };
 
-  const { error } = await supabase.from("folders").insert({ name: folderName, user_id: user.id});
+  const { error } = await supabase
+    .from("folders")
+    .insert({ name: folderName, user_id: user.id });
 
   if (error) {
     return { error: error.message };

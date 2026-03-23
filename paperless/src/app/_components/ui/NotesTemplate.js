@@ -1,13 +1,11 @@
 import NotesList from "@/app/_components/ui/NotesList";
+import { getFolderName, getMyFolders } from "@/app/_lib/data-service";
 import { Suspense } from "react";
 import SortButtons from "../buttons/SortButtons";
+import FolderList from "../folder/FolderList";
 import Panel from "./Panel";
 import PanelTitle from "./PanelTitle";
 import SearchBarPanel from "./SearchBarPanel";
-import FolderList from "./FolderList";
-import { getFolderName, getMyFolders } from "@/app/_lib/data-service";
-import NewFolderBtn from "../buttons/NewFolderBtn";
-import NewNoteBtn from "../buttons/NewNoteBtn";
 
 export default async function NotesTemplate({ query, page, sort, folderId }) {
   const titles = {

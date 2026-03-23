@@ -1,16 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import NewFolderBtn from "../buttons/NewFolderBtn";
+import FolderCard from "./FolderCard";
 
-export default function FolderList({folders}) {
+export default function FolderList({ folders }) {
+  const [openOptionsId, setOpenOptionsId] = useState(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!folders || folders.length === 0) {
-    return <p className="text-brand-light/70 text-sm">No folders created yet.</p>;
+    return (
+      <p className="text-brand-light/70 text-sm">No folders created yet.</p>
+    );
   }
 
   const visibleFolders = isExpanded ? folders : folders.slice(0, 5);
@@ -23,25 +25,7 @@ export default function FolderList({folders}) {
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
         <NewFolderBtn />
         {visibleFolders.map((folder) => (
-          <Link
-            key={folder.id}
-            href={`/my-notes?folder=${folder.id}`}
-            className="focus-visible:ring-brand-light group border-brand-light/20 flex shrink-0 cursor-pointer items-center gap-3 rounded-lg border p-3 pr-6 transition-all hover:-translate-y-1 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95"
-            aria-label={`Open ${folder.name} folder`}
-          >
-            <Image
-              src="/folder-icon.png"
-              alt=""
-              quality={100}
-              width={32}
-              height={32}
-              priority
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="text-brand font-medium tracking-wide">
-              {folder.name}
-            </span>
-          </Link>
+          <FolderCard key={folder.id} folder={folder} openOptionsId={openOptionsId} setOpenOptionsId={setOpenOptionsId}/>
         ))}
 
         {hasMore && !isExpanded && (

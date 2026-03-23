@@ -34,7 +34,7 @@ export default function NewFolderBtn() {
         onClick={() => setIsModalOpen(true)}
         className="btn-primary flex items-center gap-2 self-center rounded-md p-3"
       >
-        <FaPlus />
+        <FaPlus aria-hidden="true" />
         New Folder
       </button>
 
@@ -55,6 +55,7 @@ export default function NewFolderBtn() {
               onChange={(e) => setFolderName(e.target.value)}
               placeholder="e.g., Architecture Concepts"
               disabled={isPending}
+              autoFocus
               className="border-brand-light/30 rounded-md border bg-transparent p-2"
             />
           </div>
@@ -73,7 +74,14 @@ export default function NewFolderBtn() {
               disabled={isPending || !folderName.trim()}
               className={`${isPending || !folderName.trim() ? "cursor-not-allowed" : "cursor-pointer"} btn-primary flex items-center justify-center rounded-md px-4 py-2 disabled:opacity-50`}
             >
-              {isPending ? <FaSpinner className="animate-spin" /> : "Create"}
+              {isPending ? (
+                <div className="flex items-center gap-2">
+                  <FaSpinner aria-hidden="true" className="animate-spin" />
+                  <span>Creating...</span>
+                </div>
+              ) : (
+                "Create"
+              )}
             </button>
           </div>
         </form>

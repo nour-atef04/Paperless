@@ -1,10 +1,9 @@
 "use client";
 
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import FormInput from "./FormInput";
-import Panel from "./Panel";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IoMdSearch } from "react-icons/io";
 import { useDebouncedCallback } from "use-debounce";
+import FormInput from "./FormInput";
 
 export default function SearchBarPanel({ className }) {
   const searchParams = useSearchParams();

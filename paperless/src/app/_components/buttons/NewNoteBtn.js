@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 
 export default function NewNoteBtn() {
