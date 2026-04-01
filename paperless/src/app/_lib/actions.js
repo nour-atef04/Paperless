@@ -170,4 +170,20 @@ export async function createFolder(folderName) {
   return { success: true };
 }
 
+export async function deleteFolder(folderId) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to create a new folder." };
+
+  const { error } = await supabase.from("folders").delete().eq("id", folderId);
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/my-notes");
+  return { success: true };
+}
+
 // TO DO: GOOGLE AUTH
