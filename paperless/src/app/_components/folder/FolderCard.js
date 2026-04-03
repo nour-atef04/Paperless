@@ -9,6 +9,7 @@ import { FaSpinner } from "react-icons/fa";
 import FolderActionsBtn from "../buttons/FolderActionsBtn";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
+import ActionsBtn from "../buttons/ActionsBtn";
 
 export default function FolderCard({
   folder,
@@ -96,9 +97,9 @@ export default function FolderCard({
           </span>
         </Link>
 
-        <FolderActionsBtn
-          folderId={folder.id}
-          newFolderName={folder.name}
+        <ActionsBtn
+          id={folder.id}
+          name={folder.name}
           setOpenOptionsId={setOpenOptionsId}
           isOpen={isOpen}
         />
