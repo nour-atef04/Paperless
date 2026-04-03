@@ -1,8 +1,8 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import PanelTitle from "./PanelTitle";
-import MarkdownGuide from "./MarkdownGuide";
+import PanelTitle from "../ui/PanelTitle";
+import MarkdownGuide from "../ui/MarkdownGuide";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 

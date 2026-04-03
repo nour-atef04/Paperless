@@ -4,7 +4,7 @@ import {
   getSavedNotes,
   getUserId,
 } from "../../_lib/data-service";
-import NoteCard from "./NoteCard";
+import NotesGrid from "./NotesGrid";
 
 export default async function NotesList({
   query,
@@ -28,12 +28,6 @@ export default async function NotesList({
   }
 
   return (
-    <ul className="grid w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
-      {notes.map((note) => (
-        <li key={note.id} className="list-none">
-          <NoteCard note={note} userId={userId} page={page} />
-        </li>
-      ))}
-    </ul>
+    <NotesGrid notes={notes} userId={userId} page={page}/>
   );
 }

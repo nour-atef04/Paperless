@@ -6,17 +6,16 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
-import FolderActionsBtn from "../buttons/FolderActionsBtn";
+import ActionsBtn from "../buttons/ActionsBtn";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
-import ActionsBtn from "../buttons/ActionsBtn";
 
 export default function FolderCard({
   folder,
   openOptionsId,
   setOpenOptionsId,
 }) {
-  const isOpen = openOptionsId === folder.id;
+  const isOpen = openOptionsId === folder.id; // for options 
 
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
@@ -106,6 +105,7 @@ export default function FolderCard({
 
         {isOpen && (
           <OptionsList
+          className="top-10 right-3"
             closeMenu={() => setOpenOptionsId(null)}
             options={folderOptions}
           />

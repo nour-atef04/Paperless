@@ -1,4 +1,4 @@
-import NoteForm from "@/app/_components/ui/NoteForm";
+import NoteForm from "@/app/_components/notes/NoteForm";
 import { postNewNote } from "@/app/_lib/actions";
 
 export default function NewNotePage() {

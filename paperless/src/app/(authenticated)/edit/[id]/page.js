@@ -1,4 +1,4 @@
-import NoteForm from "@/app/_components/ui/NoteForm";
+import NoteForm from "@/app/_components/notes/NoteForm";
 import { editNote } from "@/app/_lib/actions";
 import { getNoteById } from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";

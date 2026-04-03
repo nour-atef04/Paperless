@@ -10,10 +10,20 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
 import EditNoteBtn from "../buttons/EditNoteBtn";
+import ActionsBtn from "../buttons/ActionsBtn";
+import OptionsList from "../ui/OptionsList";
 
-export default function NoteCard({ note, userId, page }) {
+export default function NoteCard({
+  note,
+  userId,
+  page,
+  openOptionsId,
+  setOpenOptionsId,
+}) {
   const isMine = note.user_id === userId;
-  const showDeleteBtn = isMine && page === "my-notes";
+  const isOpen = openOptionsId === note.id; // for the options
+
+  const showOptions = isMine && page === "my-notes";
 
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();
@@ -26,6 +36,21 @@ export default function NoteCard({ note, userId, page }) {
     });
   };
 
+  const noteOptions = [
+    {
+      label: "Move",
+      onClick: () => {
+        console.log("Open Move Modal!");
+      },
+    },
+    {
+      label: "Copy",
+      onClick: () => {
+        console.log("Open Move Modal!");
+      },
+    },
+  ];
+
   return (
     <article
       className={`focus-visible:ring-brand relative flex h-80 w-full flex-col items-start rounded-md border-t-8 p-6 text-left shadow-md transition-all focus-visible:ring-2 focus-visible:outline-none ${
@@ -34,7 +59,7 @@ export default function NoteCard({ note, userId, page }) {
           : "border-brand-light hover:scale-[0.98]"
       }`}
     >
-      <h2 className="text-brand text-2xl">
+      <h2 className="text-brand line-clamp-1 text-2xl">
         <Link
           onClick={handleNavigation}
           href={`/notes/${note.id}`}
@@ -46,7 +71,7 @@ export default function NoteCard({ note, userId, page }) {
         </Link>
       </h2>
 
-      <div className="text-brand-light mt-4 line-clamp-6 text-sm w-full whitespace-pre-wrap">
+      <div className="text-brand-light mt-4 line-clamp-6 w-full text-sm whitespace-pre-wrap">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkBreaks]}
           disallowedElements={["h1"]}
@@ -66,12 +91,29 @@ export default function NoteCard({ note, userId, page }) {
 
         <div className="flex flex-wrap items-center">
           <SaveNoteBtn note={note} />
-          {showDeleteBtn && (
+          {showOptions && (
             <>
               <EditNoteBtn note={note} />
               <DeleteNoteBtn note={note} />
             </>
           )}
+          <div className="relative">
+            <ActionsBtn
+              id={note.id}
+              name={note.title}
+              isOpen={isOpen}
+              setOpenOptionsId={setOpenOptionsId}
+              variant="note"
+            />
+
+            {isOpen && (
+              <OptionsList
+                className="right-0"
+                options={noteOptions}
+                closeMenu={() => setOpenOptionsId(null)}
+              />
+            )}
+          </div>
         </div>
       </div>
     </article>
