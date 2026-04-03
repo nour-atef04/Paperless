@@ -3,12 +3,12 @@
 import { deleteFolder, renameFolder } from "@/app/_lib/actions";
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState, useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
+import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
 import FolderActionsBtn from "../buttons/FolderActionsBtn";
 import Modal from "../ui/Modal";
-import FolderOptionsList from "./FolderOptionsList";
-import toast from "react-hot-toast";
+import OptionsList from "../ui/OptionsList";
 
 export default function FolderCard({
   folder,
@@ -58,6 +58,18 @@ export default function FolderCard({
     });
   };
 
+  // drop down options
+  const folderOptions = [
+    {
+      label: "Rename",
+      onClick: () => setIsRenameModalOpen(true),
+    },
+    {
+      label: "Delete",
+      onClick: () => setIsDeleteModalOpen(true),
+    },
+  ];
+
   return (
     <>
       <div
@@ -92,11 +104,9 @@ export default function FolderCard({
         />
 
         {isOpen && (
-          <FolderOptionsList
-            folder={folder}
+          <OptionsList
             closeMenu={() => setOpenOptionsId(null)}
-            onOpenDelete={() => setIsDeleteModalOpen(true)}
-            onOpenRename={() => setIsRenameModalOpen(true)}
+            options={folderOptions}
           />
         )}
       </div>
