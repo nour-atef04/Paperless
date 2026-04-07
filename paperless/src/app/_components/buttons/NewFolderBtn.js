@@ -6,6 +6,7 @@ import Modal from "../ui/Modal";
 import toast from "react-hot-toast";
 import { createFolder } from "@/app/_lib/actions";
 import FormInput from "../ui/FormInput";
+import ModalActionBtns from "./ModalActionsBtns";
 
 export default function NewFolderBtn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,31 +60,14 @@ export default function NewFolderBtn() {
               autoFocus
             />
           </div>
-
-          <div className="mt-2 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              disabled={isPending}
-              className="text-brand-light cursor-pointer px-4 py-2 text-sm hover:underline disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isPending || !folderName.trim()}
-              className={`${isPending || !folderName.trim() ? "cursor-not-allowed" : "cursor-pointer"} btn-primary flex items-center justify-center rounded-md px-4 py-2 disabled:opacity-50`}
-            >
-              {isPending ? (
-                <div className="flex items-center gap-2">
-                  <FaSpinner aria-hidden="true" className="animate-spin" />
-                  <span>Creating...</span>
-                </div>
-              ) : (
-                "Create"
-              )}
-            </button>
-          </div>
+          
+          <ModalActionBtns
+            onCancel={() => setIsModalOpen(false)}
+            isPending={isPending}
+            isSubmitDisabled={!folderName.trim()}
+            submitText="Create"
+            loadingText="Creating..."
+          />
         </form>
       </Modal>
     </>

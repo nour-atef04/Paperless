@@ -10,6 +10,7 @@ import ActionsBtn from "../buttons/ActionsBtn";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
 import FormInput from "../ui/FormInput";
+import ModalActionBtns from "../buttons/ModalActionsBtns";
 
 export default function FolderCard({
   folder,
@@ -124,30 +125,13 @@ export default function FolderCard({
             Are you sure you want to delete this folder? This action cannot be
             undone.
           </p>
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={() => setIsDeleteModalOpen(false)}
-              className="text-brand-light cursor-pointer px-4 py-2 text-sm underline"
-              disabled={isDeleting}
-            >
-              Cancel
-            </button>
-            <button
-              disabled={isDeleting}
-              className="btn-primary rounded-md p-2"
-              onClick={confirmDelete}
-              aria-live="polite"
-            >
-              {isDeleting ? (
-                <span className="flex items-center gap-2">
-                  <FaSpinner className="animate-spin" aria-hidden="true" />
-                  <span>Deleting...</span>
-                </span>
-              ) : (
-                "Delete Permanently"
-              )}
-            </button>
-          </div>
+          <ModalActionBtns
+            onCancel={() => setIsDeleteModalOpen(false)}
+            onSubmit={confirmDelete}
+            isPending={isDeleting}
+            submitText="Delete Permanently"
+            loadingText="Deleting..."
+          />
         </div>
       </Modal>
 
@@ -172,35 +156,17 @@ export default function FolderCard({
             />
           </div>
 
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => setIsRenameModalOpen(false)}
-              className="text-brand-light cursor-pointer px-4 py-2 text-sm underline"
-              disabled={isRenaming}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={
-                isRenaming ||
-                folder.name.trim() === newFolderName.trim() ||
-                !newFolderName.trim()
-              }
-              className="btn-primary flex items-center gap-2 rounded-md px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
-              aria-live="polite"
-            >
-              {isRenaming ? (
-                <>
-                  <FaSpinner className="animate-spin" aria-hidden="true" />
-                  <span>Renaming...</span>
-                </>
-              ) : (
-                "Rename"
-              )}
-            </button>
-          </div>
+          <ModalActionBtns
+            onCancel={() => setIsRenameModalOpen(false)}
+            isPending={isRenaming}
+            isSubmitDisabled={
+              isRenaming ||
+              folder.name.trim() === newFolderName.trim() ||
+              !newFolderName.trim()
+            }
+            submitText="Rename"
+            loadingText="Renaming..."
+          />
         </form>
       </Modal>
     </>

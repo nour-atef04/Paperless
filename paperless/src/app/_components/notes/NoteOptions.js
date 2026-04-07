@@ -5,25 +5,26 @@ import OptionsList from "../ui/OptionsList";
 import Modal from "../ui/Modal";
 import FormInput from "../ui/FormInput";
 import { useFolders } from "@/app/_context/FolderContext";
+import { FaSpinner } from "react-icons/fa";
+import ModalActionBtns from "../buttons/ModalActionsBtns";
 
 export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(null);
+  const [selectedFolderId, setSelectedFolderId] = useState(""); // track what the user selects in the dropdown
 
-  const folders = useFolders()
-    .filter((folder) => folder.id !== note.folder_id)
-    .map((folder) => folder.name);
+  const folders = useFolders().filter((folder) => folder.id !== note.folder_id);
 
   const noteOptions = [
     {
       label: "Move",
       onClick: () => {
-        setOpenModal(true);
+        setOpenModal("Move Folder");
       },
     },
     {
       label: "Copy",
       onClick: () => {
-        setOpenModal(true);
+        setOpenModal("Copy Folder");
       },
     },
   ];
@@ -38,7 +39,14 @@ export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
         />
       )}
       {openModal && (
-        <Modal isOpen={true} onClose={() => setOpenModal(false)} title="Modal">
+        <Modal
+          isOpen={true}
+          onClose={() => {
+            setOpenModal(null);
+            setSelectedFolderId("");
+          }}
+          title={openModal}
+        >
           <form className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <FormInput
@@ -47,7 +55,7 @@ export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
                 variant="variant2"
                 id="current-folder"
                 disabled
-                value={note.folders?.name}
+                value={note.folders?.name || "None"}
                 readOnly
               />
             </div>
@@ -62,8 +70,18 @@ export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
                 selectInput={true}
                 selectOptions={folders}
                 placeholder="Select a Folder..."
+                value={selectedFolderId}
+                onChange={(e) => setSelectedFolderId(e.target.value)}
               />
             </div>
+
+            <ModalActionBtns
+              onCancel={() => setOpenModal(null)}
+              isSubmitDisabled={!selectedFolderId}
+              submitText={openModal === "Move Folder" ? "Move" : "Copy"}
+              // when i write the Server Action, pass isPending={isPending} here
+              // and loadingText={openModal === "Move Folder" ? "Moving..." : "Copying..."}
+            />
           </form>
         </Modal>
       )}

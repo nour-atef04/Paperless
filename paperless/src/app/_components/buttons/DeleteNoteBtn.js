@@ -7,6 +7,7 @@ import { FaSpinner } from "react-icons/fa6";
 import Modal from "../ui/Modal";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import ModalActionBtns from "./ModalActionsBtns";
 
 export default function DeleteNoteBtn({ note }) {
   const [isDeleting, startDeleting] = useTransition();
@@ -67,29 +68,13 @@ export default function DeleteNoteBtn({ note }) {
             Are you sure you want to delete this note? This action cannot be
             undone.
           </p>
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="text-brand-light cursor-pointer px-4 py-2 text-sm underline"
-            >
-              Cancel
-            </button>
-            <button
-              disabled={isDeleting}
-              className="btn-primary rounded-md p-2"
-              onClick={confirmDelete}
-              aria-live="polite"
-            >
-              {isDeleting ? (
-                <span className="flex items-center gap-2">
-                  <FaSpinner className="animate-spin" aria-hidden="true" />
-                  <span>Deleting...</span>
-                </span>
-              ) : (
-                "Delete Permanently"
-              )}
-            </button>
-          </div>
+          <ModalActionBtns
+            onCancel={() => setIsModalOpen(false)}
+            onSubmit={confirmDelete}
+            isPending={isDeleting}
+            submitText="Delete Permanently"
+            loadingText="Deleting..."
+          />
         </div>
       </Modal>
     </>

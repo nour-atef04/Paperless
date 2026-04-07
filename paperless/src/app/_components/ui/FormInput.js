@@ -8,6 +8,8 @@ export default function FormInput({
   showLabel = false,
   selectInput = false,
   selectOptions,
+  value,
+  defaultValue,
   ...props
 }) {
   const variantClass = {
@@ -17,6 +19,9 @@ export default function FormInput({
   };
 
   const sharedClasses = `${variantClass[variant]} ${className} disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50 w-full`;
+
+  // determining if the parent component is controlling this input
+  const isControlled = value !== undefined;
 
   return (
     <>
@@ -28,10 +33,11 @@ export default function FormInput({
       </label>
       {selectInput ? (
         <select
-          defaultValue={props.defaultValue || ""}
           name={name}
           id={id}
           className={sharedClasses}
+          value={isControlled ? value : undefined}
+          defaultValue={!isControlled ? defaultValue || "" : undefined}
           {...props}
         >
           {placeholder && (
@@ -40,8 +46,8 @@ export default function FormInput({
             </option>
           )}
           {selectOptions.map((option, index) => (
-            <option key={index} value={option.id || option.value || option}>
-              {option.id || option.value || option}
+            <option key={index} value={option.id}>
+              {option.name}
             </option>
           ))}
         </select>
@@ -51,6 +57,8 @@ export default function FormInput({
           id={id}
           className={`${variantClass[variant]} ${className} disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50`}
           placeholder={placeholder}
+          value={isControlled ? value : undefined}
+          defaultValue={!isControlled ? defaultValue : undefined}
           {...props}
         />
       )}
