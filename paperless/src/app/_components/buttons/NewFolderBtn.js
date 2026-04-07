@@ -5,6 +5,7 @@ import { FaPlus, FaSpinner } from "react-icons/fa6";
 import Modal from "../ui/Modal";
 import toast from "react-hot-toast";
 import { createFolder } from "@/app/_lib/actions";
+import FormInput from "../ui/FormInput";
 
 export default function NewFolderBtn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,18 +46,17 @@ export default function NewFolderBtn() {
       >
         <form onSubmit={handleCreate} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="folderName" className="text-sm font-medium">
-              Folder Name
-            </label>
-            <input
+            <FormInput
               id="folderName"
+              label="Folder Name"
               type="text"
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
               placeholder="e.g., Architecture Concepts"
               disabled={isPending}
+              variant="variant2"
+              showLabel={true}
               autoFocus
-              className="border-brand-light/30 rounded-md border bg-transparent p-2"
             />
           </div>
 

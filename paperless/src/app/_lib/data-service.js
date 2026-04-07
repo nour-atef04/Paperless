@@ -32,6 +32,7 @@ function getAllNotes(supabase) {
   return supabase.from("notes").select(
     `
     *,
+    folders(name),
     profiles!user_id (
       full_name,
       avatar_url
@@ -87,7 +88,7 @@ export async function getMyNotes(query, sort, folderId) {
 
   let supabaseQuery = getAllNotes(supabase).eq("user_id", user.id);
 
-  if(folderId){
+  if (folderId) {
     supabaseQuery = supabaseQuery.eq("folder_id", folderId);
   }
 

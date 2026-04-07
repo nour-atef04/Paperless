@@ -1,17 +1,17 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
 import SaveNoteBtn from "@/app/_components/buttons/SaveNoteBtn";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import ActionsBtn from "../buttons/ActionsBtn";
 import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
 import EditNoteBtn from "../buttons/EditNoteBtn";
-import ActionsBtn from "../buttons/ActionsBtn";
-import OptionsList from "../ui/OptionsList";
+import NoteOptions from "./NoteOptions";
 
 export default function NoteCard({
   note,
@@ -35,21 +35,6 @@ export default function NoteCard({
       router.push(`/notes/${note.id}`);
     });
   };
-
-  const noteOptions = [
-    {
-      label: "Move",
-      onClick: () => {
-        console.log("Open Move Modal!");
-      },
-    },
-    {
-      label: "Copy",
-      onClick: () => {
-        console.log("Open Move Modal!");
-      },
-    },
-  ];
 
   return (
     <article
@@ -106,13 +91,7 @@ export default function NoteCard({
               variant="note"
             />
 
-            {isOpen && (
-              <OptionsList
-                className="right-0"
-                options={noteOptions}
-                closeMenu={() => setOpenOptionsId(null)}
-              />
-            )}
+            <NoteOptions note={note} setOpenOptionsId={setOpenOptionsId} isOpen={isOpen} />
           </div>
         </div>
       </div>

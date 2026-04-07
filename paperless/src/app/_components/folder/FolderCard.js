@@ -9,13 +9,14 @@ import { FaSpinner } from "react-icons/fa";
 import ActionsBtn from "../buttons/ActionsBtn";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
+import FormInput from "../ui/FormInput";
 
 export default function FolderCard({
   folder,
   openOptionsId,
   setOpenOptionsId,
 }) {
-  const isOpen = openOptionsId === folder.id; // for options 
+  const isOpen = openOptionsId === folder.id; // for options
 
   const [newFolderName, setNewFolderName] = useState(folder.name);
 
@@ -105,7 +106,7 @@ export default function FolderCard({
 
         {isOpen && (
           <OptionsList
-          className="top-10 right-3"
+            className="top-10 right-3"
             closeMenu={() => setOpenOptionsId(null)}
             options={folderOptions}
           />
@@ -158,17 +159,16 @@ export default function FolderCard({
       >
         <form onSubmit={handleRename} className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <label htmlFor="newFolderName" className="text-sm font-medium">
-              New Folder Name
-            </label>
-            <input
+            <FormInput
+              label="New Folder Name"
+              showLabel={true}
+              variant="variant2"
               id="newFolderName"
               type="text"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               disabled={isRenaming}
               autoFocus
-              className="border-brand-light/30 focus-visible:ring-brand rounded-md border bg-transparent p-2 focus-visible:ring-2 focus-visible:outline-none"
             />
           </div>
 
