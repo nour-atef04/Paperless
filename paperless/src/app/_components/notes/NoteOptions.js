@@ -3,9 +3,15 @@
 import { useState } from "react";
 import OptionsList from "../ui/OptionsList";
 import Modal from "../ui/Modal";
+import FormInput from "../ui/FormInput";
+import { useFolders } from "@/app/_context/FolderContext";
 
 export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
   const [openModal, setOpenModal] = useState(false);
+
+  const folders = useFolders()
+    .filter((folder) => folder.id !== note.folder_id)
+    .map((folder) => folder.name);
 
   const noteOptions = [
     {
@@ -33,28 +39,29 @@ export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
       )}
       {openModal && (
         <Modal isOpen={true} onClose={() => setOpenModal(false)} title="Modal">
-          <form className="flex flex-col">
-            <label htmlFor="current-folder">Current Folder:</label>
-            <input
-              disabled={true}
-              defaultValue={note.folders?.name}
-              id="current-folder"
-            />
-            <label htmlFor="new-folder">New Folder:</label>
-            <input type="text" id="new-folder" />
+          <form className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
-              <label htmlFor="folderName" className="text-sm font-medium">
-                Folder Name
-              </label>
-              <input
-                id="folderName"
-                type="text"
-                value={folderName}
-                // onChange={(e) => setFolderName(e.target.value)}
-                placeholder="e.g., Architecture Concepts"
-                // disabled={isPending}
-                autoFocus
-                className="border-brand-light/30 rounded-md border bg-transparent p-2"
+              <FormInput
+                showLabel={true}
+                label="Current Folder"
+                variant="variant2"
+                id="current-folder"
+                disabled
+                value={note.folders?.name}
+                readOnly
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <FormInput
+                showLabel={true}
+                label="Destination Folder"
+                variant="variant2"
+                id="folderId"
+                name="folderId"
+                selectInput={true}
+                selectOptions={folders}
+                placeholder="Select a Folder..."
               />
             </div>
           </form>

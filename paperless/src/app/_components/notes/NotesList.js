@@ -1,5 +1,7 @@
+import { FolderProvider } from "@/app/_context/FolderContext";
 import {
   getDashboardNotes,
+  getMyFolders,
   getMyNotes,
   getSavedNotes,
   getUserId,
@@ -10,7 +12,7 @@ export default async function NotesList({
   query,
   page = "dashboard", // "dashboard" || "my-notes" || "saved"
   sort = "most-relevant", // "most-relevant || "latest" || "oldest"
-  folderId
+  folderId,
 }) {
   const userId = await getUserId();
 
@@ -27,7 +29,11 @@ export default async function NotesList({
     return <p className="text-brand py-9 text-center">No notes found.</p>;
   }
 
+  const folders = await getMyFolders(userId);
+
   return (
-    <NotesGrid notes={notes} userId={userId} page={page}/>
+    <FolderProvider folders={folders}>
+      <NotesGrid notes={notes} userId={userId} page={page} />
+    </FolderProvider>
   );
 }
