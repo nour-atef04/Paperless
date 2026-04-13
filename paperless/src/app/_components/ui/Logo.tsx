@@ -1,9 +1,14 @@
 import Image from "next/image";
 
+type LogoProps = {
+  className?: string;
+  variant?: "light-mode" | "dark-mode";
+};
+
 export default function Logo({
-  className,
-  variant = "light-mode", // "dark-mode" || "light-mode"
-}) {
+  className = "",
+  variant = "light-mode",
+}: LogoProps) {
   return (
     <div className={`${className} flex items-center gap-2`}>
       <Image

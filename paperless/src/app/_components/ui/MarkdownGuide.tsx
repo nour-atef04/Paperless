@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaInfoCircle, FaTimes } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import Modal from "./Modal";
 
 export default function MarkdownGuide() {

@@ -2,7 +2,20 @@
 
 import { useOutsideClick } from "@/app/_hooks/useOutsideClick";
 
-export default function OptionsList({ className, closeMenu, options }) {
+type OptionsListProps = {
+  className?: string;
+  closeMenu: () => void;
+  options: {
+    label: string;
+    onClick: () => void;
+  }[];
+};
+
+export default function OptionsList({
+  className = "",
+  closeMenu,
+  options,
+}: OptionsListProps) {
   const ref = useOutsideClick(closeMenu);
 
   return (
@@ -16,7 +29,7 @@ export default function OptionsList({ className, closeMenu, options }) {
           key={index}
           role="menuitem"
           className="text-brand z-10 cursor-pointer rounded-sm px-4 text-left text-sm whitespace-nowrap transition-colors hover:underline"
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             option.onClick();
             closeMenu();

@@ -1,3 +1,12 @@
+type FormInputProps = React.ComponentPropsWithoutRef<"input"> & {
+  className?: string;
+  label?: string;
+  variant?: "variant1" | "variant2";
+  showLabel?: boolean;
+  selectInput?: boolean;
+  selectOptions?: { id: string | number; name: string }[];
+};
+
 export default function FormInput({
   className = "",
   placeholder,
@@ -7,11 +16,11 @@ export default function FormInput({
   variant = "variant1", // "variant1" | "variant2"
   showLabel = false,
   selectInput = false,
-  selectOptions,
+  selectOptions = [],
   value,
   defaultValue,
   ...props
-}) {
+}: FormInputProps) {
   const variantClass = {
     variant1:
       "bg-surface focus-ring-primary placeholder:text-brand-light rounded-4xl shadow-sm",
@@ -38,7 +47,8 @@ export default function FormInput({
           className={sharedClasses}
           value={isControlled ? value : undefined}
           defaultValue={!isControlled ? defaultValue || "" : undefined}
-          {...props}
+          // to bypass clash between HTMLInputElement and HTMLSelectElement typings
+          {...(props as any)}
         >
           {placeholder && (
             <option value="" disabled>
@@ -55,7 +65,7 @@ export default function FormInput({
         <input
           name={name}
           id={id}
-          className={`${variantClass[variant]} ${className} disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-50`}
+          className={sharedClasses}
           placeholder={placeholder}
           value={isControlled ? value : undefined}
           defaultValue={!isControlled ? defaultValue : undefined}

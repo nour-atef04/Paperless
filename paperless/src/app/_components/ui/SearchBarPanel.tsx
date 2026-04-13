@@ -5,12 +5,16 @@ import { IoMdSearch } from "react-icons/io";
 import { useDebouncedCallback } from "use-debounce";
 import FormInput from "./FormInput";
 
-export default function SearchBarPanel({ className }) {
+type SearchBarPanelProps = {
+  className?: string
+}
+
+export default function SearchBarPanel({ className = "" }: SearchBarPanelProps) {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
 
-  const handleSearch = useDebouncedCallback((term) => {
+  const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
       params.set("query", term);

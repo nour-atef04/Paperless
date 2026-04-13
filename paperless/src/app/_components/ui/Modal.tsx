@@ -4,9 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { IoClose } from "react-icons/io5";
 
-export default function Modal({ isOpen, onClose, title, children }) {
+type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+};
+
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+}: ModalProps) {
   const [mounted, setMounted] = useState(false);
-  const dialogRef = useRef(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   // 1. Wait until the component is mounted on the client
   useEffect(() => {
@@ -26,7 +38,7 @@ export default function Modal({ isOpen, onClose, title, children }) {
     }
   }, [isOpen, mounted]);
 
-  const handleBackdropClick = (e) => {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     if (e.target === dialogRef.current) onClose();
   };
 
@@ -42,7 +54,11 @@ export default function Modal({ isOpen, onClose, title, children }) {
     >
       <div className="border-brand-light/20 flex items-center justify-between border-b p-4">
         <h3 className="text-brand text-xl font-semibold">{title}</h3>
-        <button onClick={onClose} className="cursor-pointer text-brand p-1" aria-label="Close">
+        <button
+          onClick={onClose}
+          className="text-brand cursor-pointer p-1"
+          aria-label="Close"
+        >
           <IoClose size={24} />
         </button>
       </div>

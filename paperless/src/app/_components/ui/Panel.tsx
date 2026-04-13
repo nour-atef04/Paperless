@@ -1,11 +1,19 @@
+type PanelProps = React.HTMLAttributes<HTMLElement> & {
+  ariaLabel: string;
+  ariaLabelledBy: string;
+  children: React.ReactNode;
+  className?: string;
+  as?: React.ElementType;
+};
+
 export default function Panel({
   ariaLabel,
   ariaLabelledBy,
   children,
-  className,
+  className = "",
   as: Component = "section",
   ...props
-}) {
+}: PanelProps) {
   return (
     <Component
       {...props}
