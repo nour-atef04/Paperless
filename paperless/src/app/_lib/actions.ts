@@ -4,10 +4,16 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase";
 import { revalidatePath } from "next/cache";
 
-export async function loginAction(prevState, formData) {
+export type ActionResponse = {
+  error?: string;
+  success?: boolean;
+  redirectTo?: string;
+};
+
+export async function loginAction(prevState: any, formData: FormData): Promise<ActionResponse | never> { // "never" because redirect() throws an internal error to stop execution
   const supabase = await createSupabaseServerClient();
-  const email = formData.get("email");
-  const password = formData.get("password");
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
 
   if (!email || !password) {
     return { error: "Please enter email and password" };
@@ -24,7 +30,7 @@ export async function loginAction(prevState, formData) {
   redirect("/");
 }
 
-export async function logoutAction(prevState, formData) {
+export async function logoutAction(prevState: any, formData: FormData): Promise<ActionResponse | never> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -33,7 +39,7 @@ export async function logoutAction(prevState, formData) {
   redirect("/login");
 }
 
-export async function toggleSaveNote(noteId) {
+export async function toggleSaveNote(noteId: string): Promise<ActionResponse | boolean> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -49,7 +55,7 @@ export async function toggleSaveNote(noteId) {
     return { error: fetchError.message };
   }
 
-  let wasSaved;
+  let wasSaved: boolean;
 
   if (!data) {
     const { error: insertError } = await supabase
@@ -78,9 +84,9 @@ export async function toggleSaveNote(noteId) {
   return wasSaved;
 }
 
-export async function postNewNote(prevState, formData) {
-  const title = formData.get("new-note-title");
-  const content = formData.get("new-note-content");
+export async function postNewNote(prevState: any, formData: FormData): Promise<ActionResponse> {
+  const title = formData.get("new-note-title")?.toString();
+  const content = formData.get("new-note-content")?.toString();
 
   const supabase = await createSupabaseServerClient();
   const {
@@ -104,7 +110,7 @@ export async function postNewNote(prevState, formData) {
   return { success: true, redirectTo: `/notes/${noteId}` };
 }
 
-export async function deleteNote(noteId) {
+export async function deleteNote(noteId: string): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -124,10 +130,10 @@ export async function deleteNote(noteId) {
   return { success: true, redirectTo: "/my-notes" };
 }
 
-export async function editNote(prevState, formData) {
-  const id = formData.get("note-id");
-  const title = formData.get("new-note-title");
-  const content = formData.get("new-note-content");
+export async function editNote(prevState: any, formData: FormData): Promise<ActionResponse> {
+  const id = formData.get("note-id")?.toString();
+  const title = formData.get("new-note-title")?.toString();
+  const content = formData.get("new-note-content")?.toString();
 
   const supabase = await createSupabaseServerClient();
 
@@ -150,7 +156,7 @@ export async function editNote(prevState, formData) {
   return { success: true, redirectTo: `/notes/${id}` };
 }
 
-export async function createFolder(folderName) {
+export async function createFolder(folderName: string): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -170,7 +176,7 @@ export async function createFolder(folderName) {
   return { success: true };
 }
 
-export async function deleteFolder(folderId) {
+export async function deleteFolder(folderId: string): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -186,10 +192,12 @@ export async function deleteFolder(folderId) {
   return { success: true };
 }
 
-export async function renameFolder(id, name) {
+export async function renameFolder(id: string, name: string): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { error: "You must be logged in to rename a folder." };
 
   const { error } = await supabase

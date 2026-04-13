@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "./supabase";
+import { Folder, Note, NoteWithDetails, Profile, SortOption } from "./types";
 
-export async function getUserId() {
+export async function getUserId(): Promise<string | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -9,7 +10,7 @@ export async function getUserId() {
   return user.id;
 }
 
-export async function getUserProfile() {
+export async function getUserProfile(): Promise<Pick<Profile, "full_name" | "avatar_url"> | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -25,10 +26,12 @@ export async function getUserProfile() {
   if (error) {
     throw error;
   }
-  return profile;
+
+  // casting so TS knows what properties are available
+  return profile as Pick<Profile, "full_name" | "avatar_url"> | null;
 }
 
-function getAllNotes(supabase) {
+function getAllNotes(supabase: any) {
   return supabase.from("notes").select(
     `
     *,
@@ -42,7 +45,7 @@ function getAllNotes(supabase) {
   );
 }
 
-function applySorting(queryBuilder, sort) {
+function applySorting(queryBuilder: any, sort?: SortOption) {
   switch (sort) {
     case "oldest":
       return queryBuilder.order("created_at", { ascending: true });
@@ -57,7 +60,7 @@ function applySorting(queryBuilder, sort) {
   }
 }
 
-export async function getDashboardNotes(query, sort) {
+export async function getDashboardNotes(query?:string, sort?:SortOption): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -76,10 +79,10 @@ export async function getDashboardNotes(query, sort) {
 
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data;
+  return data as NoteWithDetails[];
 }
 
-export async function getMyNotes(query, sort, folderId) {
+export async function getMyNotes(query?: string, sort?: SortOption, folderId?: string): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -102,10 +105,10 @@ export async function getMyNotes(query, sort, folderId) {
 
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data;
+  return data as NoteWithDetails[];
 }
 
-export async function getSavedNotes(query, sort) {
+export async function getSavedNotes(query?: string, sort?: SortOption): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -138,10 +141,10 @@ export async function getSavedNotes(query, sort) {
 
   const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data;
+  return data as NoteWithDetails[];
 }
 
-export async function getNoteById(id) {
+export async function getNoteById(id: string): Promise<NoteWithDetails | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("notes")
@@ -157,10 +160,10 @@ export async function getNoteById(id) {
     .eq("id", id)
     .maybeSingle();
   if (error) throw new Error(error.message);
-  return data;
+  return data as NoteWithDetails;
 }
 
-export async function getMyFolders() {
+export async function getMyFolders(): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -173,10 +176,10 @@ export async function getMyFolders() {
     .eq("user_id", user.id)
     .order("name", { ascending: true });
   if (error) throw new Error(error.message);
-  return data;
+  return data as Folder[];
 }
 
-export async function getFolderName(id) {
+export async function getFolderName(id: string): Promise<string | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("folders")
