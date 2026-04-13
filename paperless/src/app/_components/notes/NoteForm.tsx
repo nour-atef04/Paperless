@@ -5,19 +5,30 @@ import PanelTitle from "../ui/PanelTitle";
 import MarkdownGuide from "../ui/MarkdownGuide";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Note, NoteWithDetails } from "@/app/_lib/types";
+import { ActionResponse } from "@/app/_lib/actions";
 
-export default function NoteForm({ serverAction, note }) {
+type NoteFormProps = {
+  serverAction: (
+    prevState: ActionResponse | null,
+    formData: FormData,
+  ) => Promise<ActionResponse>;
+  note?: Note;
+};
+
+export default function NoteForm({ serverAction, note }: NoteFormProps) {
   const [state, formAction, isPending] = useActionState(serverAction, null);
   const router = useRouter();
   const editMode = !!note;
 
   useEffect(() => {
-    if (!state) return;
-    if (state.message && !state.success) {
-      toast.error(state.message);
+    if (state.error) {
+      toast.error(state.error);
     } else if (state.success) {
       toast.success(editMode ? "Note updated!" : "Note created!");
-      router.push(state.redirectTo);
+      if (state.redirectTo) {
+        router.push(state.redirectTo);
+      }
     }
   }, [state, editMode, router]);
 

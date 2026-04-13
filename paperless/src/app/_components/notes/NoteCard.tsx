@@ -5,7 +5,7 @@ import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
 import SaveNoteBtn from "@/app/_components/buttons/SaveNoteBtn";
-import { NoteWithDetails } from "@/app/_lib/types";
+import { NoteWithDetails, PageRoute } from "@/app/_lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -17,7 +17,7 @@ import NoteOptions from "./NoteOptions";
 type NoteCardProps = {
   note: NoteWithDetails;
   userId: string;
-  page: "my-notes" | "dashboard" | "saved" | string;
+  page: PageRoute | string;
   openOptionsId: string | null;
   setOpenOptionsId: (id: string | null) => void;
 };

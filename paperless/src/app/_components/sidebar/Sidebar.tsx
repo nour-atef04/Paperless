@@ -11,7 +11,12 @@ import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
 
-export default function Sidebar({ userName, userAvatar }) {
+type SidebarProps = {
+  userName: string;
+  userAvatar: string | null;
+};
+
+export default function Sidebar({ userName, userAvatar }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -46,7 +51,7 @@ export default function Sidebar({ userName, userAvatar }) {
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">
-        <UserAccount image={userAvatar} name={userName} />
+        <UserAccount image={userAvatar || ""} name={userName} />
       </div>
 
       {/* Navigation */}

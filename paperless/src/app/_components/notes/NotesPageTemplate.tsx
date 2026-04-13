@@ -6,30 +6,40 @@ import FolderList from "../folder/FolderList";
 import Panel from "../ui/Panel";
 import PanelTitle from "../ui/PanelTitle";
 import SearchBarPanel from "../ui/SearchBarPanel";
+import { Folder, PageRoute, SortOption } from "@/app/_lib/types";
+
+type NotesPageTemplateProps = {
+  query?: string;
+  page: PageRoute;
+  sort?: SortOption;
+  folderId?: string;
+};
 
 export default async function NotesPageTemplate({
   query,
   page,
   sort,
   folderId,
-}) {
-  const titles = {
+}: NotesPageTemplateProps) {
+  // record to that TS forces to define every page route
+  const titles: Record<PageRoute, string> = {
     dashboard: "Dashboard",
     saved: "Saved Notes",
     "my-notes": "My Notes",
   };
 
-  const currentTitle = titles[page] || "Notes";
+  const currentTitle = titles[page];
   const titleId = `${page}-title`;
 
-  let folderName;
+  let folderName: string | null = null;
   if (folderId) {
     folderName = await getFolderName(folderId);
   }
 
-  let folders = [];
+  let folders: Folder[] = [];
   if (page === "my-notes") {
-    folders = await getMyFolders();
+    const fetchedFolders = await getMyFolders();
+    folders = fetchedFolders || [];
   }
 
   return (
@@ -37,9 +47,7 @@ export default async function NotesPageTemplate({
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
       <Panel ariaLabelledBy={titleId} className="flex flex-col gap-6 p-6">
         <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row">
-          <PanelTitle level={1} id={titleId}>
-            {currentTitle}
-          </PanelTitle>
+          <PanelTitle level={1}>{currentTitle}</PanelTitle>
 
           {/* if not "my notes" page -> put buttons next to panel title */}
           {page !== "my-notes" && <SortButtons />}

@@ -1,5 +1,6 @@
 "use client"
 
+import { SortOption } from "@/app/_lib/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function SortButtons() {
@@ -9,7 +10,7 @@ export default function SortButtons() {
 
   const currentSort = searchParams.get("sort") || "most-relevant";
 
-  const handleSort = (sortValue) => {
+  const handleSort = (sortValue: SortOption) => {
     const params = new URLSearchParams(searchParams);
     params.set("sort", sortValue);
     router.push(`${pathname}?${params.toString()}`);

@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 import NoteCard from "./NoteCard";
+import { NoteWithDetails, PageRoute } from "@/app/_lib/types";
 
-export default function NotesGrid({ notes, userId, page }) {
-  const [openOptionsId, setOpenOptionsId] = useState(null);
+type NotesGridProps = {
+  notes: NoteWithDetails[];
+  userId: string;
+  page: PageRoute;
+};
+
+export default function NotesGrid({ notes, userId, page }: NotesGridProps) {
+  const [openOptionsId, setOpenOptionsId] = useState<string | null>(null);
 
   return (
     <ul className="grid w-full grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">

@@ -3,9 +3,14 @@
 import { useState } from "react";
 import NewFolderBtn from "../buttons/NewFolderBtn";
 import FolderCard from "./FolderCard";
+import { Folder } from "@/app/_lib/types";
 
-export default function FolderList({ folders }) {
-  const [openOptionsId, setOpenOptionsId] = useState(null);
+type FolderListProps = {
+  folders: Folder[];
+};
+
+export default function FolderList({ folders }: FolderListProps) {
+  const [openOptionsId, setOpenOptionsId] = useState<string | null>(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -25,7 +30,12 @@ export default function FolderList({ folders }) {
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
         <NewFolderBtn />
         {visibleFolders.map((folder) => (
-          <FolderCard key={folder.id} folder={folder} openOptionsId={openOptionsId} setOpenOptionsId={setOpenOptionsId}/>
+          <FolderCard
+            key={folder.id}
+            folder={folder}
+            openOptionsId={openOptionsId}
+            setOpenOptionsId={setOpenOptionsId}
+          />
         ))}
 
         {hasMore && !isExpanded && (

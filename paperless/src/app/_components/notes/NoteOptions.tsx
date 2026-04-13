@@ -1,15 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import OptionsList from "../ui/OptionsList";
-import Modal from "../ui/Modal";
-import FormInput from "../ui/FormInput";
 import { useFolders } from "@/app/_context/FolderContext";
-import { FaSpinner } from "react-icons/fa";
+import { NoteWithDetails } from "@/app/_lib/types";
+import { useState } from "react";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
+import FormInput from "../ui/FormInput";
+import Modal from "../ui/Modal";
+import OptionsList from "../ui/OptionsList";
 
-export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
-  const [openModal, setOpenModal] = useState(null);
+type NoteOptionsProps = {
+  setOpenOptionsId: (id: string | null) => void;
+  isOpen: boolean;
+  note: NoteWithDetails;
+};
+
+export default function NoteOptions({
+  setOpenOptionsId,
+  isOpen,
+  note,
+}: NoteOptionsProps) {
+  const [openModal, setOpenModal] = useState<string | null>(null);
   const [selectedFolderId, setSelectedFolderId] = useState(""); // track what the user selects in the dropdown
 
   const folders = useFolders().filter((folder) => folder.id !== note.folder_id);
@@ -76,6 +86,7 @@ export default function NoteOptions({ setOpenOptionsId, isOpen, note }) {
             </div>
 
             <ModalActionBtns
+              onSubmit={() => console.log("submitted")}
               onCancel={() => setOpenModal(null)}
               isSubmitDisabled={!selectedFolderId}
               submitText={openModal === "Move Folder" ? "Move" : "Copy"}

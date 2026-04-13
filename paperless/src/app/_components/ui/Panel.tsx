@@ -1,6 +1,6 @@
 type PanelProps = React.HTMLAttributes<HTMLElement> & {
-  ariaLabel: string;
-  ariaLabelledBy: string;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
   children: React.ReactNode;
   className?: string;
   as?: React.ElementType;

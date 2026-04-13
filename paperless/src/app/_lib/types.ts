@@ -35,3 +35,5 @@ export type NoteWithDetails = Note & {
 };
 
 export type SortOption = "latest" | "oldest" | "most-relevant" | string;
+
+export type PageRoute = "dashboard" | "my-notes" | "saved";

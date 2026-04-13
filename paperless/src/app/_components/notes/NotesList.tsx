@@ -7,16 +7,27 @@ import {
   getUserId,
 } from "../../_lib/data-service";
 import NotesGrid from "./NotesGrid";
+import { NoteWithDetails, PageRoute, SortOption } from "@/app/_lib/types";
+
+type NotesListProps = {
+  query?: string;
+  page?: PageRoute;
+  sort?: SortOption;
+  folderId?: string;
+};
 
 export default async function NotesList({
   query,
-  page = "dashboard", // "dashboard" || "my-notes" || "saved"
-  sort = "most-relevant", // "most-relevant || "latest" || "oldest"
+  page = "dashboard",
+  sort = "most-relevant",
   folderId,
-}) {
+}: NotesListProps) {
   const userId = await getUserId();
 
-  let notes;
+  if (!userId) return null;
+
+  let notes: NoteWithDetails[] | null = null;
+
   if (page === "dashboard") {
     notes = await getDashboardNotes(query, sort);
   } else if (page === "my-notes") {
@@ -29,10 +40,10 @@ export default async function NotesList({
     return <p className="text-brand py-9 text-center">No notes found.</p>;
   }
 
-  const folders = await getMyFolders(userId);
+  const folders = await getMyFolders();
 
   return (
-    <FolderProvider folders={folders}>
+    <FolderProvider folders={folders || []}>
       <NotesGrid notes={notes} userId={userId} page={page} />
     </FolderProvider>
   );
