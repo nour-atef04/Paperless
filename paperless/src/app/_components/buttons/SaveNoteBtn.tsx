@@ -1,14 +1,17 @@
 "use client";
 
 import { toggleSaveNote } from "@/app/_lib/actions";
+import { NoteWithDetails } from "@/app/_lib/types";
 import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { FaSpinner } from "react-icons/fa6";
 
-// TO DO: REFACTOR TO USE A REUSABLE BTN IF POSSIBLE
+type SaveNoteBtnProps = {
+  note: NoteWithDetails;
+};
 
-export default function SaveBtn({ note }) {
+export default function SaveBtn({ note }: SaveNoteBtnProps) {
   const [isSaving, startSaving] = useTransition();
 
   const initiallySaved = note.user_saves?.length > 0;
@@ -16,7 +19,7 @@ export default function SaveBtn({ note }) {
   // local state for instant UI updates (optimistic ui)
   const [isSaved, setIsSaved] = useState(initiallySaved);
 
-  const handleSave = (e) => {
+  const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -24,16 +27,24 @@ export default function SaveBtn({ note }) {
 
     startSaving(async () => {
       try {
-        const wasSaved = await toggleSaveNote(note.id);
-        if (wasSaved) {
-          toast.success("Note removed from saved!");
+        const result = await toggleSaveNote(note.id);
+
+        if (
+          typeof result === "object" &&
+          result !== null &&
+          "error" in result
+        ) {
+          throw new Error(result.error);
         }
-        else toast.success("Note added to saved!");
-      } catch (error) {
+
+        if (result === true) {
+          toast.success("Note removed from saved!");
+        } else toast.success("Note added to saved!");
+      } catch (error: any) {
         console.error("Failed to save note: ", error);
         // revert heart back to original if saving failed
         setIsSaved(initiallySaved);
-        toast.error("Failed to save note.");
+        toast.error(error.message || "Failed to save note.");
       }
     });
   };

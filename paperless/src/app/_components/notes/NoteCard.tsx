@@ -5,6 +5,7 @@ import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
 import SaveNoteBtn from "@/app/_components/buttons/SaveNoteBtn";
+import { NoteWithDetails } from "@/app/_lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -13,13 +14,21 @@ import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
 import EditNoteBtn from "../buttons/EditNoteBtn";
 import NoteOptions from "./NoteOptions";
 
+type NoteCardProps = {
+  note: NoteWithDetails;
+  userId: string;
+  page: "my-notes" | "dashboard" | "saved" | string;
+  openOptionsId: string | null;
+  setOpenOptionsId: (id: string | null) => void;
+};
+
 export default function NoteCard({
   note,
   userId,
   page,
   openOptionsId,
   setOpenOptionsId,
-}) {
+}: NoteCardProps) {
   const isMine = note.user_id === userId;
   const isOpen = openOptionsId === note.id; // for the options
 
@@ -28,7 +37,7 @@ export default function NoteCard({
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();
 
-  const handleNavigation = (e) => {
+  const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     startNavigation(() => {
       // startTransition stays "true" until the next page is fully ready
@@ -69,8 +78,10 @@ export default function NoteCard({
       <div className="border-brand-light/20 mt-auto flex w-full items-center justify-between border-t pt-3">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
           <span>By: {note.profiles?.full_name}</span>
-          <time dateTime={note.created_at}>
-            {new Date(note.created_at).toLocaleDateString()}
+          <time dateTime={note.created_at || ""}>
+            {note.created_at
+              ? new Date(note.created_at).toLocaleDateString()
+              : "Unknown Date"}
           </time>
         </div>
 
@@ -91,7 +102,11 @@ export default function NoteCard({
               variant="note"
             />
 
-            <NoteOptions note={note} setOpenOptionsId={setOpenOptionsId} isOpen={isOpen} />
+            <NoteOptions
+              note={note}
+              setOpenOptionsId={setOpenOptionsId}
+              isOpen={isOpen}
+            />
           </div>
         </div>
       </div>

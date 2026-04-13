@@ -13,7 +13,7 @@ export default function NewFolderBtn() {
   const [folderName, setFolderName] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const handleCreate = async (e) => {
+  const handleCreate = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!folderName.trim()) return;
 
@@ -60,8 +60,9 @@ export default function NewFolderBtn() {
               autoFocus
             />
           </div>
-          
+
           <ModalActionBtns
+            onSubmit={() => console.log("submitted")}
             onCancel={() => setIsModalOpen(false)}
             isPending={isPending}
             isSubmitDisabled={!folderName.trim()}

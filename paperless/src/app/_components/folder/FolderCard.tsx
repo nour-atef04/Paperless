@@ -11,12 +11,19 @@ import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
 import FormInput from "../ui/FormInput";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
+import { Folder } from "@/app/_lib/types";
+
+type FolderCardProps = {
+  folder: Folder;
+  openOptionsId: string | null;
+  setOpenOptionsId: (id: string | null) => void;
+};
 
 export default function FolderCard({
   folder,
   openOptionsId,
   setOpenOptionsId,
-}) {
+}: FolderCardProps) {
   const isOpen = openOptionsId === folder.id; // for options
 
   const [newFolderName, setNewFolderName] = useState(folder.name);
@@ -44,7 +51,7 @@ export default function FolderCard({
     });
   };
 
-  const handleRename = (e) => {
+  const handleRename = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newFolderName.trim() || newFolderName === folder.name) return;
 
@@ -157,6 +164,7 @@ export default function FolderCard({
           </div>
 
           <ModalActionBtns
+            onSubmit={() => console.log("submitted!")}
             onCancel={() => setIsRenameModalOpen(false)}
             isPending={isRenaming}
             isSubmitDisabled={

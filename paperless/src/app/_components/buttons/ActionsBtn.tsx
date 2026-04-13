@@ -1,17 +1,25 @@
 "use client";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
+type ActionsBtnProps = {
+  id: string | number;
+  name: string;
+  isOpen: boolean;
+  setOpenOptionsId: (id: string | number | null) => void;
+  variant?: "folder" | "note";
+};
+
 export default function ActionsBtn({
   id,
   name,
   isOpen,
   setOpenOptionsId,
-  variant = "folder", // "folder" | "note"
-}) {
-  function handleClick(e) {
+  variant = "folder",
+}: ActionsBtnProps) {
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
-    setOpenOptionsId((prev) => (prev === id ? null : id));
+    setOpenOptionsId(isOpen ? null : id);
   }
 
   return (

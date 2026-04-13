@@ -8,13 +8,18 @@ import Modal from "../ui/Modal";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import ModalActionBtns from "./ModalActionsBtns";
+import { NoteWithDetails } from "@/app/_lib/types";
 
-export default function DeleteNoteBtn({ note }) {
+type DeleteNoteBtnProps = {
+  note: NoteWithDetails;
+};
+
+export default function DeleteNoteBtn({ note }: DeleteNoteBtnProps) {
   const [isDeleting, startDeleting] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
-  const openModal = (e) => {
+  const openModal = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsModalOpen(true);

@@ -1,5 +1,15 @@
 import { FaSpinner } from "react-icons/fa6";
 
+type ModalActionBtnsProps = {
+  onCancel: () => void;
+  onSubmit: () => void;
+  isPending?: boolean;
+  isSubmitDisabled?: boolean;
+  submitText?: string;
+  loadingText?: string;
+  cancelText?: string;
+};
+
 export default function ModalActionBtns({
   onCancel,
   onSubmit,
@@ -8,7 +18,7 @@ export default function ModalActionBtns({
   submitText = "Submit",
   loadingText = "Saving...",
   cancelText = "Cancel",
-}) {
+}: ModalActionBtnsProps) {
   const isDisabled = isPending || isSubmitDisabled;
 
   return (

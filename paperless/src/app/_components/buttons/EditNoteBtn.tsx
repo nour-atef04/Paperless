@@ -1,15 +1,21 @@
 "use client";
 
+import { NoteWithDetails } from "@/app/_lib/types";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { FaSpinner } from "react-icons/fa";
 import { GoPencil } from "react-icons/go";
-export default function EditNoteBtn({ note }) {
+
+type EditNoteBtnProps = {
+  note: NoteWithDetails;
+};
+
+export default function EditNoteBtn({ note }: EditNoteBtnProps) {
   const [isNavigating, startNavigation] = useTransition();
 
   const router = useRouter();
 
-  const handleClick = (e) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
