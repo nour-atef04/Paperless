@@ -1,7 +1,7 @@
 import { createSupabaseServerClient } from "@/app/_lib/supabase";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function proxy(req) {
+export async function proxy(req: NextRequest) {
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -18,3 +18,9 @@ export async function proxy(req) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};

@@ -4,13 +4,13 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase";
 import { revalidatePath } from "next/cache";
 
-export type ActionResponse = {
-  error?: string;
-  success?: boolean;
-  redirectTo?: string;
-};
+import { ActionResponse } from "./types";
 
-export async function loginAction(prevState: any, formData: FormData): Promise<ActionResponse | never> { // "never" because redirect() throws an internal error to stop execution
+export async function loginAction(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse | never> {
+  // "never" because redirect() throws an internal error to stop execution
   const supabase = await createSupabaseServerClient();
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
@@ -30,7 +30,10 @@ export async function loginAction(prevState: any, formData: FormData): Promise<A
   redirect("/");
 }
 
-export async function logoutAction(prevState: any, formData: FormData): Promise<ActionResponse | never> {
+export async function logoutAction(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse | never> {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signOut();
   if (error) {
@@ -39,7 +42,9 @@ export async function logoutAction(prevState: any, formData: FormData): Promise<
   redirect("/login");
 }
 
-export async function toggleSaveNote(noteId: string): Promise<ActionResponse | boolean> {
+export async function toggleSaveNote(
+  noteId: string,
+): Promise<ActionResponse | boolean> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -84,7 +89,10 @@ export async function toggleSaveNote(noteId: string): Promise<ActionResponse | b
   return wasSaved;
 }
 
-export async function postNewNote(prevState: any, formData: FormData): Promise<ActionResponse> {
+export async function postNewNote(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse> {
   const title = formData.get("new-note-title")?.toString();
   const content = formData.get("new-note-content")?.toString();
 
@@ -130,7 +138,10 @@ export async function deleteNote(noteId: string): Promise<ActionResponse> {
   return { success: true, redirectTo: "/my-notes" };
 }
 
-export async function editNote(prevState: any, formData: FormData): Promise<ActionResponse> {
+export async function editNote(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse> {
   const id = formData.get("note-id")?.toString();
   const title = formData.get("new-note-title")?.toString();
   const content = formData.get("new-note-content")?.toString();
@@ -156,7 +167,9 @@ export async function editNote(prevState: any, formData: FormData): Promise<Acti
   return { success: true, redirectTo: `/notes/${id}` };
 }
 
-export async function createFolder(folderName: string): Promise<ActionResponse> {
+export async function createFolder(
+  folderName: string,
+): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -192,7 +205,10 @@ export async function deleteFolder(folderId: string): Promise<ActionResponse> {
   return { success: true };
 }
 
-export async function renameFolder(id: string, name: string): Promise<ActionResponse> {
+export async function renameFolder(
+  id: string,
+  name: string,
+): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
 
   const {

@@ -9,9 +9,13 @@ import { notFound } from "next/navigation";
 import EditNoteBtn from "@/app/_components/buttons/EditNoteBtn";
 import DeleteNoteBtn from "@/app/_components/buttons/DeleteNoteBtn";
 
-// TO DO: SSG
+// No SSG since this page relies on getUserId() which checks cookies
 
-export default async function Note({ params }) {
+type NoteProps = {
+  params: Promise<{id: string}>;
+}
+
+export default async function Note({ params }: NoteProps) {
   const { id } = await params;
   const note = await getNoteById(id);
 
@@ -20,7 +24,7 @@ export default async function Note({ params }) {
   }
 
   const userId = await getUserId();
-  const isMine = note.user_id === userId ? true : false;
+  const isMine = note.user_id === userId;
 
   const { title, content, created_at } = note;
   return (
@@ -31,7 +35,7 @@ export default async function Note({ params }) {
     >
       <header className="flex items-start justify-between">
         <div>
-          <PanelTitle level={1} id="note-title">
+          <PanelTitle level={1}>
             {title}
           </PanelTitle>
           <div className="text-brand-light mt-3 flex flex-col gap-x-2 sm:flex-row">

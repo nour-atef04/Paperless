@@ -1,17 +1,18 @@
 import { useEffect, useRef } from "react";
 
-export function useOutsideClick(handler) {
-  const ref = useRef();
+export function useOutsideClick<T extends HTMLElement = HTMLElement>(handler: ()=>void) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
-    function handleClick(e) {
+    function handleClick(e: MouseEvent) {
       // if click, and the click was NOT inside referenced element
-      if (ref.current && !ref.current.contains(e.target)) {
+      // "as Node" since contains requires a DOM Node
+      if (ref.current && !ref.current.contains(e.target as Node)) {
         handler();
       }
     }
 
-    function handleKeyDown(e) {
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         handler();
       }

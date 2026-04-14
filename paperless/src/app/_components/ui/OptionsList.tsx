@@ -16,7 +16,7 @@ export default function OptionsList({
   closeMenu,
   options,
 }: OptionsListProps) {
-  const ref = useOutsideClick(closeMenu);
+  const ref = useOutsideClick<HTMLDivElement>(closeMenu);
 
   return (
     <div

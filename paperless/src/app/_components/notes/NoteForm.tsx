@@ -1,12 +1,11 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import PanelTitle from "../ui/PanelTitle";
-import MarkdownGuide from "../ui/MarkdownGuide";
+import { ActionResponse, Note } from "@/app/_lib/types";
 import { useRouter } from "next/navigation";
+import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Note, NoteWithDetails } from "@/app/_lib/types";
-import { ActionResponse } from "@/app/_lib/actions";
+import MarkdownGuide from "../ui/MarkdownGuide";
+import PanelTitle from "../ui/PanelTitle";
 
 type NoteFormProps = {
   serverAction: (

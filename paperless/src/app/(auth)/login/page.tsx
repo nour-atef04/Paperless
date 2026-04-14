@@ -21,7 +21,7 @@ export default function LoginPage() {
         action={formAction}
         className="animate-slide-up bg-background flex h-full w-full flex-col justify-center gap-4 rounded-lg p-10 shadow-2xl sm:h-auto sm:w-[70%] md:w-[50%]"
       >
-        <PanelTitle level={1} id="login-title" className="mb-4">
+        <PanelTitle level={1} className="mb-4">
           Log in
         </PanelTitle>
         <FormInput

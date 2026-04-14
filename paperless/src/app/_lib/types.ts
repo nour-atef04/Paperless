@@ -1,3 +1,9 @@
+export type ActionResponse = {
+  error?: string;
+  success?: boolean;
+  redirectTo?: string;
+};
+
 export type Profile = {
   id: string;
   full_name: string;
@@ -37,3 +43,9 @@ export type NoteWithDetails = Note & {
 export type SortOption = "latest" | "oldest" | "most-relevant" | string;
 
 export type PageRoute = "dashboard" | "my-notes" | "saved";
+
+export type PageSearchParams = Promise<{
+  query?: string;
+  sort?: SortOption;
+  folder?: string;
+}>;

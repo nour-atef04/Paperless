@@ -1,6 +1,11 @@
+import React from "react";
 import Logo from "../_components/ui/Logo";
 
-export default function AuthLayout({ children }) {
+type AuthLayoutProps = {
+  children: React.ReactNode;
+}
+
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="min-h-screen w-full bg-[#7C6F8A] bg-[radial-gradient(circle,#7C6F8A_0%,#3A314A_75%,#3A314A_100%)]">
       <header className="absolute top-0 left-0 z-10 p-8">
