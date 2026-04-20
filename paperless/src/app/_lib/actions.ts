@@ -227,4 +227,62 @@ export async function renameFolder(
   return { success: true };
 }
 
+export async function moveNote(
+  noteId: string,
+  newFolderId: string,
+): Promise<ActionResponse> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to move a note." };
+
+  const { error } = await supabase
+    .from("notes")
+    .update({ folder_id: newFolderId })
+    .eq("id", noteId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/my-notes");
+  revalidatePath("/notes");
+  return { success: true };
+}
+
+export async function copyNote(
+  noteId: string,
+  newFolderId: string,
+): Promise<ActionResponse> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to copy a note." };
+
+  // fetch original note
+  const { data: originalNote, error: fetchError } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("id", noteId)
+    .single();
+
+  if (fetchError || !originalNote) return { error: "Original note not found." };
+
+  // take out id and created_at to add new ones
+  const { id, created_at, ...noteDataToCopy } = originalNote;
+
+  // insert duplicate
+  const { error: insertError } = await supabase.from("notes").insert({
+    ...noteDataToCopy,
+    folder_id: newFolderId,
+    title: `${originalNote.title} (Copy)`,
+  });
+
+  if (insertError) return { error: insertError.message };
+
+  revalidatePath("/my-notes");
+  revalidatePath("/notes");
+  return { success: true };
+}
+
 // TO DO: GOOGLE AUTH

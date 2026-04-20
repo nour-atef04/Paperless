@@ -21,9 +21,9 @@ export default function NoteForm({ serverAction, note }: NoteFormProps) {
   const editMode = !!note;
 
   useEffect(() => {
-    if (state.error) {
+    if (state?.error) {
       toast.error(state.error);
-    } else if (state.success) {
+    } else if (state?.success) {
       toast.success(editMode ? "Note updated!" : "Note created!");
       if (state.redirectTo) {
         router.push(state.redirectTo);
