@@ -2,6 +2,11 @@ export type ActionResponse = {
   error?: string;
   success?: boolean;
   redirectTo?: string;
+  fields?: { // for previous form values
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+  };
 };
 
 export type Profile = {

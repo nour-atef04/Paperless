@@ -14,29 +14,27 @@ export default function FolderList({ folders }: FolderListProps) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!folders || folders.length === 0) {
-    return (
-      <p className="text-brand-light/70 text-sm">No folders created yet.</p>
-    );
-  }
-
   const visibleFolders = isExpanded ? folders : folders.slice(0, 5);
   const hasMore = folders.length > 5;
 
   return (
     <>
       {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4"> */}
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 items-center">
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
         <NewFolderBtn />
-        {visibleFolders.map((folder) => (
-          <FolderCard
-            key={folder.id}
-            folder={folder}
-            openOptionsId={openOptionsId}
-            setOpenOptionsId={setOpenOptionsId}
-          />
-        ))}
+        {!folders || folders.length === 0 ? (
+          <p className="text-brand-light/70 text-sm">No folders created yet.</p>
+        ) : (
+          visibleFolders.map((folder) => (
+            <FolderCard
+              key={folder.id}
+              folder={folder}
+              openOptionsId={openOptionsId}
+              setOpenOptionsId={setOpenOptionsId}
+            />
+          ))
+        )}
 
         {hasMore && !isExpanded && (
           <button

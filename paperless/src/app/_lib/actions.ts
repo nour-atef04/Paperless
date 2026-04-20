@@ -9,8 +9,7 @@ import { ActionResponse } from "./types";
 export async function loginAction(
   prevState: any,
   formData: FormData,
-): Promise<ActionResponse | never> {
-  // "never" because redirect() throws an internal error to stop execution
+): Promise<ActionResponse> {
   const supabase = await createSupabaseServerClient();
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
@@ -27,7 +26,62 @@ export async function loginAction(
   if (error) {
     return { error: error.message };
   }
-  redirect("/");
+  return { success: true, redirectTo: "/" };
+}
+
+export async function signUpAction(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse> {
+  const supabase = await createSupabaseServerClient();
+  const firstName = formData.get("firstName")?.toString() || "";
+  const lastName = formData.get("lastName")?.toString() || "";
+  const email = formData.get("email")?.toString() || "";
+  const password = formData.get("password")?.toString();
+  const confirmPassword = formData.get("confirmPassword")?.toString();
+
+  const previousFields = { firstName, lastName, email };
+
+  if (!email || !password || !firstName || !lastName) {
+    return { error: "Please fill out all fields.", fields: previousFields };
+  }
+
+  if (password !== confirmPassword) {
+    return { error: "Passwords do not match.", fields: previousFields };
+  }
+
+  const { data: authData, error: signUpError } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (signUpError) {
+    return { error: signUpError.message, fields: previousFields };
+  }
+
+  if (!authData.user) {
+    return {
+      error: "An unknown error occurred during sign up.",
+      fields: previousFields,
+    };
+  }
+
+  const fullName = `${firstName} ${lastName}`;
+
+  const { error: insertError } = await supabase.from("profiles").insert({
+    id: authData.user.id,
+    full_name: fullName,
+  });
+
+  if (insertError) {
+    console.error("Profile creation error:", insertError);
+    return {
+      error: "Account created, but profile setup failed.",
+      fields: previousFields,
+    };
+  }
+
+  return { success: true, redirectTo: "/" };
 }
 
 export async function logoutAction(
