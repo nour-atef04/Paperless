@@ -100,7 +100,7 @@ export default function FolderCard({
             priority
             className="transition-transform duration-200 group-hover:scale-110"
           />
-          <span className="text-brand font-medium tracking-wide">
+          <span className="text-brand-dark font-medium tracking-wide">
             {folder.name}
           </span>
         </Link>

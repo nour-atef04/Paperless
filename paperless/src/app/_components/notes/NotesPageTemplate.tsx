@@ -56,7 +56,7 @@ export default async function NotesPageTemplate({
         {page === "my-notes" && (
           <section className="flex flex-col gap-9">
             <div className="flex items-center justify-between">
-              <h2 className="text-brand text-xl font-semibold">Folders</h2>
+              <h2 className="text-brand-dark text-xl font-semibold">Folders</h2>
               {/* <NewFolderBtn />  */}
             </div>
 
@@ -68,7 +68,7 @@ export default async function NotesPageTemplate({
           {/* notes section in "my notes" page */}
           {page === "my-notes" && (
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              <h2 className="text-brand text-xl font-semibold">
+              <h2 className="text-brand-dark text-xl font-semibold">
                 {folderName ? `Notes/${folderName}` : "All Notes"}
               </h2>
               <SortButtons />

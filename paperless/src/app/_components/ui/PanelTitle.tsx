@@ -12,7 +12,7 @@ export default function PanelTitle({
   const Tag = `h${level}` as React.ElementType; // dynamically render h1, h2, h3, ...
 
   return (
-    <Tag className={`text-brand text-4xl font-bold ${className}`}>
+    <Tag className={`text-brand-dark text-4xl font-bold ${className}`}>
       {children}
     </Tag>
   );

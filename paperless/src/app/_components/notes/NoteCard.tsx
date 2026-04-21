@@ -53,7 +53,7 @@ export default function NoteCard({
           : "border-brand-light hover:scale-[0.98]"
       }`}
     >
-      <h2 className="text-brand line-clamp-1 text-2xl">
+      <h2 className="text-brand-darkest line-clamp-1 text-2xl">
         <Link
           onClick={handleNavigation}
           href={`/notes/${note.id}`}

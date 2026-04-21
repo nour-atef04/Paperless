@@ -6,8 +6,10 @@
   --foreground: #1a161f;
   --card: #ffffff;
 
-  --brand: #3a314a;
   --brand-light: #7c6f8a;
+  --brand: #5d536d;
+  --brand-dark: #3a314a;
+  --brand-darkest: #15111a;
   --accent: #d4af37;
 }
 
@@ -24,7 +26,9 @@
 
 @theme {
   --color-brand: var(--brand); /* headings */
+  --color-brand-dark: var(--brand-dark);
   --color-brand-light: var(--brand-light);
+  --color-brand-darkest: var(--brand-darkest);
   --color-accent: var(--accent); /* buttons */
 
   --color-background: var(--background);
@@ -45,11 +49,15 @@
   }
 
   .btn-primary {
-    @apply bg-brand focus-visible:ring-brand-light cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
+    @apply bg-brand-dark focus-visible:ring-brand-light cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
   }
 
   .btn-secondary {
     @apply bg-brand-light focus-visible:ring-brand cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
+  }
+
+  .btn-tertiary {
+    @apply bg-brand focus-visible:ring-brand-dark cursor-pointer text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-3 focus-visible:outline-none active:scale-95;
   }
 
   .btn-outline {

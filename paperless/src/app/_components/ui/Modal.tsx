@@ -53,7 +53,7 @@ export default function Modal({
       className="bg-surface m-auto w-full max-w-[90vw] flex-col rounded-lg border-none p-0 shadow-2xl outline-none backdrop:bg-black/30 backdrop:backdrop-blur-xs open:flex md:max-w-lg"
     >
       <div className="border-brand-light/20 flex items-center justify-between border-b p-4">
-        <h3 className="text-brand text-xl font-semibold">{title}</h3>
+        <h3 className="text-brand-dark text-xl font-semibold">{title}</h3>
         <button
           onClick={onClose}
           className="text-brand cursor-pointer p-1"

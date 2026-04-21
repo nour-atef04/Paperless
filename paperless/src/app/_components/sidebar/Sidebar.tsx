@@ -21,6 +21,7 @@ export default function Sidebar({ userName, userAvatar }: SidebarProps) {
 
   return (
     <Panel
+      dark={true}
       ariaLabel="Main sidebar"
       className={`${isOpen ? "h-44" : "h-20"} flex flex-wrap items-center gap-4 overflow-hidden p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
     >

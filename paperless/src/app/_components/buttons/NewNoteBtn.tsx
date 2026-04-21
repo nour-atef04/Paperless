@@ -21,7 +21,7 @@ export default function NewNoteBtn() {
       // aria-disabled={isNavigating}
       aria-label="Create new note"
       // className={` ${isNavigating ? "btn-disabled" : "btn-primary"} ml-auto flex shrink-0 items-center gap-2 rounded-full p-2 transition-all sm:rounded-md md:ml-0 md:w-full md:rounded-md md:px-4 md:py-2`}
-      className={"btn-primary ml-auto flex shrink-0 items-center gap-2 rounded-full p-2 transition-all sm:rounded-md md:ml-0 md:w-full md:rounded-md md:px-4 md:py-2"}
+      className={"btn-tertiary ml-auto flex shrink-0 items-center gap-2 rounded-full p-2 transition-all sm:rounded-md md:ml-0 md:w-full md:rounded-md md:px-4 md:py-2"}
 
     >
       <FaPlus aria-hidden="true" />
