@@ -40,9 +40,9 @@ export default function Sidebar({ userName, userAvatar }: SidebarProps) {
         <header>
           <Link
             href="/notes"
-            className="md:border-b-background flex flex-1 items-center gap-2 md:border-b-2 md:pb-6"
+            className="md:border-b-brand flex flex-1 items-center gap-2 md:border-b-2 md:pb-6"
           >
-            <Logo />
+            <Logo variant="dark-mode" />
           </Link>
         </header>
       </div>
@@ -59,7 +59,7 @@ export default function Sidebar({ userName, userAvatar }: SidebarProps) {
       <nav
         id="sidebar-nav"
         onClick={() => setIsOpen(false)}
-        className={`${isOpen ? "flex" : "hidden"} border-brand-light/10 order-4 flex w-full flex-row items-center justify-around border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
+        className={`${isOpen ? "flex" : "hidden"} border-brand/10 order-4 flex w-full flex-row items-center justify-around border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
       >
         <NavLink href="/notes">
           <MdOutlineDashboard aria-hidden="true" /> Dashboard

@@ -19,7 +19,7 @@ export default function Panel({
   return (
     <Component
       {...props}
-      className={`${dark ? "bg-brand-darkest" : "bg-surface"} rounded-md shadow-sm ${className || ""} `}
+      className={`${dark ? "bg-brand-dark" : "bg-surface"} rounded-md shadow-sm ${className || ""} `}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
     >

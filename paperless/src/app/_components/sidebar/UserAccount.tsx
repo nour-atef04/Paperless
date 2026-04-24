@@ -8,7 +8,7 @@ type UserAccountProps = {
 
 export default function UserAccount({ name, image }: UserAccountProps) {
   return (
-    <div className="md:border-t-background ml-auto shrink-0 items-center md:mt-auto md:ml-0 md:flex md:w-full md:items-center md:gap-3 md:border-t-2 md:pt-6">
+    <div className="md:border-t-brand ml-auto shrink-0 items-center md:mt-auto md:ml-0 md:flex md:w-full md:items-center md:gap-3 md:border-t-2 md:pt-6">
       <Link href="/profile">
         <Image
           src={image}
@@ -19,7 +19,7 @@ export default function UserAccount({ name, image }: UserAccountProps) {
         />
       </Link>
 
-      <span className="hidden md:inline">{name}</span>
+      <span className="hidden md:inline text-surface">{name}</span>
     </div>
   );
 }
