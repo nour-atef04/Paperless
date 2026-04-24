@@ -84,15 +84,14 @@ export async function signUpAction(
   return { success: true, redirectTo: "/" };
 }
 
-export async function logoutAction(
-  prevState: any,
-  formData: FormData,
-): Promise<ActionResponse | never> {
+export async function logoutAction() {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signOut();
+  
   if (error) {
-    return { error: error.message };
+    throw new Error(error.message); 
   }
+  
   redirect("/login");
 }
 

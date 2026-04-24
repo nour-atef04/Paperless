@@ -10,7 +10,10 @@ export async function getUserId(): Promise<string | null> {
   return user.id;
 }
 
-export async function getUserProfile(): Promise<Pick<Profile, "full_name" | "avatar_url"> | null> {
+export async function getUserProfile(): Promise<
+  | (Pick<Profile, "full_name" | "avatar_url"> & { email: string | undefined })
+  | null
+> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -28,7 +31,10 @@ export async function getUserProfile(): Promise<Pick<Profile, "full_name" | "ava
   }
 
   // casting so TS knows what properties are available
-  return profile as Pick<Profile, "full_name" | "avatar_url"> | null;
+  return {
+    ...(profile as Pick<Profile, "full_name" | "avatar_url">),
+    email: user.email, 
+  };
 }
 
 function getAllNotes(supabase: any) {
@@ -60,7 +66,10 @@ function applySorting(queryBuilder: any, sort?: SortOption) {
   }
 }
 
-export async function getDashboardNotes(query?:string, sort?:SortOption): Promise<NoteWithDetails[] | null> {
+export async function getDashboardNotes(
+  query?: string,
+  sort?: SortOption,
+): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -82,7 +91,11 @@ export async function getDashboardNotes(query?:string, sort?:SortOption): Promis
   return data as NoteWithDetails[];
 }
 
-export async function getMyNotes(query?: string, sort?: SortOption, folderId?: string): Promise<NoteWithDetails[] | null> {
+export async function getMyNotes(
+  query?: string,
+  sort?: SortOption,
+  folderId?: string,
+): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -108,7 +121,10 @@ export async function getMyNotes(query?: string, sort?: SortOption, folderId?: s
   return data as NoteWithDetails[];
 }
 
-export async function getSavedNotes(query?: string, sort?: SortOption): Promise<NoteWithDetails[] | null> {
+export async function getSavedNotes(
+  query?: string,
+  sort?: SortOption,
+): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },

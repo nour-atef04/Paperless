@@ -5,13 +5,14 @@ import { useState } from "react";
 import ProfileSettingsModal from "../modals/ProfileSettingsModal";
 
 type UserAccountProps = {
-  name: string;
-  image: string | null;
-  email?: string;
+  profile: { full_name: string; avatar_url?: string | null; email: string };
 };
 
-export default function UserAccount({ name, image, email }: UserAccountProps) {
+export default function UserAccount({ profile }: UserAccountProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const userName = profile?.full_name || "User";
+  const userAvatar = profile?.avatar_url || "/default-user.jpg";
+  const email = profile?.email || "";  
 
   return (
     <>
@@ -22,20 +23,21 @@ export default function UserAccount({ name, image, email }: UserAccountProps) {
           aria-label="Open account settings"
         >
           <Image
-            src={image}
+            src={userAvatar}
             width={50}
             height={40}
-            alt={`${name}'s avatar`}
+            alt={`${userName}'s avatar`}
             className="rounded-md"
           />
         </button>
 
-        <span className="text-surface hidden md:inline">{name}</span>
+        <span className="text-surface hidden md:inline">{userName}</span>
       </div>
       <ProfileSettingsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        name={name}
+        image={userAvatar}
+        name={userName}
         email={email || "user@example.com"}
       />
     </>

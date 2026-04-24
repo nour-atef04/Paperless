@@ -4,19 +4,23 @@ import { useState } from "react";
 import Modal from "../../_components/ui/Modal";
 import FormInput from "../../_components/ui/FormInput";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
+import Image from "next/image";
+import LogoutBtn from "../buttons/LogoutBtn";
 
 type ProfileSettingsModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  name?: string;
-  email?: string;
+  name: string;
+  email: string;
+  image: string;
 };
 
 export default function ProfileSettingsModal({
   isOpen,
   onClose,
-  name = "",
-  email = "",
+  name,
+  email,
+  image,
 }: ProfileSettingsModalProps) {
   const [isPending, setIsPending] = useState(false);
 
@@ -26,18 +30,25 @@ export default function ProfileSettingsModal({
     // call action
   };
 
-  const handleLogOut = async () => {
-    console.log("Logging out...");
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Settings">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        
-        <div className="flex items-center gap-4 mb-2">
-          <div className="bg-brand flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold text-white">
-            {name ? name.charAt(0).toUpperCase() : "U"}
-          </div>
+        <div className="mb-2 flex items-center gap-4">
+          {image ? (
+            <Image
+              src={image}
+              alt="Profile Picture"
+              width={64}
+              height={64}
+              className="h-16 w-16 rounded-full object-cover shadow-sm"
+            />
+          ) : (
+            // fallback in case image fails to load or isn't passed
+            <div className="bg-brand flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold text-white shadow-sm">
+              {name ? name.charAt(0).toUpperCase() : "U"}
+            </div>
+          )}
+
           <button
             type="button"
             className="text-brand hover:text-brand-light cursor-pointer text-sm underline"
@@ -52,7 +63,7 @@ export default function ProfileSettingsModal({
           label="Full Name"
           type="text"
           showLabel={true}
-          variant="variant2" 
+          variant="variant2"
           defaultValue={name}
         />
 
@@ -68,14 +79,8 @@ export default function ProfileSettingsModal({
           className="opacity-60"
         />
 
-        <div className="mt-4 flex items-center justify-between border-t border-brand-light/20 pt-4">
-          <button
-            type="button"
-            onClick={handleLogOut}
-            className=" text-sm font-medium text-red-700 hover:text-red-700 hover:underline cursor-pointer"
-          >
-            Log Out
-          </button>
+        <div className="border-brand-light/20 mt-4 flex items-center justify-between border-t pt-4">
+          <LogoutBtn />
 
           <ModalActionBtns
             onCancel={onClose}

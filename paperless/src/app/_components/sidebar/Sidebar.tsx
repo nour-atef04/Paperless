@@ -12,13 +12,11 @@ import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
 
 type SidebarProps = {
-  profile: { full_name: string; avatar_url?: string | null };
+  profile: { full_name: string; avatar_url?: string | null, email: string };
 };
 
 export default function Sidebar({ profile }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const userName = profile?.full_name || "User";
-  const userAvatar = profile?.avatar_url || "/default-user.jpg";
 
   return (
     <Panel
@@ -53,7 +51,7 @@ export default function Sidebar({ profile }: SidebarProps) {
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">
-        <UserAccount image={userAvatar || ""} name={userName} />
+        <UserAccount profile={profile}/>
       </div>
 
       {/* Navigation */}

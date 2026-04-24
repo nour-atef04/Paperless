@@ -9,7 +9,6 @@ export default async function AuthenticatedLayout({
   children,
 }: AuthenticatedLayoutProps) {
   const profile = await getUserProfile();
-  
 
   return (
     <div className="grid h-screen grid-rows-[auto_1fr] md:grid-cols-[250px_1fr] md:grid-rows-none">
