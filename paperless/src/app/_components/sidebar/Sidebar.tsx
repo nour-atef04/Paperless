@@ -12,12 +12,13 @@ import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
 
 type SidebarProps = {
-  userName: string;
-  userAvatar: string | null;
+  profile: { full_name: string; avatar_url?: string | null };
 };
 
-export default function Sidebar({ userName, userAvatar }: SidebarProps) {
+export default function Sidebar({ profile }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const userName = profile?.full_name || "User";
+  const userAvatar = profile?.avatar_url || "/default-user.jpg";
 
   return (
     <Panel

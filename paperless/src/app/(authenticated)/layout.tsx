@@ -9,8 +9,7 @@ export default async function AuthenticatedLayout({
   children,
 }: AuthenticatedLayoutProps) {
   const profile = await getUserProfile();
-  const userName = profile?.full_name || "User";
-  const userAvatar = profile?.avatar_url || "/default-user.jpg";
+  
 
   return (
     <div className="grid h-screen grid-rows-[auto_1fr] md:grid-cols-[250px_1fr] md:grid-rows-none">
@@ -20,7 +19,7 @@ export default async function AuthenticatedLayout({
       >
         Skip to content
       </a>
-      <Sidebar userName={userName} userAvatar={userAvatar} />
+      <Sidebar profile={profile} />
       <main id="main-content" className="overflow-auto p-8">
         {children}
       </main>

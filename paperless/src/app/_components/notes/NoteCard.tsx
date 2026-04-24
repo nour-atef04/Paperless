@@ -94,13 +94,15 @@ export default function NoteCard({
             </>
           )}
           <div className="relative">
-            <ActionsBtn
-              id={note.id}
-              name={note.title}
-              isOpen={isOpen}
-              setOpenOptionsId={setOpenOptionsId}
-              variant="note"
-            />
+            {showOptions && (
+              <ActionsBtn
+                id={note.id}
+                name={note.title}
+                isOpen={isOpen}
+                setOpenOptionsId={setOpenOptionsId}
+                variant="note"
+              />
+            )}
 
             <NoteOptions
               note={note}
