@@ -77,7 +77,7 @@ export default function NoteCard({
 
       <div className="border-brand-light/20 mt-auto flex w-full items-center justify-between border-t pt-3">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
-          <span>By: {note.profiles?.full_name}</span>
+          <Link className="hover:underline" href={`/profile/${note.user_id}`}>By: {note.profiles?.full_name}</Link>
           <time dateTime={note.created_at || ""}>
             {note.created_at
               ? new Date(note.created_at).toLocaleDateString()

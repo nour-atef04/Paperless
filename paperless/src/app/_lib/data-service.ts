@@ -1,5 +1,12 @@
 import { createSupabaseServerClient } from "./supabase";
-import { Folder, Note, NoteWithDetails, Profile, SortOption } from "./types";
+import {
+  Folder,
+  Note,
+  NoteWithDetails,
+  Profile,
+  SortOption,
+  UserProfile,
+} from "./types";
 
 export async function getUserId(): Promise<string | null> {
   const supabase = await createSupabaseServerClient();
@@ -10,10 +17,7 @@ export async function getUserId(): Promise<string | null> {
   return user.id;
 }
 
-export async function getUserProfile(): Promise<
-  | (Pick<Profile, "full_name" | "avatar_url"> & { email: string | undefined })
-  | null
-> {
+export async function getUserProfile(): Promise<UserProfile | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -26,17 +30,40 @@ export async function getUserProfile(): Promise<
     .eq("id", user.id)
     .maybeSingle();
 
-  if (error) {
-    throw error;
-  }
+  if (error || !profile) return null;
 
-  // casting so TS knows what properties are available
   return {
-    ...(profile as Pick<Profile, "full_name" | "avatar_url">),
-    email: user.email, 
+    name: profile.full_name,
+    image: profile.avatar_url,
+    email: user.email,
+    id: user.id,
   };
 }
 
+export async function getUserProfileById(
+  id: string,
+): Promise<Omit<UserProfile, "email"> | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Failed to fetch public profile:", error);
+    return null;
+  }
+
+  if (!profile) return null;
+
+return {
+    name: profile.full_name,
+    image: profile.avatar_url,
+    id: id, 
+  };
+}
 function getAllNotes(supabase: any) {
   return supabase.from("notes").select(
     `
@@ -179,6 +206,33 @@ export async function getNoteById(id: string): Promise<NoteWithDetails | null> {
   return data as NoteWithDetails;
 }
 
+export async function getNotesByUserId(
+  id: string,
+  query?: string,
+  sort?: SortOption,
+  folderId?: string,
+): Promise<NoteWithDetails[] | null> {
+  const supabase = await createSupabaseServerClient();
+
+  let supabaseQuery = getAllNotes(supabase).eq("user_id", id);
+
+  if (folderId) {
+    supabaseQuery = supabaseQuery.eq("folder_id", folderId);
+  }
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(
+      `title.ilike.%${query}%, content.ilike.%${query}%`,
+    );
+  }
+
+  supabaseQuery = applySorting(supabaseQuery, sort);
+
+  const { data, error } = await supabaseQuery;
+  if (error) throw new Error(error.message);
+  return data as NoteWithDetails[];
+}
+
 export async function getMyFolders(): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
@@ -190,6 +244,18 @@ export async function getMyFolders(): Promise<Folder[] | null> {
     .from("folders")
     .select("*")
     .eq("user_id", user.id)
+    .order("name", { ascending: true });
+  if (error) throw new Error(error.message);
+  return data as Folder[];
+}
+
+export async function getFoldersByUserId(id: string): Promise<Folder[] | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from("folders")
+    .select("*")
+    .eq("user_id", id)
     .order("name", { ascending: true });
   if (error) throw new Error(error.message);
   return data as Folder[];

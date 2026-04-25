@@ -3,16 +3,16 @@
 import Image from "next/image";
 import { useState } from "react";
 import ProfileSettingsModal from "../modals/ProfileSettingsModal";
+import { UserProfile } from "@/app/_lib/types";
 
 type UserAccountProps = {
-  profile: { full_name: string; avatar_url?: string | null; email: string };
+  profile: UserProfile;
 };
 
 export default function UserAccount({ profile }: UserAccountProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const userName = profile?.full_name || "User";
-  const userAvatar = profile?.avatar_url || "/default-user.jpg";
-  const email = profile?.email || "";  
+  const userName = profile?.name || "User";
+  const userImage = profile?.image || "/default-user.jpg";
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function UserAccount({ profile }: UserAccountProps) {
           aria-label="Open account settings"
         >
           <Image
-            src={userAvatar}
+            src={userImage}
             width={50}
             height={40}
             alt={`${userName}'s avatar`}
@@ -36,9 +36,7 @@ export default function UserAccount({ profile }: UserAccountProps) {
       <ProfileSettingsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        image={userAvatar}
-        name={userName}
-        email={email || "user@example.com"}
+        profile={profile}
       />
     </>
   );

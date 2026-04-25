@@ -10,9 +10,10 @@ import Logo from "../ui/Logo";
 import Panel from "../ui/Panel";
 import NavLink from "./NavLink";
 import UserAccount from "./UserAccount";
+import { UserProfile } from "@/app/_lib/types";
 
 type SidebarProps = {
-  profile: { full_name: string; avatar_url?: string | null, email: string };
+  profile: UserProfile;
 };
 
 export default function Sidebar({ profile }: SidebarProps) {

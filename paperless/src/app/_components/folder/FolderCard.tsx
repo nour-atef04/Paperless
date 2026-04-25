@@ -11,18 +11,20 @@ import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
 import FormInput from "../ui/FormInput";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
-import { Folder } from "@/app/_lib/types";
+import { Folder, PageRoute } from "@/app/_lib/types";
 
 type FolderCardProps = {
   folder: Folder;
   openOptionsId: string | null;
   setOpenOptionsId: (id: string | null) => void;
+  page?: PageRoute;
 };
 
 export default function FolderCard({
   folder,
   openOptionsId,
   setOpenOptionsId,
+  page,
 }: FolderCardProps) {
   const isOpen = openOptionsId === folder.id; // for options
 
@@ -87,7 +89,11 @@ export default function FolderCard({
         }`}
       >
         <Link
-          href={`/my-notes?folder=${folder.id}`}
+          href={
+            page === "profile"
+              ? `?folderId=${folder.id}`
+              : `/my-notes?folder=${folder.id}`
+          }
           className="flex items-center gap-3 p-3 outline-none"
           aria-label={`Open ${folder.name} folder`}
         >
@@ -105,12 +111,14 @@ export default function FolderCard({
           </span>
         </Link>
 
-        <ActionsBtn
-          id={folder.id}
-          name={folder.name}
-          setOpenOptionsId={setOpenOptionsId}
-          isOpen={isOpen}
-        />
+        {page === "my-notes" && (
+          <ActionsBtn
+            id={folder.id}
+            name={folder.name}
+            setOpenOptionsId={setOpenOptionsId}
+            isOpen={isOpen}
+          />
+        )}
 
         {isOpen && (
           <OptionsList

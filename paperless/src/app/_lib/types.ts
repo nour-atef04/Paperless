@@ -2,7 +2,8 @@ export type ActionResponse = {
   error?: string;
   success?: boolean;
   redirectTo?: string;
-  fields?: { // for previous form values
+  fields?: {
+    // for previous form values
     firstName?: string;
     lastName?: string;
     email?: string;
@@ -41,16 +42,23 @@ export type UserSave = {
 
 export type NoteWithDetails = Note & {
   folders: Pick<Folder, "name"> | null;
-  profiles: Pick<Profile, "full_name" | "avatar_url"> | null;
+  profiles: Pick<Profile, "full_name" | "avatar_url" | "id"> | null;
   user_saves: Pick<UserSave, "user_id">[];
 };
 
 export type SortOption = "latest" | "oldest" | "most-relevant" | string;
 
-export type PageRoute = "dashboard" | "my-notes" | "saved";
+export type PageRoute = "dashboard" | "my-notes" | "saved" | "profile";
 
 export type PageSearchParams = Promise<{
   query?: string;
   sort?: SortOption;
   folder?: string;
 }>;
+
+export type UserProfile = {
+  name: string;
+  image?: string | null;
+  email?: string;
+  id: string;
+};

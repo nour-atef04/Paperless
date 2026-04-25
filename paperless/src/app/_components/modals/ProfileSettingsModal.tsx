@@ -9,22 +9,27 @@ import LogoutBtn from "../buttons/LogoutBtn";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { updateProfileAction } from "@/app/_lib/actions";
+import Link from "next/link";
+import { UserProfile } from "@/app/_lib/types";
 
 type ProfileSettingsModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  name: string;
-  email: string;
-  image: string;
+  profile: UserProfile;
 };
 
 export default function ProfileSettingsModal({
   isOpen,
   onClose,
-  name,
-  email,
-  image,
+  profile,
 }: ProfileSettingsModalProps) {
+  // console.log(profile)
+
+  const name = profile?.name || "User";
+  const image = profile?.image || "/default-user.jpg";
+  const email = profile?.email || "";
+  const id = profile?.id || "";
+
   const [previewUrl, setPreviewUrl] = useState<string>(image);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -61,7 +66,8 @@ export default function ProfileSettingsModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Settings">
       <form action={formAction} className="flex flex-col gap-5">
-        <div className="mb-2 flex items-center gap-4">
+        <div className="mb-4 flex items-center gap-4">
+          {/* 1. The Avatar Circle */}
           {previewUrl ? (
             <Image
               src={previewUrl}
@@ -71,12 +77,12 @@ export default function ProfileSettingsModal({
               className="h-16 w-16 rounded-full object-cover shadow-sm"
             />
           ) : (
-            // fallback in case image fails to load or isn't passed
             <div className="bg-brand flex h-16 w-16 items-center justify-center rounded-full text-xl font-bold text-white shadow-sm">
               {name ? name.charAt(0).toUpperCase() : "U"}
             </div>
           )}
 
+          {/* Hidden file input */}
           <input
             type="file"
             name="avatar"
@@ -86,13 +92,38 @@ export default function ProfileSettingsModal({
             className="hidden"
           />
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="text-brand hover:text-brand-light cursor-pointer text-sm underline"
-          >
-            Change Picture
-          </button>
+          <div className="flex flex-col items-start gap-1.5">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-brand hover:text-brand-dark cursor-pointer text-sm font-medium transition-colors hover:underline"
+            >
+              Change Picture
+            </button>
+
+            <Link
+              href={`profile/${id}`}
+              onClick={onClose}
+              className="text-brand-light hover:text-brand flex items-center gap-1.5 text-xs transition-colors hover:underline"
+            >
+              View public profile
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </Link>
+          </div>
         </div>
 
         <FormInput

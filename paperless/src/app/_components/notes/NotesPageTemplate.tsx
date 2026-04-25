@@ -26,6 +26,7 @@ export default async function NotesPageTemplate({
     dashboard: "Dashboard",
     saved: "Saved Notes",
     "my-notes": "My Notes",
+    profile: "Profile",
   };
 
   const currentTitle = titles[page];
@@ -60,7 +61,7 @@ export default async function NotesPageTemplate({
               {/* <NewFolderBtn />  */}
             </div>
 
-            <FolderList folders={folders} />
+            <FolderList page={page} folders={folders} />
           </section>
         )}
 

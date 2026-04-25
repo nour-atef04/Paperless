@@ -3,13 +3,19 @@
 import { useState } from "react";
 import NewFolderBtn from "../buttons/NewFolderBtn";
 import FolderCard from "./FolderCard";
-import { Folder } from "@/app/_lib/types";
+import { Folder, PageRoute } from "@/app/_lib/types";
 
 type FolderListProps = {
   folders: Folder[];
+  newFolderBtn?: boolean;
+  page?: PageRoute;
 };
 
-export default function FolderList({ folders }: FolderListProps) {
+export default function FolderList({
+  folders,
+  newFolderBtn = true,
+  page,
+}: FolderListProps) {
   const [openOptionsId, setOpenOptionsId] = useState<string | null>(null);
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,14 +26,15 @@ export default function FolderList({ folders }: FolderListProps) {
   return (
     <>
       {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4"> */}
-      <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-wrap items-center gap-4">
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
-        <NewFolderBtn />
+        {newFolderBtn && <NewFolderBtn />}
         {!folders || folders.length === 0 ? (
           <p className="text-brand-light/70 text-sm">No folders created yet.</p>
         ) : (
           visibleFolders.map((folder) => (
             <FolderCard
+              page={page}
               key={folder.id}
               folder={folder}
               openOptionsId={openOptionsId}
