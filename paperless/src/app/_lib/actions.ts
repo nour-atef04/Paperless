@@ -87,11 +87,11 @@ export async function signUpAction(
 export async function logoutAction() {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signOut();
-  
+
   if (error) {
-    throw new Error(error.message); 
+    throw new Error(error.message);
   }
-  
+
   redirect("/login");
 }
 
@@ -336,6 +336,52 @@ export async function copyNote(
   revalidatePath("/my-notes");
   revalidatePath("/notes");
   return { success: true };
+}
+
+export async function updateProfileAction(formData: FormData) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to edit profile." };
+
+  const fullName = formData.get("fullName") as string;
+  const avatarFile = formData.get("avatar") as File | null;
+
+  let avatarUrl = undefined;
+
+  // if a new avatar was selected
+  if (avatarFile && avatarFile.size > 0) {
+    // create unique file name
+    const fileExtension = avatarFile.name.split(".").pop();
+    const fileName = `${user.id}-${Date.now()}.${fileExtension}`;
+
+    // upload to the 'avatars' bucket
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(fileName, avatarFile, { upsert: true });
+
+    if (uploadError) throw new Error("Failed to upload image");
+
+    // get the public URL for the uploaded image
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+    avatarUrl = publicUrl;
+  }
+
+  const updatePayload: any = { full_name: fullName };
+  if (avatarUrl) {
+    updatePayload.avatar_url = avatarUrl;
+  }
+
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update(updatePayload)
+    .eq("id", user.id);
+
+  if (updateError) throw new Error("Failed to update profile");
 }
 
 // TO DO: GOOGLE AUTH

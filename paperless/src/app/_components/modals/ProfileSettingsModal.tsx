@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import React, { useActionState, useRef, useState } from "react";
 import Modal from "../../_components/ui/Modal";
 import FormInput from "../../_components/ui/FormInput";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
 import Image from "next/image";
 import LogoutBtn from "../buttons/LogoutBtn";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { updateProfileAction } from "@/app/_lib/actions";
 
 type ProfileSettingsModalProps = {
   isOpen: boolean;
@@ -22,21 +25,46 @@ export default function ProfileSettingsModal({
   email,
   image,
 }: ProfileSettingsModalProps) {
-  const [isPending, setIsPending] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string>(image);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsPending(true);
-    // call action
+  // live image preview
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
   };
+
+  // client action wrapper (in client so we can close the modal)
+  const handleAction = async (prevState: any, formData: FormData) => {
+    try {
+      await updateProfileAction(formData);
+
+      // client side-effects
+      toast.success("Profile updated successfully!");
+      router.refresh();
+      onClose();
+
+      return { success: true };
+    } catch (error) {
+      toast.error("Failed to update profile.");
+      return { error: "Failed to update profile." };
+    }
+  };
+
+  // pass wrapper to the hook (to get isPending)
+  const [, formAction, isPending] = useActionState(handleAction, null);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Account Settings">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      <form action={formAction} className="flex flex-col gap-5">
         <div className="mb-2 flex items-center gap-4">
-          {image ? (
+          {previewUrl ? (
             <Image
-              src={image}
+              src={previewUrl}
               alt="Profile Picture"
               width={64}
               height={64}
@@ -49,8 +77,18 @@ export default function ProfileSettingsModal({
             </div>
           )}
 
+          <input
+            type="file"
+            name="avatar"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            className="hidden"
+          />
+
           <button
             type="button"
+            onClick={() => fileInputRef.current?.click()}
             className="text-brand hover:text-brand-light cursor-pointer text-sm underline"
           >
             Change Picture
