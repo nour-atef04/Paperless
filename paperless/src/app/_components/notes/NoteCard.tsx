@@ -13,6 +13,8 @@ import ActionsBtn from "../buttons/ActionsBtn";
 import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
 import EditNoteBtn from "../buttons/EditNoteBtn";
 import NoteOptions from "./NoteOptions";
+import { IoMdLock } from "react-icons/io";
+import { RiEarthFill } from "react-icons/ri";
 
 type NoteCardProps = {
   note: NoteWithDetails;
@@ -77,12 +79,20 @@ export default function NoteCard({
 
       <div className="border-brand-light/20 mt-auto flex w-full items-center justify-between border-t pt-3">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
-          <Link className="hover:underline" href={`/profile/${note.user_id}`}>By: {note.profiles?.full_name}</Link>
-          <time dateTime={note.created_at || ""}>
-            {note.created_at
-              ? new Date(note.created_at).toLocaleDateString()
-              : "Unknown Date"}
-          </time>
+          <Link className="hover:underline" href={`/profile/${note.user_id}`}>
+            By: {note.profiles?.full_name}
+          </Link>
+          <div className="flex items-center gap-1">
+            <time dateTime={note.created_at || ""}>
+              {note.created_at
+                ? new Date(note.created_at).toLocaleDateString()
+                : "Unknown Date"}
+            </time>{" "}
+            •{" "}
+            <span aria-hidden={true}>
+              {note.public ? <RiEarthFill /> : <IoMdLock />}
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center">

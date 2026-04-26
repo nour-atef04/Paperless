@@ -102,7 +102,7 @@ export default function ProfileSettingsModal({
             </button>
 
             <Link
-              href={`profile/${id}`}
+              href={`/profile/${id}`}
               onClick={onClose}
               className="text-brand-light hover:text-brand flex items-center gap-1.5 text-xs transition-colors hover:underline"
             >

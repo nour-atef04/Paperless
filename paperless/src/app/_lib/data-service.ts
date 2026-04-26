@@ -64,6 +64,7 @@ return {
     id: id, 
   };
 }
+
 function getAllNotes(supabase: any) {
   return supabase.from("notes").select(
     `
@@ -75,7 +76,7 @@ function getAllNotes(supabase: any) {
     ),
     user_saves ( user_id )
   `,
-  );
+  )
 }
 
 function applySorting(queryBuilder: any, sort?: SortOption) {
@@ -103,7 +104,8 @@ export async function getDashboardNotes(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  let supabaseQuery = getAllNotes(supabase).neq("user_id", user.id);
+  // only public notes
+  let supabaseQuery = getAllNotes(supabase).neq("user_id", user.id).eq("public", true);
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -129,6 +131,7 @@ export async function getMyNotes(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // all notes (public and private)
   let supabaseQuery = getAllNotes(supabase).eq("user_id", user.id);
 
   if (folderId) {
@@ -158,6 +161,7 @@ export async function getSavedNotes(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // all notes (public and private)
   let supabaseQuery = supabase
     .from("notes")
     .select(
@@ -187,6 +191,7 @@ export async function getSavedNotes(
   return data as NoteWithDetails[];
 }
 
+// added RLS in supabase to only view private notes if yours, or any public note
 export async function getNoteById(id: string): Promise<NoteWithDetails | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -214,7 +219,8 @@ export async function getNotesByUserId(
 ): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
 
-  let supabaseQuery = getAllNotes(supabase).eq("user_id", id);
+  // only public notes
+  let supabaseQuery = getAllNotes(supabase).eq("user_id", id).eq("public", true);
 
   if (folderId) {
     supabaseQuery = supabaseQuery.eq("folder_id", folderId);

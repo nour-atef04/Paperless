@@ -384,4 +384,28 @@ export async function updateProfileAction(formData: FormData) {
   if (updateError) throw new Error("Failed to update profile");
 }
 
+export async function toggleNoteVisibility(
+  noteId: string,
+  makePublic: boolean,
+) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to toggle visibility." };
+
+  const { error } = await supabase
+    .from("notes")
+    .update({ public: makePublic })
+    .eq("id", noteId)
+    .eq("user_id", user.id);
+  if (error) return { error: "Failed to update visibility." };
+
+  revalidatePath("/my-notes");
+  revalidatePath("/dashboard");
+  revalidatePath("/profile/[id]", "page");
+
+  return { success: true };
+}
+
 // TO DO: GOOGLE AUTH

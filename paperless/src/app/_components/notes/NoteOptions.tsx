@@ -1,14 +1,14 @@
 "use client";
 
 import { useFolders } from "@/app/_context/FolderContext";
+import { copyNote, moveNote, toggleNoteVisibility } from "@/app/_lib/actions";
 import { NoteWithDetails } from "@/app/_lib/types";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useState } from "react";
+import toast from "react-hot-toast";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
 import FormInput from "../ui/FormInput";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
-import { copyNote, moveNote } from "@/app/_lib/actions";
-import toast from "react-hot-toast";
 
 type NoteOptionsProps = {
   setOpenOptionsId: (id: string | null) => void;
@@ -21,13 +21,15 @@ export default function NoteOptions({
   isOpen,
   note,
 }: NoteOptionsProps) {
-  const [openModal, setOpenModal] = useState<string | null>(null);
+  const [openModal, setOpenModal] = useState<string | null>(null); // for move/copy modal
+  const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false); // for visibility
   const [selectedFolderId, setSelectedFolderId] = useState(""); // track what the user selects in the dropdown
 
   const folders = useFolders().filter((folder) => folder.id !== note.folder_id);
 
+  // --- MOVE / COPY ---
   // action handler (wrapper) to route to correct server action
-  const handleAction = async (prevState: any, formData: FormData) => {
+  const handleMoveCopy = async (prevState: any, formData: FormData) => {
     if (!selectedFolderId) {
       toast.error("Please select a destination folder.");
       return { error: "Please select a destination folder." };
@@ -54,8 +56,29 @@ export default function NoteOptions({
   };
 
   // grab isPending
-  const [, formAction, isPending] = useActionState(handleAction, null);
+  const [, moveCopyAction, isPending] = useActionState(handleMoveCopy, null);
 
+  // --- VISBILITY ---
+  const handleVisibility = async (prevState: any, formData: FormData) => {
+    const willBePublic = !note.public;
+    const res = await toggleNoteVisibility(note.id, willBePublic);
+    if (res?.error) {
+      toast.error(res.error);
+      return res;
+    }
+
+    toast.success(`Note is now ${willBePublic ? "Public" : "Private"}!`);
+    setIsVisibilityModalOpen(false);
+    setOpenOptionsId(null);
+    return res;
+  };
+
+  const [, visibilityAction, isVisibilityPending] = useActionState(
+    handleVisibility,
+    null,
+  );
+
+  // --- MENU OPTIONS ---
   const noteOptions = [
     {
       label: "Move",
@@ -69,17 +92,25 @@ export default function NoteOptions({
         setOpenModal("Copy Note");
       },
     },
+    {
+      label: note.public ? "Make Private" : "Make Public",
+      onClick: () => {
+        setIsVisibilityModalOpen(true);
+      },
+    },
   ];
 
   return (
     <>
       {isOpen && (
         <OptionsList
-          className="right-0"
+          className="right-0 bottom-8"
           options={noteOptions}
           closeMenu={() => setOpenOptionsId(null)}
         />
       )}
+
+      {/* --- MOVE / COPY --- */}
       {openModal && (
         <Modal
           isOpen={true}
@@ -89,7 +120,7 @@ export default function NoteOptions({
           }}
           title={openModal}
         >
-          <form action={formAction} className="flex flex-col gap-6">
+          <form action={moveCopyAction} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <FormInput
                 showLabel={true}
@@ -125,6 +156,30 @@ export default function NoteOptions({
               loadingText={
                 openModal === "Move Note" ? "Moving..." : "Copying..."
               }
+            />
+          </form>
+        </Modal>
+      )}
+
+      {/* --- VISIBILITY MODAL --- */}
+      {isVisibilityModalOpen && (
+        <Modal
+          isOpen={true}
+          onClose={() => setIsVisibilityModalOpen(false)}
+          title={note.public ? "Make Note Private" : "Make Note Public"}
+        >
+          <form action={visibilityAction} className="flex flex-col gap-6">
+            <p className="text-brand-light text-sm">
+              {note.public
+                ? "This note will be hidden from your public profile. Only you will be able to view and edit it."
+                : "This note will be visible on your public profile. Anyone with the link will be able to read it."}
+            </p>
+
+            <ModalActionBtns
+              onCancel={() => setIsVisibilityModalOpen(false)}
+              isPending={isVisibilityPending}
+              submitText="Confirm Change"
+              loadingText="Updating..."
             />
           </form>
         </Modal>
