@@ -1,9 +1,13 @@
 "use client";
 
-import { deleteFolder, renameFolder } from "@/app/_lib/actions";
+import {
+  deleteFolder,
+  renameFolder,
+  toggleFolderVisibility,
+} from "@/app/_lib/actions";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useActionState, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
 import ActionsBtn from "../buttons/ActionsBtn";
@@ -12,6 +16,10 @@ import OptionsList from "../ui/OptionsList";
 import FormInput from "../ui/FormInput";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
 import { Folder, PageRoute } from "@/app/_lib/types";
+import { IoMdLock } from "react-icons/io";
+import { RiEarthFill } from "react-icons/ri";
+import VisibilityIcon from "../ui/VisibilityIcon";
+import VisibilityModal from "../modals/VisibilityModal";
 
 type FolderCardProps = {
   folder: Folder;
@@ -32,10 +40,12 @@ export default function FolderCard({
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false);
 
   const [isDeleting, startDeleting] = useTransition();
   const [isRenaming, startRenaming] = useTransition();
 
+  // --- DELETE / RENAME ---
   const confirmDelete = () => {
     startDeleting(async () => {
       const result = await deleteFolder(folder.id);
@@ -69,6 +79,27 @@ export default function FolderCard({
     });
   };
 
+  // --- VISIBILITY ---
+
+  const handleVisibility = async (prevState: any, formData: FormData) => {
+    const willBePublic = !folder.public;
+    const res = await toggleFolderVisibility(folder.id, willBePublic);
+    if (res?.error) {
+      toast.error(res.error);
+      return res;
+    }
+
+    toast.success(`Folder is now ${willBePublic ? "Public" : "Private"}!`);
+    setIsVisibilityModalOpen(false);
+    setOpenOptionsId(null);
+    return res;
+  };
+
+  const [, visibilityAction, isVisibilityPending] = useActionState(
+    handleVisibility,
+    null,
+  );
+
   // drop down options
   const folderOptions = [
     {
@@ -78,6 +109,10 @@ export default function FolderCard({
     {
       label: "Delete",
       onClick: () => setIsDeleteModalOpen(true),
+    },
+    {
+      label: `${folder.public ? "Make Private" : "Make Public"}`,
+      onClick: () => setIsVisibilityModalOpen(true),
     },
   ];
 
@@ -94,9 +129,14 @@ export default function FolderCard({
               ? `?folderId=${folder.id}`
               : `/my-notes?folder=${folder.id}`
           }
-          className="flex items-center gap-3 p-3 outline-none"
+          className="flex items-center gap-2 p-3 outline-none"
           aria-label={`Open ${folder.name} folder`}
         >
+          <VisibilityIcon
+            className="text-surface absolute left-8 z-10 text-xs"
+            variant="folder"
+            isPublic={folder.public}
+          />
           <Image
             src="/folder-icon.png"
             alt=""
@@ -185,6 +225,17 @@ export default function FolderCard({
           />
         </form>
       </Modal>
+
+      {/* Visibility Modal */}
+      {isVisibilityModalOpen && (
+        <VisibilityModal
+          isPublic={folder.public}
+          isPending={isVisibilityPending}
+          action={visibilityAction}
+          variant="folder"
+          onClose={() => setIsVisibilityModalOpen(false)}
+        />
+      )}
     </>
   );
 }

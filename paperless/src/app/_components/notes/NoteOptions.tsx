@@ -9,6 +9,7 @@ import ModalActionBtns from "../buttons/ModalActionsBtns";
 import FormInput from "../ui/FormInput";
 import Modal from "../ui/Modal";
 import OptionsList from "../ui/OptionsList";
+import VisibilityModal from "../modals/VisibilityModal";
 
 type NoteOptionsProps = {
   setOpenOptionsId: (id: string | null) => void;
@@ -163,26 +164,15 @@ export default function NoteOptions({
 
       {/* --- VISIBILITY MODAL --- */}
       {isVisibilityModalOpen && (
-        <Modal
-          isOpen={true}
+        <VisibilityModal
+          isPublic={note.public}
+          isPending={isVisibilityPending}
+          action={visibilityAction}
+          variant="note"
           onClose={() => setIsVisibilityModalOpen(false)}
-          title={note.public ? "Make Note Private" : "Make Note Public"}
-        >
-          <form action={visibilityAction} className="flex flex-col gap-6">
-            <p className="text-brand-light text-sm">
-              {note.public
-                ? "This note will be hidden from your public profile. Only you will be able to view and edit it."
-                : "This note will be visible on your public profile. Anyone with the link will be able to read it."}
-            </p>
-
-            <ModalActionBtns
-              onCancel={() => setIsVisibilityModalOpen(false)}
-              isPending={isVisibilityPending}
-              submitText="Confirm Change"
-              loadingText="Updating..."
-            />
-          </form>
-        </Modal>
+          isParentFolderPrivate={note.folders ? !note.folders.public : false}
+          parentFolderName={note.folders?.name}
+        />
       )}
     </>
   );

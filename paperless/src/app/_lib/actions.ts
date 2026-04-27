@@ -408,4 +408,28 @@ export async function toggleNoteVisibility(
   return { success: true };
 }
 
+export async function toggleFolderVisibility(
+  folderId: string,
+  makePublic: boolean,
+) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be logged in to toggle visibility." };
+
+  const { error } = await supabase
+    .from("folders")
+    .update({ public: makePublic })
+    .eq("id", folderId)
+    .eq("user_id", user.id);
+  if (error) return { error: "Failed to update visibility." };
+
+  revalidatePath("/my-notes");
+  revalidatePath("/dashboard");
+  revalidatePath("/profile/[id]", "page");
+
+  return { success: true };
+}
+
 // TO DO: GOOGLE AUTH

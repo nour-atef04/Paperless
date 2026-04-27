@@ -15,6 +15,7 @@ import EditNoteBtn from "../buttons/EditNoteBtn";
 import NoteOptions from "./NoteOptions";
 import { IoMdLock } from "react-icons/io";
 import { RiEarthFill } from "react-icons/ri";
+import VisibilityIcon from "../ui/VisibilityIcon";
 
 type NoteCardProps = {
   note: NoteWithDetails;
@@ -87,11 +88,9 @@ export default function NoteCard({
               {note.created_at
                 ? new Date(note.created_at).toLocaleDateString()
                 : "Unknown Date"}
-            </time>{" "}
-            •{" "}
-            <span aria-hidden={true}>
-              {note.public ? <RiEarthFill /> : <IoMdLock />}
-            </span>
+            </time>
+            <span aria-hidden="true">•</span>
+            <VisibilityIcon variant="note" isPublic={note.public} />
           </div>
         </div>
 

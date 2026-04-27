@@ -258,10 +258,12 @@ export async function getMyFolders(): Promise<Folder[] | null> {
 export async function getFoldersByUserId(id: string): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
 
+  // only public folders
   const { data, error } = await supabase
     .from("folders")
     .select("*")
     .eq("user_id", id)
+    .eq("public", true)
     .order("name", { ascending: true });
   if (error) throw new Error(error.message);
   return data as Folder[];

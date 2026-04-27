@@ -32,6 +32,7 @@ export type Folder = {
   id: string;
   user_id: string;
   name: string;
+  public: boolean;
   created_at?: string;
 };
 
@@ -42,7 +43,7 @@ export type UserSave = {
 };
 
 export type NoteWithDetails = Note & {
-  folders: Pick<Folder, "name"> | null;
+  folders: Pick<Folder, "name" | "public"> | null; // know folder privacy status too
   profiles: Pick<Profile, "full_name" | "avatar_url" | "id"> | null;
   user_saves: Pick<UserSave, "user_id">[];
 };
