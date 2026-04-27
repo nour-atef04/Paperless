@@ -58,10 +58,10 @@ export async function getUserProfileById(
 
   if (!profile) return null;
 
-return {
+  return {
     name: profile.full_name,
     image: profile.avatar_url,
-    id: id, 
+    id: id,
   };
 }
 
@@ -76,7 +76,7 @@ function getAllNotes(supabase: any) {
     ),
     user_saves ( user_id )
   `,
-  )
+  );
 }
 
 function applySorting(queryBuilder: any, sort?: SortOption) {
@@ -105,7 +105,9 @@ export async function getDashboardNotes(
   if (!user) return null;
 
   // only public notes
-  let supabaseQuery = getAllNotes(supabase).neq("user_id", user.id).eq("public", true);
+  let supabaseQuery = getAllNotes(supabase)
+    .neq("user_id", user.id)
+    .eq("public", true);
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -220,7 +222,9 @@ export async function getNotesByUserId(
   const supabase = await createSupabaseServerClient();
 
   // only public notes
-  let supabaseQuery = getAllNotes(supabase).eq("user_id", id).eq("public", true);
+  let supabaseQuery = getAllNotes(supabase)
+    .eq("user_id", id)
+    .eq("public", true);
 
   if (folderId) {
     supabaseQuery = supabaseQuery.eq("folder_id", folderId);
@@ -239,32 +243,48 @@ export async function getNotesByUserId(
   return data as NoteWithDetails[];
 }
 
-export async function getMyFolders(): Promise<Folder[] | null> {
+export async function getMyFolders(query?: string): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data, error } = await supabase
+  let supabaseQuery = supabase
     .from("folders")
     .select("*")
     .eq("user_id", user.id)
     .order("name", { ascending: true });
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(`name.ilike.%${query}%`);
+  }
+
+  const { data, error } = await supabaseQuery;
+
   if (error) throw new Error(error.message);
   return data as Folder[];
 }
 
-export async function getFoldersByUserId(id: string): Promise<Folder[] | null> {
+export async function getFoldersByUserId(
+  id: string,
+  query?: string,
+): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
 
   // only public folders
-  const { data, error } = await supabase
+  let supabaseQuery = supabase
     .from("folders")
     .select("*")
     .eq("user_id", id)
     .eq("public", true)
     .order("name", { ascending: true });
+
+  if (query) {
+    supabaseQuery = supabaseQuery.or(`name.ilike.%${query}%`);
+  }
+
+  const { data, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
   return data as Folder[];
 }

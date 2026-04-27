@@ -9,12 +9,14 @@ type FolderListProps = {
   folders: Folder[];
   newFolderBtn?: boolean;
   page?: PageRoute;
+  query?: string;
 };
 
 export default function FolderList({
   folders,
   newFolderBtn = true,
   page,
+  query,
 }: FolderListProps) {
   const [openOptionsId, setOpenOptionsId] = useState<string | null>(null);
 
@@ -30,7 +32,11 @@ export default function FolderList({
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
         {newFolderBtn && <NewFolderBtn />}
         {!folders || folders.length === 0 ? (
-          <p className="text-brand-light/70 text-sm">No folders created yet.</p>
+          <p className="text-brand-light/70 text-sm">
+            {query
+              ? `No folders found matching "${query}".`
+              : "No folders created yet."}
+          </p>
         ) : (
           visibleFolders.map((folder) => (
             <FolderCard

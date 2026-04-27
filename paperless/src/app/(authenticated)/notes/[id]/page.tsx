@@ -71,12 +71,12 @@ export default async function Note({ params }: NoteProps) {
             note={note}
             showOptions={isMine}
             className="flex flex-col sm:flex-row sm:gap-2"
-            optionsMenuClass="right-0 top-8" 
+            optionsMenuClass="right-0 top-8"
           />
         </FolderProvider>
       </header>
 
-      <div className="prose prose-brand max-w-none leading-relaxed whitespace-pre-wrap">
+      <div className="prose prose-brand prose-p:my-2 prose-ul:my-2 prose-li:my-0 prose-li:leading-snug max-w-none leading-normal">
         <ReactMarkdown
           disallowedElements={["h1"]}
           unwrapDisallowed={true}

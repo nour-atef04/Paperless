@@ -31,7 +31,7 @@ export default function SearchBarPanel({ className = "" }: SearchBarPanelProps) 
         <FormInput
           aria-label="Search notes"
           className="w-full rounded-4xl p-3 px-5"
-          placeholder="Search notes..."
+          placeholder="Search notes, folders..."
           defaultValue={searchParams.get("query")?.toString()}
           onChange={(e) => handleSearch(e.target.value)}
         />

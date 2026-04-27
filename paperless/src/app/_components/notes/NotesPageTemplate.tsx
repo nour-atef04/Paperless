@@ -39,7 +39,7 @@ export default async function NotesPageTemplate({
 
   let folders: Folder[] = [];
   if (page === "my-notes") {
-    const fetchedFolders = await getMyFolders();
+    const fetchedFolders = await getMyFolders(query);
     folders = fetchedFolders || [];
   }
 
@@ -61,7 +61,22 @@ export default async function NotesPageTemplate({
               {/* <NewFolderBtn />  */}
             </div>
 
-            <FolderList page={page} folders={folders} />
+            <Suspense
+              key={`${query}-${sort}-${folderId}`}
+              fallback={
+                <div
+                  className="flex flex-col items-center py-10"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <p className="text-brand-light animate-pulse">
+                    Loading {currentTitle.toLowerCase()}...
+                  </p>
+                </div>
+              }
+            >
+              <FolderList query={query} page={page} folders={folders} />
+            </Suspense>
           </section>
         )}
 
