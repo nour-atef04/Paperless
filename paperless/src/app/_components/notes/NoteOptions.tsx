@@ -15,12 +15,14 @@ type NoteOptionsProps = {
   setOpenOptionsId: (id: string | null) => void;
   isOpen: boolean;
   note: NoteWithDetails;
+  optionsMenuClass?: string;
 };
 
 export default function NoteOptions({
   setOpenOptionsId,
   isOpen,
   note,
+  optionsMenuClass = "right-0 top-8",
 }: NoteOptionsProps) {
   const [openModal, setOpenModal] = useState<string | null>(null); // for move/copy modal
   const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false); // for visibility
@@ -105,7 +107,7 @@ export default function NoteOptions({
     <>
       {isOpen && (
         <OptionsList
-          className="right-0 bottom-8"
+          className={optionsMenuClass}
           options={noteOptions}
           closeMenu={() => setOpenOptionsId(null)}
         />

@@ -16,6 +16,7 @@ import NoteOptions from "./NoteOptions";
 import { IoMdLock } from "react-icons/io";
 import { RiEarthFill } from "react-icons/ri";
 import VisibilityIcon from "../ui/VisibilityIcon";
+import NoteActionBar from "./NoteActionBar";
 
 type NoteCardProps = {
   note: NoteWithDetails;
@@ -94,7 +95,7 @@ export default function NoteCard({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center">
+        {/* <div className="flex flex-wrap items-center">
           <SaveNoteBtn note={note} />
           {showOptions && (
             <>
@@ -119,7 +120,14 @@ export default function NoteCard({
               isOpen={isOpen}
             />
           </div>
-        </div>
+        </div> */}
+        <NoteActionBar
+          note={note}
+          showOptions={showOptions}
+          isOpen={isOpen}
+          setOpenOptionsId={setOpenOptionsId}
+          optionsMenuClass="right-0 bottom-8"
+        />
       </div>
     </article>
   );

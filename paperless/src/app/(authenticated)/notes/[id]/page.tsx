@@ -4,16 +4,23 @@ import remarkGfm from "remark-gfm";
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
 import SaveBtn from "@/app/_components/buttons/SaveNoteBtn";
-import { getNoteById, getUserId } from "@/app/_lib/data-service";
+import {
+  getFoldersByUserId,
+  getNoteById,
+  getUserId,
+} from "@/app/_lib/data-service";
 import { notFound } from "next/navigation";
 import EditNoteBtn from "@/app/_components/buttons/EditNoteBtn";
 import DeleteNoteBtn from "@/app/_components/buttons/DeleteNoteBtn";
+import Link from "next/link";
+import { FolderProvider } from "@/app/_context/FolderContext";
+import NoteActionBar from "@/app/_components/notes/NoteActionBar";
 
 // No SSG since this page relies on getUserId() which checks cookies
 
 type NoteProps = {
-  params: Promise<{id: string}>;
-}
+  params: Promise<{ id: string }>;
+};
 
 export default async function Note({ params }: NoteProps) {
   const { id } = await params;
@@ -26,6 +33,9 @@ export default async function Note({ params }: NoteProps) {
   const userId = await getUserId();
   const isMine = note.user_id === userId;
 
+  // fetch the user's folders so we use the Move/Copy dropdown
+  const folders = userId ? await getFoldersByUserId(userId) : [];
+
   const { title, content, created_at } = note;
   return (
     <Panel
@@ -35,11 +45,17 @@ export default async function Note({ params }: NoteProps) {
     >
       <header className="flex items-start justify-between">
         <div>
-          <PanelTitle level={1}>
-            {title}
-          </PanelTitle>
+          <PanelTitle level={1}>{title}</PanelTitle>
           <div className="text-brand-light mt-3 flex flex-col gap-x-2 sm:flex-row">
-            <span>By: {note.profiles?.full_name}</span>
+            <span>
+              By:{" "}
+              <Link
+                className="hover:underline"
+                href={`/profile/${note.user_id}`}
+              >
+                {note.profiles?.full_name}
+              </Link>
+            </span>
             <span className="hidden sm:inline" aria-hidden="true">
               •
             </span>
@@ -48,15 +64,16 @@ export default async function Note({ params }: NoteProps) {
             </time>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:gap-2">
-          <SaveBtn note={note} />
-          {isMine && (
-            <>
-              <EditNoteBtn note={note} />
-              <DeleteNoteBtn note={note} />
-            </>
-          )}
-        </div>
+
+        {/* wrap in the provider because we need the folder names */}
+        <FolderProvider folders={folders}>
+          <NoteActionBar
+            note={note}
+            showOptions={isMine}
+            className="flex flex-col sm:flex-row sm:gap-2"
+            optionsMenuClass="right-0 top-8" 
+          />
+        </FolderProvider>
       </header>
 
       <div className="prose prose-brand max-w-none leading-relaxed whitespace-pre-wrap">
