@@ -33,7 +33,7 @@ export default async function NotesList({
   } else if (page === "my-notes") {
     notes = await getMyNotes(query, sort, folderId);
   } else if (page === "saved") {
-    notes = await getSavedNotes(query, sort);
+    notes = await getSavedNotes(query, sort, folderId);
   }
 
   if (!notes || notes.length === 0) {

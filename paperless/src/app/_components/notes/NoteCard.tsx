@@ -36,7 +36,8 @@ export default function NoteCard({
   const isMine = note.user_id === userId;
   const isOpen = openOptionsId === note.id; // for the options
 
-  const showOptions = isMine && page === "my-notes";
+  const showEditDelete = isMine && page === "my-notes";
+  const showDropdown = (isMine && page === "my-notes") || page === "saved";
 
   const router = useRouter();
   const [isNavigating, startNavigation] = useTransition();
@@ -95,35 +96,11 @@ export default function NoteCard({
           </div>
         </div>
 
-        {/* <div className="flex flex-wrap items-center">
-          <SaveNoteBtn note={note} />
-          {showOptions && (
-            <>
-              <EditNoteBtn note={note} />
-              <DeleteNoteBtn note={note} />
-            </>
-          )}
-          <div className="relative">
-            {showOptions && (
-              <ActionsBtn
-                id={note.id}
-                name={note.title}
-                isOpen={isOpen}
-                setOpenOptionsId={setOpenOptionsId}
-                variant="note"
-              />
-            )}
-
-            <NoteOptions
-              note={note}
-              setOpenOptionsId={setOpenOptionsId}
-              isOpen={isOpen}
-            />
-          </div>
-        </div> */}
         <NoteActionBar
           note={note}
-          showOptions={showOptions}
+          page={page}
+          showEditDelete={showEditDelete}
+          showDropdown={showDropdown}
           isOpen={isOpen}
           setOpenOptionsId={setOpenOptionsId}
           optionsMenuClass="right-0 bottom-8"

@@ -1,20 +1,19 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import NoteActionBar from "@/app/_components/notes/NoteActionBar";
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
-import SaveBtn from "@/app/_components/buttons/SaveNoteBtn";
+import { FolderProvider } from "@/app/_context/FolderContext";
 import {
   getFoldersByUserId,
+  getMyFolders,
   getNoteById,
   getUserId,
 } from "@/app/_lib/data-service";
-import { notFound } from "next/navigation";
-import EditNoteBtn from "@/app/_components/buttons/EditNoteBtn";
-import DeleteNoteBtn from "@/app/_components/buttons/DeleteNoteBtn";
 import Link from "next/link";
-import { FolderProvider } from "@/app/_context/FolderContext";
-import NoteActionBar from "@/app/_components/notes/NoteActionBar";
+import { notFound } from "next/navigation";
+import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
 
 // No SSG since this page relies on getUserId() which checks cookies
 
@@ -34,7 +33,7 @@ export default async function Note({ params }: NoteProps) {
   const isMine = note.user_id === userId;
 
   // fetch the user's folders so we use the Move/Copy dropdown
-  const folders = userId ? await getFoldersByUserId(userId) : [];
+  const folders = userId ? await getMyFolders(null, "my-notes") : [];
 
   const { title, content, created_at } = note;
   return (
@@ -46,7 +45,7 @@ export default async function Note({ params }: NoteProps) {
       <header className="flex items-start justify-between">
         <div>
           <PanelTitle level={1}>{title}</PanelTitle>
-          <div className="text-brand-light mt-3 flex flex-col gap-x-2 sm:flex-row">
+          <div className="text-brand-light mt-3 flex flex-col gap-x-2 sm:flex-row sm:items-center">
             <span>
               By:{" "}
               <Link
@@ -62,6 +61,10 @@ export default async function Note({ params }: NoteProps) {
             <time dateTime={created_at}>
               {new Date(created_at).toLocaleDateString()}
             </time>
+            <span className="hidden sm:inline" aria-hidden="true">
+              •
+            </span>
+            <VisibilityIcon variant="note" isPublic={note.public}/>
           </div>
         </div>
 
@@ -69,7 +72,8 @@ export default async function Note({ params }: NoteProps) {
         <FolderProvider folders={folders}>
           <NoteActionBar
             note={note}
-            showOptions={isMine}
+            showDropdown={isMine}
+            showEditDelete={isMine}
             className="flex flex-col sm:flex-row sm:gap-2"
             optionsMenuClass="right-0 top-8"
           />

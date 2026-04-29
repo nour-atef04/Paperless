@@ -7,6 +7,8 @@ import Panel from "../ui/Panel";
 import PanelTitle from "../ui/PanelTitle";
 import SearchBarPanel from "../ui/SearchBarPanel";
 import { Folder, PageRoute, SortOption } from "@/app/_lib/types";
+import Link from "next/link";
+import LoadingSkeleton from "../ui/LoadingSkeleton";
 
 type NotesPageTemplateProps = {
   query?: string;
@@ -38,8 +40,8 @@ export default async function NotesPageTemplate({
   }
 
   let folders: Folder[] = [];
-  if (page === "my-notes") {
-    const fetchedFolders = await getMyFolders(query);
+  if (page === "my-notes" || page === "saved") {
+    const fetchedFolders = await getMyFolders(query, page);
     folders = fetchedFolders || [];
   }
 
@@ -47,14 +49,16 @@ export default async function NotesPageTemplate({
     <div className="flex flex-col gap-6">
       <SearchBarPanel className="mx-auto w-full max-w-xl" />
       <Panel ariaLabelledBy={titleId} className="flex flex-col gap-6 p-6">
+        {/* --- PAGE TITLE --- */}
         <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row">
           <PanelTitle level={1}>{currentTitle}</PanelTitle>
 
           {/* if not "my notes" page -> put buttons next to panel title */}
-          {page !== "my-notes" && <SortButtons />}
+          {page !== "my-notes" && page !== "saved" && <SortButtons />}
         </header>
-        {/* folders section in "my notes" page */}
-        {page === "my-notes" && (
+
+        {/* --- FOLDER SECTION (IN MY NOTES + SAVED) --- */}
+        {(page === "my-notes" || page === "saved") && (
           <section className="flex flex-col gap-9">
             <div className="flex items-center justify-between">
               <h2 className="text-brand-dark text-xl font-semibold">Folders</h2>
@@ -63,29 +67,30 @@ export default async function NotesPageTemplate({
 
             <Suspense
               key={`${query}-${sort}-${folderId}`}
-              fallback={
-                <div
-                  className="flex flex-col items-center py-10"
-                  role="status"
-                  aria-live="polite"
-                >
-                  <p className="text-brand-light animate-pulse">
-                    Loading {currentTitle.toLowerCase()}...
-                  </p>
-                </div>
-              }
+              fallback={<LoadingSkeleton text={currentTitle} />}
             >
               <FolderList query={query} page={page} folders={folders} />
             </Suspense>
           </section>
         )}
 
+        {/* --- NOTES SECTION (IN MY NOTES + SAVED) --- */}
         <section className="mt-10 flex flex-col gap-9">
-          {/* notes section in "my notes" page */}
-          {page === "my-notes" && (
+          {(page === "my-notes" || page === "saved") && (
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
               <h2 className="text-brand-dark text-xl font-semibold">
-                {folderName ? `Notes/${folderName}` : "All Notes"}
+                {folderId ? (
+                  <>
+                    <Link className="hover:underline" href={`/${page}`}>
+                      {page === "saved" ? "All Saved Notes" : "All Notes"}
+                    </Link>{" "}
+                    <span className="text-brand">/ {folderName}</span>
+                  </>
+                ) : page === "saved" ? (
+                  "All Saved Notes"
+                ) : (
+                  "All Notes"
+                )}
               </h2>
               <SortButtons />
             </div>
@@ -93,17 +98,7 @@ export default async function NotesPageTemplate({
 
           <Suspense
             key={`${query}-${sort}-${folderId}`}
-            fallback={
-              <div
-                className="flex flex-col items-center py-10"
-                role="status"
-                aria-live="polite"
-              >
-                <p className="text-brand-light animate-pulse">
-                  Loading {currentTitle.toLowerCase()}...
-                </p>
-              </div>
-            }
+            fallback={<LoadingSkeleton text={currentTitle} />}
           >
             <NotesList
               query={query}

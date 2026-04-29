@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { NoteWithDetails } from "@/app/_lib/types";
+import { NoteWithDetails, PageRoute } from "@/app/_lib/types";
 import SaveNoteBtn from "../buttons/SaveNoteBtn";
 import EditNoteBtn from "../buttons/EditNoteBtn";
 import DeleteNoteBtn from "../buttons/DeleteNoteBtn";
@@ -10,7 +10,9 @@ import NoteOptions from "./NoteOptions";
 
 type NoteActionBarProps = {
   note: NoteWithDetails;
-  showOptions: boolean;
+  showEditDelete: boolean;
+  showDropdown: boolean;
+  page?: PageRoute | string;
   isOpen?: boolean;
   setOpenOptionsId?: (id: string | null) => void;
   className?: string; // to allow different flex layouts per page
@@ -19,8 +21,10 @@ type NoteActionBarProps = {
 
 export default function NoteActionBar({
   note,
-  showOptions,
+  showEditDelete,
+  showDropdown,
   isOpen,
+  page,
   setOpenOptionsId,
   className = "flex flex-wrap items-center",
   optionsMenuClass,
@@ -43,26 +47,29 @@ export default function NoteActionBar({
     <div className={className}>
       <SaveNoteBtn note={note} />
 
-      {showOptions && (
+      {showEditDelete && (
         <>
           <EditNoteBtn note={note} />
           <DeleteNoteBtn note={note} />
-          <div className="relative">
-            <ActionsBtn
-              id={note.id}
-              name={note.title}
-              isOpen={isDropdownOpen}
-              setOpenOptionsId={handleSetOpen}
-              variant="note"
-            />
-            <NoteOptions
-              note={note}
-              setOpenOptionsId={handleSetOpen}
-              isOpen={isDropdownOpen}
-              optionsMenuClass={optionsMenuClass}
-            />
-          </div>
         </>
+      )}
+      {showDropdown && (
+        <div className="relative">
+          <ActionsBtn
+            id={note.id}
+            name={note.title}
+            isOpen={isDropdownOpen}
+            setOpenOptionsId={handleSetOpen}
+            variant="note"
+          />
+          <NoteOptions
+            note={note}
+            setOpenOptionsId={handleSetOpen}
+            isOpen={isDropdownOpen}
+            optionsMenuClass={optionsMenuClass}
+            page={page} 
+          />
+        </div>
       )}
     </div>
   );

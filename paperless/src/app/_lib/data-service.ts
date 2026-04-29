@@ -156,6 +156,7 @@ export async function getMyNotes(
 export async function getSavedNotes(
   query?: string,
   sort?: SortOption,
+  folderId?: string,
 ): Promise<NoteWithDetails[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
@@ -174,11 +175,16 @@ export async function getSavedNotes(
         avatar_url
       ),
       user_saves!inner (
-        user_id
+        user_id,
+        folder_id
       )
     `,
     )
     .eq("user_saves.user_id", user.id);
+
+  if (folderId) {
+    supabaseQuery = supabaseQuery.eq("user_saves.folder_id", folderId);
+  }
 
   if (query) {
     supabaseQuery = supabaseQuery.or(
@@ -205,7 +211,13 @@ export async function getNoteById(id: string): Promise<NoteWithDetails | null> {
       full_name,
       avatar_url
     ),
-    user_saves ( user_id )`,
+    user_saves ( user_id ),
+    folders (
+        id,
+        name,
+        public
+      )
+    `,
     )
     .eq("id", id)
     .maybeSingle();
@@ -243,7 +255,10 @@ export async function getNotesByUserId(
   return data as NoteWithDetails[];
 }
 
-export async function getMyFolders(query?: string): Promise<Folder[] | null> {
+export async function getMyFolders(
+  query?: string,
+  page?: string,
+): Promise<Folder[] | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -255,6 +270,12 @@ export async function getMyFolders(query?: string): Promise<Folder[] | null> {
     .select("*")
     .eq("user_id", user.id)
     .order("name", { ascending: true });
+
+  if (page === "my-notes") {
+    supabaseQuery = supabaseQuery.eq("folder_type", "personal");
+  } else if (page === "saved") {
+    supabaseQuery = supabaseQuery.eq("folder_type", "saved");
+  }
 
   if (query) {
     supabaseQuery = supabaseQuery.or(`name.ilike.%${query}%`);

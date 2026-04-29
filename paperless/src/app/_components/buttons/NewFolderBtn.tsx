@@ -7,8 +7,15 @@ import toast from "react-hot-toast";
 import { createFolder } from "@/app/_lib/actions";
 import FormInput from "../ui/FormInput";
 import ModalActionBtns from "./ModalActionsBtns";
+import { FolderType } from "@/app/_lib/types";
 
-export default function NewFolderBtn() {
+type NewFolderBtnProps = {
+  folderType?: FolderType;
+};
+
+export default function NewFolderBtn({
+  folderType = "personal",
+}: NewFolderBtnProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -19,7 +26,7 @@ export default function NewFolderBtn() {
 
     startTransition(async () => {
       console.log(folderName);
-      const result = await createFolder(folderName);
+      const result = await createFolder(folderName, folderType);
       if (result?.error) {
         toast.error(result.error);
       } else {

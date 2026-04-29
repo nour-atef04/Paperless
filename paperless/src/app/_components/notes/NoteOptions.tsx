@@ -1,8 +1,8 @@
 "use client";
 
 import { useFolders } from "@/app/_context/FolderContext";
-import { copyNote, moveNote, toggleNoteVisibility } from "@/app/_lib/actions";
-import { NoteWithDetails } from "@/app/_lib/types";
+import { copyNote, moveNote, moveSavedNote, toggleNoteVisibility } from "@/app/_lib/actions";
+import { NoteWithDetails, PageRoute } from "@/app/_lib/types";
 import { useActionState, useState } from "react";
 import toast from "react-hot-toast";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
@@ -16,6 +16,7 @@ type NoteOptionsProps = {
   isOpen: boolean;
   note: NoteWithDetails;
   optionsMenuClass?: string;
+  page?: PageRoute | string;
 };
 
 export default function NoteOptions({
@@ -23,12 +24,15 @@ export default function NoteOptions({
   isOpen,
   note,
   optionsMenuClass = "right-0 top-8",
+  page,
 }: NoteOptionsProps) {
   const [openModal, setOpenModal] = useState<string | null>(null); // for move/copy modal
   const [isVisibilityModalOpen, setIsVisibilityModalOpen] = useState(false); // for visibility
   const [selectedFolderId, setSelectedFolderId] = useState(""); // track what the user selects in the dropdown
 
-  const folders = useFolders().filter((folder) => folder.id !== note.folder_id);
+  const folders = useFolders(page === "saved" ? "saved" : "personal").filter(
+    (folder) => folder.id !== note.folder_id,
+  );
 
   // --- MOVE / COPY ---
   // action handler (wrapper) to route to correct server action
@@ -40,9 +44,17 @@ export default function NoteOptions({
 
     const isMoving = openModal === "Move Note";
 
-    const res = isMoving
-      ? await moveNote(note.id, selectedFolderId)
-      : await copyNote(note.id, selectedFolderId);
+    let res;
+
+    if (page === "saved") {
+      // Updating the saved_notes table
+      res = await moveSavedNote(note.id, selectedFolderId);
+    } else {
+      // Updating the actual notes table
+      res = isMoving
+        ? await moveNote(note.id, selectedFolderId)
+        : await copyNote(note.id, selectedFolderId);
+    }
 
     if (res?.error) {
       toast.error(res.error);
@@ -89,19 +101,21 @@ export default function NoteOptions({
         setOpenModal("Move Note");
       },
     },
-    {
+  ];
+
+  if (page !== "saved") {
+    noteOptions.push({
       label: "Copy",
-      onClick: () => {
-        setOpenModal("Copy Note");
-      },
-    },
-    {
+      onClick: () => setOpenModal("Copy Note"),
+    });
+
+    noteOptions.push({
       label: note.public ? "Make Private" : "Make Public",
       onClick: () => {
         setIsVisibilityModalOpen(true);
       },
-    },
-  ];
+    });
+  }
 
   return (
     <>
@@ -165,9 +179,9 @@ export default function NoteOptions({
       )}
 
       {/* --- VISIBILITY MODAL --- */}
-      {isVisibilityModalOpen && (
+      {page !== "saved" && isVisibilityModalOpen && (
         <VisibilityModal
-          isPublic={note.public}
+          isPublic={!!note.public}
           isPending={isVisibilityPending}
           action={visibilityAction}
           variant="note"

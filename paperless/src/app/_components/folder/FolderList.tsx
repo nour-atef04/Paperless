@@ -19,18 +19,19 @@ export default function FolderList({
   query,
 }: FolderListProps) {
   const [openOptionsId, setOpenOptionsId] = useState<string | null>(null);
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const visibleFolders = isExpanded ? folders : folders.slice(0, 5);
   const hasMore = folders.length > 5;
+
+  const folderType = page === "saved" ? "saved" : "personal";
 
   return (
     <>
       {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4"> */}
       <div className="flex flex-wrap items-center gap-4">
         {/* <button className="btn-primary px-5 rounded-md">+ New Folder</button> */}
-        {newFolderBtn && <NewFolderBtn />}
+        {newFolderBtn && <NewFolderBtn folderType={folderType} />}
         {!folders || folders.length === 0 ? (
           <p className="text-brand-light/70 text-sm">
             {query

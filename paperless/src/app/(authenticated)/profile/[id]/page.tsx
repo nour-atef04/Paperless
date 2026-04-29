@@ -1,5 +1,7 @@
+import SortButtons from "@/app/_components/buttons/SortButtons";
 import FolderList from "@/app/_components/folder/FolderList";
 import NotesGrid from "@/app/_components/notes/NotesGrid";
+import LoadingSkeleton from "@/app/_components/ui/LoadingSkeleton";
 import Panel from "@/app/_components/ui/Panel";
 import SearchBarPanel from "@/app/_components/ui/SearchBarPanel";
 import { FolderProvider } from "@/app/_context/FolderContext";
@@ -105,17 +107,25 @@ export default async function ProfilePage({
             id="notes-heading"
             className="text-brand-dark text-xl font-semibold"
           >
-            Public Notes <span className="text-brand">{folderNameTitle}</span>
+            {folderId ? (
+              <Link className="hover:underline" href={`/profile/${id}`}>
+                Public Notes
+              </Link>
+            ) : (
+              "Public Notes"
+            )}{" "}
+            <span className="text-brand">{folderNameTitle}</span>
           </h2>
 
-          {folderId && (
+          {/* {folderId && (
             <Link
               href={`/profile/${id}`}
               className="text-brand-light hover:text-brand text-sm underline transition-colors"
             >
               View all notes
             </Link>
-          )}
+          )} */}
+          <SortButtons />
         </div>
 
         <FolderProvider folders={viewerFolders}>
@@ -202,16 +212,4 @@ async function ProfileNotesFetcher({
   }
 
   return <NotesGrid notes={notes} userId={viewerId || ""} page="profile" />;
-}
-
-function LoadingSkeleton({ text }: { text: string }) {
-  return (
-    <div
-      className="flex flex-col items-center py-10"
-      role="status"
-      aria-live="polite"
-    >
-      <p className="text-brand-light animate-pulse">{text}</p>
-    </div>
-  );
 }

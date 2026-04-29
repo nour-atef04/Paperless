@@ -45,15 +45,15 @@ export default function FolderCard({
   const [isDeleting, startDeleting] = useTransition();
   const [isRenaming, startRenaming] = useTransition();
 
+  const isSavedFolder = folder.folder_type === "saved" || page === "saved";
+
   // --- DELETE / RENAME ---
   const confirmDelete = () => {
     startDeleting(async () => {
       const result = await deleteFolder(folder.id);
 
       if (result?.error) {
-        setIsDeleteModalOpen(false);
         toast.error(result.error);
-        return;
       }
 
       if (result?.success) {
@@ -110,11 +110,14 @@ export default function FolderCard({
       label: "Delete",
       onClick: () => setIsDeleteModalOpen(true),
     },
-    {
-      label: `${folder.public ? "Make Private" : "Make Public"}`,
-      onClick: () => setIsVisibilityModalOpen(true),
-    },
   ];
+
+  if (!isSavedFolder) {
+    folderOptions.push({
+      label: folder.public ? "Make Private" : "Make Public",
+      onClick: () => setIsVisibilityModalOpen(true),
+    });
+  }
 
   return (
     <>
@@ -127,16 +130,19 @@ export default function FolderCard({
           href={
             page === "profile"
               ? `?folderId=${folder.id}`
-              : `/my-notes?folder=${folder.id}`
+              : `/${page === "saved" ? "saved" : "my-notes"}?folder=${folder.id}`
           }
           className="flex items-center gap-2 p-3 outline-none"
           aria-label={`Open ${folder.name} folder`}
         >
-          <VisibilityIcon
-            className="text-surface absolute left-8 z-10 text-xs"
-            variant="folder"
-            isPublic={folder.public}
-          />
+          {/* hide visibility icon for saved folders */}
+          {!isSavedFolder && (
+            <VisibilityIcon
+              className="text-surface absolute left-8 z-10 text-xs"
+              variant="folder"
+              isPublic={!!folder.public}
+            />
+          )}
           <Image
             src="/folder-icon.png"
             alt=""
@@ -151,7 +157,7 @@ export default function FolderCard({
           </span>
         </Link>
 
-        {page === "my-notes" && (
+        {(page === "my-notes" || page === "saved") && (
           <ActionsBtn
             id={folder.id}
             name={folder.name}

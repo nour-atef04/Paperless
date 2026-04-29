@@ -8,11 +8,18 @@ type SavedNotesPageProps = {
 export default async function SavedNotesPage({
   searchParams,
 }: SavedNotesPageProps) {
-  
   const params = await searchParams;
 
   const query = params.query || "";
   const sort = params.sort || "most-relevant";
+  const folderId = params?.folder || undefined;
 
-  return <NotesPageTemplate query={query} page="saved" sort={sort} />;
+  return (
+    <NotesPageTemplate
+      query={query}
+      page="saved"
+      sort={sort}
+      folderId={folderId}
+    />
+  );
 }

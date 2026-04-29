@@ -28,11 +28,14 @@ export type Note = {
   public: boolean;
 };
 
+export type FolderType = "personal" | "saved";
+
 export type Folder = {
   id: string;
   user_id: string;
   name: string;
   public: boolean;
+  folder_type: FolderType;
   created_at?: string;
 };
 
