@@ -1,8 +1,11 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase";
-import { revalidatePath } from "next/cache";
+
+import { createOpenAI } from "@ai-sdk/openai";
+import { generateText } from "ai";
 
 import { ActionResponse, FolderType } from "./types";
 
@@ -453,6 +456,49 @@ export async function toggleFolderVisibility(
   revalidatePath("/profile/[id]", "page");
 
   return { success: true };
+}
+
+// initialize the AI SDK
+const openrouter = createOpenAI({
+  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENAI_API_KEY!, // ! for non-null assertion
+});
+
+export async function generateNoteSummary(noteId: string, content: string) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return { error: "Not authorized" };
+
+    // don't summarize tiny notes
+    if (content.length < 100) {
+      return { error: "Note is too short to summarize." };
+    }
+
+    // call the AI Model
+    const { text } = await generateText({
+      model: openrouter("openai/gpt-oss-120b:free"),
+      prompt: `Summarize the following note into concise, actionable bullet points. Keep it brief.\n\nNote content:\n${content}`,
+    });
+
+    const { error: dbError } = await supabase
+      .from("notes")
+      .update({ summary: text })
+      .eq("id", noteId)
+      .eq("user_id", user.id);
+
+    if (dbError) throw new Error(dbError.message);
+
+    revalidatePath(`/notes/${noteId}`);
+
+    return { success: true, summary: text };
+  } catch (error) {
+    console.error("AI Summarization failed:", error);
+    return { error: "Failed to generate summary. Please try again." };
+  }
 }
 
 // TO DO: GOOGLE AUTH

@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
+import NoteSummary from "@/app/_components/notes/NoteSummary";
 
 // No SSG since this page relies on getUserId() which checks cookies
 
@@ -64,7 +65,7 @@ export default async function Note({ params }: NoteProps) {
             <span className="hidden sm:inline" aria-hidden="true">
               •
             </span>
-            <VisibilityIcon variant="note" isPublic={note.public}/>
+            <VisibilityIcon variant="note" isPublic={note.public} />
           </div>
         </div>
 
@@ -79,6 +80,13 @@ export default async function Note({ params }: NoteProps) {
           />
         </FolderProvider>
       </header>
+
+      <NoteSummary
+        noteId={note.id}
+        content={note.content}
+        initialSummary={note.summary}
+        isOwner={isMine}
+      />
 
       <div className="prose prose-brand prose-p:my-2 prose-ul:my-2 prose-li:my-0 prose-li:leading-snug max-w-none leading-normal">
         <ReactMarkdown

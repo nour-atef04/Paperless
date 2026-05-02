@@ -25,6 +25,7 @@ export type Note = {
   created_at?: string;
   updated_at?: string;
   folder_id?: string;
+  summary?: string | null;
   public: boolean;
 };
 
