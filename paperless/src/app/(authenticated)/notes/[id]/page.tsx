@@ -16,8 +16,6 @@ import { notFound } from "next/navigation";
 import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
 import NoteSummary from "@/app/_components/notes/NoteSummary";
 
-// No SSG since this page relies on getUserId() which checks cookies
-
 type NoteProps = {
   params: Promise<{ id: string }>;
 };
@@ -33,10 +31,10 @@ export default async function Note({ params }: NoteProps) {
   const userId = await getUserId();
   const isMine = note.user_id === userId;
 
-  // fetch the user's folders so we use the Move/Copy dropdown
   const folders = userId ? await getMyFolders(null, "my-notes") : [];
 
-  const { title, content, created_at } = note;
+  const { title, content, created_at, tags } = note; 
+
   return (
     <Panel
       as="article"
@@ -67,9 +65,21 @@ export default async function Note({ params }: NoteProps) {
             </span>
             <VisibilityIcon variant="note" isPublic={note.public} />
           </div>
+
+          {tags && tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="bg-brand/10 text-brand rounded-md px-2.5 py-1 text-xs font-medium"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* wrap in the provider because we need the folder names */}
         <FolderProvider folders={folders}>
           <NoteActionBar
             note={note}

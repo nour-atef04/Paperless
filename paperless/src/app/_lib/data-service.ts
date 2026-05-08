@@ -27,7 +27,7 @@ export async function getUserProfile(): Promise<UserProfile | null> {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("full_name, avatar_url")
+    .select("full_name, avatar_url, interests")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -38,6 +38,7 @@ export async function getUserProfile(): Promise<UserProfile | null> {
     image: profile.avatar_url,
     email: user.email,
     id: user.id,
+    interests: profile.interests,
   };
 }
 
@@ -107,6 +108,15 @@ export async function getDashboardNotes(
   } = await supabase.auth.getUser();
   if (!user) return null;
 
+  // fetch user's interests
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("interests")
+    .eq("id", user.id)
+    .single();
+
+  const userInterestsArray = profile?.interests || [];
+
   const from = (pageNumber - 1) * ITEMS_PER_PAGE;
   const to = from + ITEMS_PER_PAGE - 1;
 
@@ -114,6 +124,11 @@ export async function getDashboardNotes(
   let supabaseQuery = getAllNotes(supabase)
     .neq("user_id", user.id)
     .eq("public", true);
+
+  // if user has specified interests, overlap notes with them
+  if (userInterestsArray.length > 0 && !query) {
+    supabaseQuery = supabaseQuery.overlaps("tags", userInterestsArray);
+  }
 
   if (query) {
     supabaseQuery = supabaseQuery.or(

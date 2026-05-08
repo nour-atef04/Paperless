@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import { updateProfileAction } from "@/app/_lib/actions";
 import Link from "next/link";
 import { UserProfile } from "@/app/_lib/types";
+import { MAX_INTERESTS } from "@/app/_lib/constants";
+import TagInput from "../ui/TagInput";
 
 type ProfileSettingsModalProps = {
   isOpen: boolean;
@@ -46,7 +48,12 @@ export default function ProfileSettingsModal({
   // client action wrapper (in client so we can close the modal)
   const handleAction = async (prevState: any, formData: FormData) => {
     try {
-      await updateProfileAction(formData);
+      const result = await updateProfileAction(formData);
+
+      if (result?.error) {
+        toast.error(result.error);
+        return { error: result.error };
+      }
 
       // client side-effects
       toast.success("Profile updated successfully!");
@@ -67,7 +74,7 @@ export default function ProfileSettingsModal({
     <Modal isOpen={isOpen} onClose={onClose} title="Account Settings">
       <form action={formAction} className="flex flex-col gap-5">
         <div className="mb-4 flex items-center gap-4">
-          {/* 1. The Avatar Circle */}
+          {/* The Avatar Circle */}
           {previewUrl ? (
             <Image
               src={previewUrl}
@@ -146,6 +153,16 @@ export default function ProfileSettingsModal({
           defaultValue={email}
           disabled
           className="opacity-60"
+        />
+
+        {/*  Interests section */}
+        <TagInput
+          key={JSON.stringify(profile?.interests)}
+          label="Areas of Interest"
+          name="interests"
+          initialTags={profile?.interests}
+          maxTags={10}
+          placeholder="Type an interest (e.g. React) and press Enter"
         />
 
         <div className="border-brand-light/20 mt-4 flex items-center justify-between border-t pt-4">

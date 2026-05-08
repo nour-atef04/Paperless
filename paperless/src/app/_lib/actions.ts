@@ -8,6 +8,8 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
 import { ActionResponse, FolderType } from "./types";
+import { MAX_INTERESTS } from "./constants";
+import { MAX_TAGS } from "./constants";
 
 export async function loginAction(
   prevState: any,
@@ -152,6 +154,17 @@ export async function postNewNote(
   const title = formData.get("new-note-title")?.toString();
   const content = formData.get("new-note-content")?.toString();
 
+  const tags = formData
+    .getAll("tags")
+    .map((tag) => tag.toString().trim().toLowerCase())
+    .filter((tag) => tag.length > 0);
+
+  if (tags.length > MAX_TAGS) {
+    return {
+      error: `notes can only have a maximum of ${MAX_TAGS} tags.`,
+    };
+  }
+
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -160,7 +173,7 @@ export async function postNewNote(
 
   const { data, error } = await supabase
     .from("notes")
-    .insert({ user_id: user.id, title, content })
+    .insert({ user_id: user.id, title, content, tags })
     .select();
 
   if (error) {
@@ -202,6 +215,17 @@ export async function editNote(
   const title = formData.get("new-note-title")?.toString();
   const content = formData.get("new-note-content")?.toString();
 
+  const tags = formData
+    .getAll("tags")
+    .map((tag) => tag.toString().trim().toLowerCase())
+    .filter((tag) => tag.length > 0);
+
+  if (tags.length > MAX_TAGS) {
+    return {
+      error: `notes can only have a maximum of ${MAX_TAGS} tags.`,
+    };
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -211,7 +235,7 @@ export async function editNote(
 
   const { error } = await supabase
     .from("notes")
-    .update({ title, content })
+    .update({ title, content, tags })
     .match({ id: id, user_id: user.id })
     .select();
 
@@ -374,6 +398,17 @@ export async function updateProfileAction(formData: FormData) {
   const fullName = formData.get("fullName") as string;
   const avatarFile = formData.get("avatar") as File | null;
 
+  const interestsArray = formData
+    .getAll("interests")
+    .map((interest) => interest.toString().trim())
+    .filter((interest) => interest.length > 0);
+
+  if (interestsArray.length > MAX_INTERESTS) {
+    return {
+      error: `You can only have a maximum of ${MAX_INTERESTS} interests.`,
+    };
+  }
+
   let avatarUrl = undefined;
 
   // if a new avatar was selected
@@ -397,7 +432,7 @@ export async function updateProfileAction(formData: FormData) {
     avatarUrl = publicUrl;
   }
 
-  const updatePayload: any = { full_name: fullName };
+  const updatePayload: any = { full_name: fullName, interests: interestsArray };
   if (avatarUrl) {
     updatePayload.avatar_url = avatarUrl;
   }
@@ -408,6 +443,7 @@ export async function updateProfileAction(formData: FormData) {
     .eq("id", user.id);
 
   if (updateError) throw new Error("Failed to update profile");
+  return { success: true };
 }
 
 export async function toggleNoteVisibility(
@@ -422,18 +458,18 @@ export async function toggleNoteVisibility(
 
   // if making public -> generate summary for all to see
   if (makePublic) {
-      const { data: note, error: fetchError } = await supabase
-        .from("notes")
-        .select("content, summary")
-        .eq("id", noteId)
-        .single();
+    const { data: note, error: fetchError } = await supabase
+      .from("notes")
+      .select("content, summary")
+      .eq("id", noteId)
+      .single();
 
-      if (fetchError) throw new Error("Failed to fetch note details.");
+    if (fetchError) throw new Error("Failed to fetch note details.");
 
-      if (note && !note.summary) {
-        await generateNoteSummary(noteId, note.content);
-      }
+    if (note && !note.summary) {
+      await generateNoteSummary(noteId, note.content);
     }
+  }
 
   const { error } = await supabase
     .from("notes")

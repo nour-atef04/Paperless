@@ -15,6 +15,7 @@ export type Profile = {
   full_name: string;
   avatar_url?: string;
   created_at?: string;
+  interests?: string[];
 };
 
 export type Note = {
@@ -27,6 +28,7 @@ export type Note = {
   folder_id?: string;
   summary?: string | null;
   public: boolean;
+  tags?: string[];
 };
 
 export type FolderType = "personal" | "saved";
@@ -68,4 +70,5 @@ export type UserProfile = {
   image?: string | null;
   email?: string;
   id: string;
+  interests?: string[];
 };

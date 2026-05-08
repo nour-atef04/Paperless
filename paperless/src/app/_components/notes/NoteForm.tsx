@@ -6,6 +6,8 @@ import { useActionState, useEffect } from "react";
 import toast from "react-hot-toast";
 import MarkdownGuide from "../ui/MarkdownGuide";
 import PanelTitle from "../ui/PanelTitle";
+import TagInput from "../ui/TagInput";
+import { MAX_TAGS } from "@/app/_lib/constants";
 
 type NoteFormProps = {
   serverAction: (
@@ -50,6 +52,17 @@ export default function NoteForm({ serverAction, note }: NoteFormProps) {
           className="text-brand border-brand-light/20 placeholder:text-brand-light/40 focus-visible:border-brand-light w-full border-b bg-transparent p-6 text-4xl font-semibold transition-colors duration-200 focus-visible:outline-none"
         />
       </PanelTitle>
+
+      <div className="border-brand-light/10 border-b bg-transparent px-10 py-4">
+        <TagInput
+          label="Note Tags"
+          name="tags"
+          initialTags={note?.tags}
+          maxTags={MAX_TAGS}
+          placeholder="Add tags to categorize this note..."
+        />
+      </div>
+
       <div className="relative flex flex-1 flex-col">
         <label htmlFor="new-note-content" className="sr-only">
           {editMode ? "Edit" : "New"} Note Content
