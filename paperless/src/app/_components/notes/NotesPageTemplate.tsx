@@ -15,6 +15,7 @@ type NotesPageTemplateProps = {
   page: PageRoute;
   sort?: SortOption;
   folderId?: string;
+  currentPage?: number;
 };
 
 export default async function NotesPageTemplate({
@@ -22,6 +23,7 @@ export default async function NotesPageTemplate({
   page,
   sort,
   folderId,
+  currentPage = 1,
 }: NotesPageTemplateProps) {
   // record to that TS forces to define every page route
   const titles: Record<PageRoute, string> = {
@@ -66,7 +68,7 @@ export default async function NotesPageTemplate({
             </div>
 
             <Suspense
-              key={`${query}-${sort}-${folderId}`}
+              key={`${query}-${sort}-${folderId}-${currentPage}`}
               fallback={<LoadingSkeleton text={currentTitle} />}
             >
               <FolderList query={query} page={page} folders={folders} />
@@ -97,14 +99,15 @@ export default async function NotesPageTemplate({
           )}
 
           <Suspense
-            key={`${query}-${sort}-${folderId}`}
-            fallback={<LoadingSkeleton text={currentTitle} />}
+            key={`${query}-${sort}-${folderId}-${currentPage}`}
+            fallback={<LoadingSkeleton text={`Loading ${currentTitle}...`} />}
           >
             <NotesList
               query={query}
               page={page}
               sort={sort}
               folderId={folderId}
+              currentPage={currentPage}
             />
           </Suspense>
         </section>

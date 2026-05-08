@@ -8,12 +8,14 @@ type MyNotesPageProps = {
 export default async function MyNotesPage({ searchParams }: MyNotesPageProps) {
   const params = await searchParams;
 
+  const currentPage = Number((await searchParams)?.page) || 1;
   const query = params?.query || "";
   const sort = params?.sort || "most-relevant";
   const folderId = params?.folder || undefined;
 
   return (
     <NotesPageTemplate
+      currentPage={currentPage}
       query={query}
       page="my-notes"
       sort={sort}

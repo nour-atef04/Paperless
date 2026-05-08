@@ -1,3 +1,4 @@
+import { ITEMS_PER_PAGE } from "./constants";
 import { createSupabaseServerClient } from "./supabase";
 import {
   Folder,
@@ -76,6 +77,7 @@ function getAllNotes(supabase: any) {
     ),
     user_saves ( user_id )
   `,
+    { count: "exact" },
   );
 }
 
@@ -97,12 +99,16 @@ function applySorting(queryBuilder: any, sort?: SortOption) {
 export async function getDashboardNotes(
   query?: string,
   sort?: SortOption,
-): Promise<NoteWithDetails[] | null> {
+  pageNumber: number = 1,
+): Promise<{ notes: NoteWithDetails[]; count: number } | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
+
+  const from = (pageNumber - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
 
   // only public notes
   let supabaseQuery = getAllNotes(supabase)
@@ -116,22 +122,27 @@ export async function getDashboardNotes(
   }
 
   supabaseQuery = applySorting(supabaseQuery, sort);
+  supabaseQuery = supabaseQuery.range(from, to);
 
-  const { data, error } = await supabaseQuery;
+  const { data, count, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data as NoteWithDetails[];
+  return { notes: data as NoteWithDetails[], count: count || 0 };
 }
 
 export async function getMyNotes(
   query?: string,
   sort?: SortOption,
   folderId?: string,
-): Promise<NoteWithDetails[] | null> {
+  pageNumber: number = 1,
+): Promise<{ notes: NoteWithDetails[]; count: number } | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
+
+  const from = (pageNumber - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
 
   // all notes (public and private)
   let supabaseQuery = getAllNotes(supabase).eq("user_id", user.id);
@@ -147,22 +158,27 @@ export async function getMyNotes(
   }
 
   supabaseQuery = applySorting(supabaseQuery, sort);
+  supabaseQuery = supabaseQuery.range(from, to);
 
-  const { data, error } = await supabaseQuery;
+  const { data, count, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data as NoteWithDetails[];
+  return { notes: data as NoteWithDetails[], count: count || 0 };
 }
 
 export async function getSavedNotes(
   query?: string,
   sort?: SortOption,
   folderId?: string,
-): Promise<NoteWithDetails[] | null> {
+  pageNumber: number = 1,
+): Promise<{ notes: NoteWithDetails[]; count: number } | null> {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
+
+  const from = (pageNumber - 1) * ITEMS_PER_PAGE;
+  const to = from + ITEMS_PER_PAGE - 1;
 
   // all notes (public and private)
   let supabaseQuery = supabase
@@ -179,6 +195,7 @@ export async function getSavedNotes(
         folder_id
       )
     `,
+      { count: "exact" },
     )
     .eq("user_saves.user_id", user.id);
 
@@ -193,10 +210,11 @@ export async function getSavedNotes(
   }
 
   supabaseQuery = applySorting(supabaseQuery, sort);
+  supabaseQuery = supabaseQuery.range(from, to);
 
-  const { data, error } = await supabaseQuery;
+  const { data, count, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
-  return data as NoteWithDetails[];
+  return { notes: data as NoteWithDetails[], count: count || 0 };
 }
 
 // added RLS in supabase to only view private notes if yours, or any public note

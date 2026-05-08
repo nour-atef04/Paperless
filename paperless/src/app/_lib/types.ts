@@ -60,6 +60,7 @@ export type PageSearchParams = Promise<{
   query?: string;
   sort?: SortOption;
   folder?: string;
+  page?: string;
 }>;
 
 export type UserProfile = {
