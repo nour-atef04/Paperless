@@ -1,12 +1,13 @@
+import { VscLoading } from "react-icons/vsc";
+
 export default function Loader() {
   return (
     <div
       role="status"
       aria-live="polite"
-      className="flex items-center justify-center"
+      className="flex h-[80vh] w-full items-center justify-center"
     >
-      {/* TO DO: UI SPINNER */}
-      <p>Loading content...</p>
+      <VscLoading className="text-brand h-10 w-10 animate-spin" />
     </div>
   );
 }
