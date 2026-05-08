@@ -1,3 +1,4 @@
+import { FaWandMagicSparkles } from "react-icons/fa6";
 import ModalActionBtns from "../buttons/ModalActionsBtns";
 import Modal from "../ui/Modal";
 
@@ -29,17 +30,29 @@ export default function VisibilityModal({
       <form action={action} className="flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-sm">
           <p className="text-brand-light">
-            {isPublic
-              ? `This ${variant} will be hidden from your public profile. Only you will be able to view and edit it.`
-              : `This ${variant} will be visible on your public profile. Anyone with the link will be able to read it.`}
+            {isPublic ? (
+              `This ${variant} will be hidden from your public profile. Only you will be able to view and edit it.`
+            ) : (
+              <>
+                <p>
+                  This {variant} will be visible on your public profile. Anyone
+                  with the link will be able to read it.
+                </p>
+                <div className="mt-4 text-brand text-sm flex gap-2">
+                  <FaWandMagicSparkles className="shrink-0 mt-0.5" />
+                  <strong>Bonus:</strong> An AI summary will be automatically
+                  generated for public!
+                </div>
+              </>
+            )}
           </p>
 
           {/* only show if it's a note, it's being made public, AND parent is private */}
           {variant === "note" && !isPublic && isParentFolderPrivate && (
             <div className="rounded-md border border-amber-500/20 bg-amber-500/10 p-3 text-amber-600">
-              ⚠️ This note is currently inside the
-              private folder <em>&quot;{parentFolderName}&quot;</em>. Making this specific
-              note public means it <strong>will</strong> appear on your public
+              ⚠️ This note is currently inside the private folder{" "}
+              <em>&quot;{parentFolderName}&quot;</em>. Making this specific note
+              public means it <strong>will</strong> appear on your public
               profile, even though the rest of the folder remains hidden.
             </div>
           )}

@@ -44,25 +44,51 @@ export default function NoteSummary({
           AI Summary
         </h3>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* "Generate" on mobile, "Generate AI Summary" on desktop */}
           {!initialSummary && isOwner && (
             <button
               onClick={handleGenerate}
               disabled={isPending}
               className="text-brand hover:bg-brand/10 rounded-md px-3 py-1 text-sm font-medium transition-colors hover:cursor-pointer disabled:opacity-50"
             >
-              {isPending ? "Generating..." : "Generate AI Summary"}
+              {isPending ? (
+                "Generating..."
+              ) : (
+                <>
+                  Generate <span className="hidden sm:inline">AI Summary</span>
+                </>
+              )}
             </button>
           )}
 
           {initialSummary && (
-            <button
-              onClick={() => setShowSummary(!showSummary)}
-              className="text-brand text-sm underline hover:cursor-pointer"
-              aria-controls="summary-content"
-            >
-              {showSummary ? "Hide summary" : "Show summary"}
-            </button>
+            <>
+              {/* "↻" on mobile, "↻ Refresh" on desktop (only for owners) */}
+              {isOwner && (
+                <button
+                  onClick={handleGenerate}
+                  disabled={isPending}
+                  className="text-brand-light hover:text-brand flex items-center gap-1 text-sm transition-colors hover:cursor-pointer disabled:opacity-50"
+                  aria-label="Refresh summary"
+                >
+                  <span className={isPending ? "animate-spin" : ""}>↻</span>
+                  <span className="hidden underline sm:inline">
+                    {isPending ? "Refreshing..." : "Refresh"}
+                  </span>
+                </button>
+              )}
+              
+              {/* "Show/Hide" on mobile, "Show/Hide summary" on desktop */}
+              <button
+                onClick={() => setShowSummary(!showSummary)}
+                className="text-brand-light hover:text-brand text-sm underline transition-colors hover:cursor-pointer"
+                aria-controls="summary-content"
+              >
+                {showSummary ? "Hide" : "Show"}{" "}
+                <span className="hidden sm:inline">summary</span>
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -75,12 +101,12 @@ export default function NoteSummary({
         </p>
       ) : showSummary ? (
         <div
-          id="summary-content" 
+          id="summary-content"
           className="animate-slide text-brand-dark prose prose-sm max-w-none text-sm"
         >
           <ReactMarkdown>{initialSummary}</ReactMarkdown>
         </div>
-      ) : null} 
+      ) : null}
     </div>
   );
 }

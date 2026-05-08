@@ -26,7 +26,7 @@ export default function MarkdownGuide() {
           isOpen={isOpen}
           title="Markdown Guide"
         >
-          <ul className="text-brand-light space-y-2 text-sm">
+<ul className="text-brand-light space-y-2 text-sm">
             <li>
               <strong>**Bold**</strong> &rarr;{" "}
               <span className="text-brand font-bold">Bold</span>
@@ -51,6 +51,22 @@ export default function MarkdownGuide() {
             <li>
               [Link](url) &rarr;{" "}
               <span className="text-blue-500 underline">Link</span>
+            </li>
+            <li>
+              --- (Line) &rarr;{" "}
+              <span className="border-brand inline-block w-8 border-t-2 align-middle"></span>
+            </li>
+            <li>
+              `code` &rarr;{" "}
+              <code className="bg-brand/10 text-brand rounded px-1.5 py-0.5 font-mono text-xs">
+                code
+              </code>
+            </li>
+            <li>
+              ```block``` &rarr;{" "}
+              <code className="bg-brand/10 text-brand mt-1 block w-fit rounded p-2 font-mono text-xs leading-none">
+                code block
+              </code>
             </li>
           </ul>
         </Modal>

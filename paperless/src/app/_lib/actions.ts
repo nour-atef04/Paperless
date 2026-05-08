@@ -420,6 +420,21 @@ export async function toggleNoteVisibility(
   } = await supabase.auth.getUser();
   if (!user) return { error: "You must be logged in to toggle visibility." };
 
+  // if making public -> generate summary for all to see
+  if (makePublic) {
+      const { data: note, error: fetchError } = await supabase
+        .from("notes")
+        .select("content, summary")
+        .eq("id", noteId)
+        .single();
+
+      if (fetchError) throw new Error("Failed to fetch note details.");
+
+      if (note && !note.summary) {
+        await generateNoteSummary(noteId, note.content);
+      }
+    }
+
   const { error } = await supabase
     .from("notes")
     .update({ public: makePublic })
