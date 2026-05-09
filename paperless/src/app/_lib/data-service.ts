@@ -152,12 +152,6 @@ export async function getDashboardNotes(
       .neq("user_id", user.id)
       .eq("public", true);
 
-    if (query) {
-      fallbackQuery = fallbackQuery.or(
-        `title.ilike.%${query}%, content.ilike.%${query}%`,
-      );
-    }
-
     fallbackQuery = applySorting(fallbackQuery, sort);
     fallbackQuery = fallbackQuery.range(from, to);
 

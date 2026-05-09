@@ -40,6 +40,7 @@ export default function LoginPage() {
             placeholder="Email"
             autoComplete="email"
             className="p-2 pl-5"
+            defaultValue="alex.dev@demo.com"
           />
 
           <FormInput
@@ -50,6 +51,7 @@ export default function LoginPage() {
             placeholder="Password"
             autoComplete="current-password"
             className="p-2 pl-5"
+            defaultValue="qwerty12345"
           />
 
           {state?.error && (
