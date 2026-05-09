@@ -7,9 +7,8 @@ import { createSupabaseServerClient } from "./supabase";
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
+import { MAX_INTERESTS, MAX_TAGS } from "./constants";
 import { ActionResponse, FolderType } from "./types";
-import { MAX_INTERESTS } from "./constants";
-import { MAX_TAGS } from "./constants";
 
 export async function loginAction(
   prevState: any,

@@ -2,11 +2,9 @@ import { ITEMS_PER_PAGE } from "./constants";
 import { createSupabaseServerClient } from "./supabase";
 import {
   Folder,
-  Note,
   NoteWithDetails,
-  Profile,
   SortOption,
-  UserProfile,
+  UserProfile
 } from "./types";
 
 export async function getUserId(): Promise<string | null> {
