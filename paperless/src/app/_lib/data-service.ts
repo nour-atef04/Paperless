@@ -131,16 +131,44 @@ export async function getDashboardNotes(
   }
 
   if (query) {
+    // in case the user typed "#react" instead of "react"
+    const cleanQuery = query.replace("#", "").trim().toLowerCase();
+
+    // 'cs' checks if the array CONTAINS the specific string
     supabaseQuery = supabaseQuery.or(
-      `title.ilike.%${query}%, content.ilike.%${query}%`,
+      `title.ilike.%${query}%,content.ilike.%${query}%,tags.cs.{${cleanQuery}}`,
     );
   }
 
   supabaseQuery = applySorting(supabaseQuery, sort);
   supabaseQuery = supabaseQuery.range(from, to);
 
-  const { data, count, error } = await supabaseQuery;
+  let { data, count, error } = await supabaseQuery;
   if (error) throw new Error(error.message);
+
+  // if personalized feed is empty, fetch all
+  if (userInterestsArray.length > 0 && !query && (!data || data.length === 0)) {
+    let fallbackQuery = getAllNotes(supabase)
+      .neq("user_id", user.id)
+      .eq("public", true);
+
+    if (query) {
+      fallbackQuery = fallbackQuery.or(
+        `title.ilike.%${query}%, content.ilike.%${query}%`,
+      );
+    }
+
+    fallbackQuery = applySorting(fallbackQuery, sort);
+    fallbackQuery = fallbackQuery.range(from, to);
+
+    const fallbackResult = await fallbackQuery;
+    if (fallbackResult.error) throw new Error(fallbackResult.error.message);
+
+    // overwrite our initial empty data with the fallback data
+    data = fallbackResult.data;
+    count = fallbackResult.count;
+  }
+
   return { notes: data as NoteWithDetails[], count: count || 0 };
 }
 
@@ -167,8 +195,12 @@ export async function getMyNotes(
   }
 
   if (query) {
+    // in case the user typed "#react" instead of "react"
+    const cleanQuery = query.replace("#", "").trim().toLowerCase();
+
+    // 'cs' checks if the array CONTAINS the specific string
     supabaseQuery = supabaseQuery.or(
-      `title.ilike.%${query}%, content.ilike.%${query}%`,
+      `title.ilike.%${query}%,content.ilike.%${query}%,tags.cs.{${cleanQuery}}`,
     );
   }
 
@@ -219,8 +251,12 @@ export async function getSavedNotes(
   }
 
   if (query) {
+    // in case the user typed "#react" instead of "react"
+    const cleanQuery = query.replace("#", "").trim().toLowerCase();
+
+    // 'cs' checks if the array CONTAINS the specific string
     supabaseQuery = supabaseQuery.or(
-      `title.ilike.%${query}%, content.ilike.%${query}%`,
+      `title.ilike.%${query}%,content.ilike.%${query}%,tags.cs.{${cleanQuery}}`,
     );
   }
 
