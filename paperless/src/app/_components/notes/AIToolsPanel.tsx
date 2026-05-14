@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import { FaWandMagicSparkles, FaBrain } from "react-icons/fa6";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FaSpinner } from "react-icons/fa";
 
 type AIToolsPanelProps = {
   noteId: string;
@@ -20,7 +22,11 @@ export default function AIToolsPanel({
   initialSummary,
   isOwner,
 }: AIToolsPanelProps) {
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
+  const [isNavigating, startNavigation] = useTransition();
+
   const [showSummary, setShowSummary] = useState(true);
 
   const handleGenerate = () => {
@@ -36,6 +42,12 @@ export default function AIToolsPanel({
   };
 
   const showSummarySection = initialSummary || isOwner;
+
+  const handleQuizNavigation = () => {
+    startNavigation(() => {
+      router.push(`/notes/${noteId}/practice`);
+    });
+  };
 
   return (
     <div className="bg-brand-light/5 border-brand-light/20 mb-8 flex flex-col gap-4 rounded-xl border p-5">
@@ -119,15 +131,23 @@ export default function AIToolsPanel({
             <FaBrain className="text-brand" />
             Active Recall
           </h3>
-          <Link
-            href={`/notes/${noteId}/practice`}
-            className="text-brand hover:bg-brand/10 border-brand-light rounded-md border px-3 py-1 text-sm font-medium transition-colors hover:cursor-pointer disabled:opacity-50"
+          <button
+            onClick={handleQuizNavigation}
+            disabled={isNavigating}
+            className="text-brand hover:bg-brand/10 border-brand-light flex items-center gap-2 rounded-md border px-3 py-1 text-sm font-medium transition-colors hover:cursor-pointer disabled:cursor-wait disabled:opacity-70"
           >
-            Quiz Me
-          </Link>
+            {isNavigating ? (
+              <>
+                <FaSpinner className="animate-spin" />
+                <span className="hidden md:block">Loading Quiz...</span>
+              </>
+            ) : (
+              "Quiz Me"
+            )}
+          </button>
         </div>
 
-        <p className="text-brand-light mt-1 text-xs sm:text-sm">
+        <p className="text-brand-light animate-slide-up mt-1 text-xs sm:text-sm">
           Test your knowledge with an AI-generated quiz based on this note.
         </p>
       </div>

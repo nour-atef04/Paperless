@@ -601,7 +601,7 @@ Return ONLY a valid JSON array with no markdown, no explanation, no backticks. E
   "id": "q1",
   "type": "mcq" | "written",
   "question": "...",
-  "options": ["A", "B", "C", "D"],
+  "options": ["A", "B", "C", "D"], "options": ["...", "...", "...", "..."]  // plain text only, NO letter prefixes like "A.", "B.", "C.", "D."
   "correctAnswerOrRubric": "..."  // for mcq: MUST be the EXACT full text of the correct option, not a letter like "A" or "B"
 }
 For mcq: options is required, correctAnswerOrRubric is the exact correct option string.

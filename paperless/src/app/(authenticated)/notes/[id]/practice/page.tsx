@@ -3,6 +3,7 @@ import { getNoteById } from "@/app/_lib/data-service";
 import PracticeClient from "@/app/_components/ui/PracticeClient";
 
 export default async function PracticePage({ params }) {
+  // throw new Error("Testing error boundary!");
   const { id } = await params;
 
   const { title, content } = await getNoteById(id);

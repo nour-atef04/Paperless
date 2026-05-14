@@ -13,6 +13,8 @@ type Question = {
   correctAnswerOrRubric: string;
 };
 
+const stripPrefix = (s: string) => s.replace(/^[A-D][.)]\s*/i, "").trim();
+
 export default function PracticeClient({
   questions,
   title,
@@ -36,7 +38,7 @@ export default function PracticeClient({
   const handleSubmit = () => {
     if (!userAnswer) return;
 
-    if (currentQ.type === "mcq") { 
+    if (currentQ.type === "mcq") {
       const correct = currentQ.correctAnswerOrRubric;
 
       // match exact text OR resolve a letter like A, B,... to the option at that index
@@ -46,7 +48,8 @@ export default function PracticeClient({
           : correct;
 
       // correct mcq instantly
-      const isCorrect = userAnswer === resolvedCorrect;
+      const isCorrect =
+        stripPrefix(userAnswer) === stripPrefix(resolvedCorrect);
       setFeedback({
         isCorrect,
         text: isCorrect
@@ -123,7 +126,7 @@ export default function PracticeClient({
                 disabled={!!feedback}
                 className="text-brand accent-brand h-4 w-4"
               />
-              <span className="text-sm">{opt}</span>
+              <span className="text-sm">{stripPrefix(opt)}</span>
             </label>
           ))}
         </div>
