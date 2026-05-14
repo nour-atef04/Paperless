@@ -14,8 +14,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
-import NoteSummary from "@/app/_components/notes/NoteSummary";
-
+import AIToolsPanel from "@/app/_components/notes/AIToolsPanel";
 type NoteProps = {
   params: Promise<{ id: string }>;
 };
@@ -33,7 +32,7 @@ export default async function Note({ params }: NoteProps) {
 
   const folders = userId ? await getMyFolders(null, "my-notes") : [];
 
-  const { title, content, created_at, tags } = note; 
+  const { title, content, created_at, tags } = note;
 
   return (
     <Panel
@@ -91,7 +90,7 @@ export default async function Note({ params }: NoteProps) {
         </FolderProvider>
       </header>
 
-      <NoteSummary
+      <AIToolsPanel
         noteId={note.id}
         content={note.content}
         initialSummary={note.summary}

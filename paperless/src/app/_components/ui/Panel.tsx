@@ -5,6 +5,7 @@ type PanelProps = React.HTMLAttributes<HTMLElement> & {
   className?: string;
   as?: React.ElementType;
   dark?: boolean;
+  rounded?: boolean;
 };
 
 export default function Panel({
@@ -14,12 +15,13 @@ export default function Panel({
   className = "",
   as: Component = "section",
   dark = false,
+  rounded = true,
   ...props
 }: PanelProps) {
   return (
     <Component
       {...props}
-      className={`${dark ? "bg-brand-dark" : "bg-surface"} rounded-md shadow-sm ${className || ""} `}
+      className={`${dark ? "bg-brand-dark" : "bg-surface"} ${rounded ? "rounded-md" : ""} shadow-sm ${className || ""} `}
       aria-label={ariaLabel}
       aria-labelledby={ariaLabelledBy}
     >

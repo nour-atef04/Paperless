@@ -5,10 +5,12 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "./supabase";
 
 import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { generateObject, generateText } from "ai";
 
 import { MAX_INTERESTS, MAX_TAGS } from "./constants";
 import { ActionResponse, FolderType } from "./types";
+
+import { z } from "zod";
 
 export async function loginAction(
   prevState: any,
@@ -549,6 +551,94 @@ export async function generateNoteSummary(noteId: string, content: string) {
     console.error("AI Summarization failed:", error);
     return { error: "Failed to generate summary. Please try again." };
   }
+}
+
+const MODELS = [
+  "openrouter/free",
+  "deepseek/deepseek-chat-v3-0324:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+];
+
+async function callWithFallback(prompt: string): Promise<string> {
+  let lastError: unknown;
+
+  for (const modelId of MODELS) {
+    try {
+      const { text } = await generateText({
+        model: openrouter(modelId),
+        prompt,
+        maxRetries: 1,
+      });
+      return text;
+    } catch (err) {
+      lastError = err;
+      console.warn(`Model ${modelId} failed, trying next...`, err);
+    }
+  }
+
+  throw new Error(
+    `All models failed. Last error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
+  );
+}
+
+function extractJSON(text: string, type: "object" | "array"): string {
+  const [open, close] = type === "object" ? ["{", "}"] : ["[", "]"];
+  const start = text.indexOf(open);
+  const end = text.lastIndexOf(close);
+  if (start === -1 || end === -1)
+    throw new Error(`No JSON ${type} found in response: ${text}`);
+  return text.slice(start, end + 1);
+}
+
+export async function generatePracticeQuiz(content: string) {
+  const text =
+    await callWithFallback(`You are a quiz generator. Given the following study notes, generate a practice quiz with exactly 5 questions:
+- 3 multiple-choice questions (type: "mcq")
+- 2 short written-answer questions (type: "written")
+
+Return ONLY a valid JSON array with no markdown, no explanation, no backticks. Each object must follow this shape:
+{
+  "id": "q1",
+  "type": "mcq" | "written",
+  "question": "...",
+  "options": ["A", "B", "C", "D"],
+  "correctAnswerOrRubric": "..."  // for mcq: MUST be the EXACT full text of the correct option, not a letter like "A" or "B"
+}
+For mcq: options is required, correctAnswerOrRubric is the exact correct option string.
+For written: omit options, correctAnswerOrRubric is a grading rubric.
+
+NOTES:
+${content}`);
+
+  const clean = extractJSON(text, "array");
+  return JSON.parse(clean);
+}
+
+export async function gradeWrittenAnswer(
+  question: string,
+  userAnswer: string,
+  rubric: string,
+) {
+  const text =
+    await callWithFallback(`You are a strict but fair grader. Grade the student's answer based on the rubric.
+
+Return ONLY a valid JSON object with no markdown, no explanation, no backticks:
+{
+  "score": <integer 0-100>,
+  "isPassing": <true if score >= 60>,
+  "feedback": "<one or two sentences of constructive feedback>"
+}
+
+Question: ${question}
+Rubric: ${rubric}
+Student's answer: ${userAnswer}`);
+
+  const clean = extractJSON(text, "object");
+  return JSON.parse(clean) as {
+    score: number;
+    isPassing: boolean;
+    feedback: string;
+  };
 }
 
 // TO DO: GOOGLE AUTH

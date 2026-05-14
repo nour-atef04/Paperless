@@ -57,7 +57,7 @@ export default function NoteForm({ serverAction, note }: NoteFormProps) {
         <TagInput
           label="Note Tags"
           name="tags"
-          initialTags={note?.tags}
+          initialTags={note?.tags || []}
           maxTags={MAX_TAGS}
           placeholder="Add tags to categorize this note..."
         />

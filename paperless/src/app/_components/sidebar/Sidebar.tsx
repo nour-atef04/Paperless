@@ -23,7 +23,8 @@ export default function Sidebar({ profile }: SidebarProps) {
     <Panel
       dark={true}
       ariaLabel="Main sidebar"
-      className={`${isOpen ? "h-44" : "h-20"} flex flex-wrap items-center gap-4 overflow-hidden p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
+      rounded={false}
+      className={`${isOpen ? "h-44" : "h-20"} md:rounded-r-md md:rounded-bl-none rounded-b-md flex flex-wrap items-center gap-4 overflow-hidden p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
     >
       {/* Toggle and logo */}
       <div className="flex items-center gap-4 md:w-full">
