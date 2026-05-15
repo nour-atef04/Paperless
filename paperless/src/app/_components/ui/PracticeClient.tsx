@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
 import { gradeWrittenAnswer } from "@/app/_lib/actions";
+import { useState, useTransition } from "react";
+import { PiGearSixLight } from "react-icons/pi";
+import PracticeSettingsBtn, {
+} from "../buttons/PracticeSettingsBtn";
+import { useRouter } from "next/navigation";
 
 type Question = {
   id: string;
@@ -22,6 +26,9 @@ export default function PracticeClient({
   questions: Question[];
   title: string;
 }) {
+
+  const router = useRouter();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
   const [feedback, setFeedback] = useState<{
@@ -92,11 +99,14 @@ export default function PracticeClient({
 
   return (
     <Panel className="p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <PanelTitle level={2}>Practice: {title}</PanelTitle>
-        <span className="text-brand text-sm font-medium">
-          Question {currentIndex + 1} of {questions.length}
-        </span>
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <PanelTitle level={2}>Practice: {title}</PanelTitle>
+          <span className="text-brand text-sm font-medium">
+            Question {currentIndex + 1} of {questions.length}
+          </span>
+        </div>
+        <PracticeSettingsBtn />
       </div>
 
       <div className="bg-brand-light/5 mb-6 rounded-lg p-5">

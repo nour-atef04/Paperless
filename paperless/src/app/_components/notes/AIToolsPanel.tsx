@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import { generateNoteSummary } from "@/app/_lib/actions";
-import toast from "react-hot-toast";
-import { FaWandMagicSparkles, FaBrain } from "react-icons/fa6";
-import ReactMarkdown from "react-markdown";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import toast from "react-hot-toast";
 import { FaSpinner } from "react-icons/fa";
+import { FaBrain, FaWandMagicSparkles } from "react-icons/fa6";
+import ReactMarkdown from "react-markdown";
 
 type AIToolsPanelProps = {
   noteId: string;

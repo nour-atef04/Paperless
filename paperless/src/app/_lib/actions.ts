@@ -590,18 +590,39 @@ function extractJSON(text: string, type: "object" | "array"): string {
   return text.slice(start, end + 1);
 }
 
-export async function generatePracticeQuiz(content: string) {
+export async function generatePracticeQuiz(
+  content: string,
+  options: { count: number; type: string; focusArea: string } = {
+    count: 3,
+    type: "mixed",
+    focusArea: "",
+  },
+) {
+  const { count, type, focusArea } = options;
+
+  // calculate question types
+  let typeInstructions = `- ${Math.ceil(count / 2)} multiple-choice questions (type: "mcq")\n- ${Math.floor(count / 2)} short written-answer questions (type: "written")`;
+  if (type === "mcq_only")
+    typeInstructions = `- ${count} multiple-choice questions (type: "mcq")`;
+  if (type === "written_only")
+    typeInstructions = `- ${count} short written-answer questions (type: "written")`;
+
+  // add focus area (if provided by user)
+  const focusInstruction = focusArea
+    ? `\nCRITICAL CUSTOM INSTRUCTION: Focus specifically on testing the following area/topic: "${focusArea}"`
+    : "";
+
   const text =
-    await callWithFallback(`You are a quiz generator. Given the following study notes, generate a practice quiz with exactly 5 questions:
-- 3 multiple-choice questions (type: "mcq")
-- 2 short written-answer questions (type: "written")
+    await callWithFallback(`You are a quiz generator. Given the following study notes, generate a practice quiz with exactly ${count} questions:
+${typeInstructions}
+${focusInstruction}
 
 Return ONLY a valid JSON array with no markdown, no explanation, no backticks. Each object must follow this shape:
 {
   "id": "q1",
   "type": "mcq" | "written",
   "question": "...",
-  "options": ["A", "B", "C", "D"], "options": ["...", "...", "...", "..."]  // plain text only, NO letter prefixes like "A.", "B.", "C.", "D."
+  "options": ["...", "...", "...", "..."]  // plain text only, NO letter prefixes like "A.", "B.", "C.", "D."
   "correctAnswerOrRubric": "..."  // for mcq: MUST be the EXACT full text of the correct option, not a letter like "A" or "B"
 }
 For mcq: options is required, correctAnswerOrRubric is the exact correct option string.
