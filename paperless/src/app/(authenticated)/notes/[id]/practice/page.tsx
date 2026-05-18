@@ -3,6 +3,7 @@ import { getNoteById } from "@/app/_lib/data-service";
 import PracticeClient from "@/app/_components/ui/PracticeClient";
 
 import type { Metadata } from "next";
+import { Question } from "@/app/_lib/types";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -38,17 +39,11 @@ export default async function PracticePage({ params, searchParams }) {
     count,
     type,
     focusArea,
-  })) as {
-    id: string;
-    type: "mcq" | "written";
-    question: string;
-    correctAnswerOrRubric: string;
-    options?: string[];
-  }[];
+  })) as Question[];
 
   return (
     <div className="mx-auto max-w-3xl py-8">
-      <PracticeClient questions={questions} title={title} />
+      <PracticeClient noteId={id} questions={questions} title={title} />
     </div>
   );
 }

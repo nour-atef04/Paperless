@@ -3,8 +3,9 @@ import { createSupabaseServerClient } from "./supabase";
 import {
   Folder,
   NoteWithDetails,
+  Question,
   SortOption,
-  UserProfile
+  UserProfile,
 } from "./types";
 
 export async function getUserId(): Promise<string | null> {
@@ -380,4 +381,58 @@ export async function getFolderName(id: string): Promise<string | null> {
     .maybeSingle();
   if (error) throw new Error(error.message);
   return data?.name || null;
+}
+
+export async function getSavedQuestions(filterNoteId?: string) {
+  const supabase = await createSupabaseServerClient();
+  const userId = await getUserId();
+
+  if (!userId)
+    return { formattedQuestions: [], savedIds: [], availableNotes: [] };
+
+  const { data: allSaved, error } = await supabase
+    .from("saved_questions")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error || !allSaved) {
+    console.error("Failed to fetch saved questions:", error);
+    return { formattedQuestions: [], savedIds: [], availableNotes: [] };
+  }
+
+  // for the dropdown in review settings
+  const uniqueNoteIds = Array.from(
+    new Set(allSaved.map((q) => q.note_id).filter(Boolean)),
+  );
+
+  // get the titles for these specific notes
+  let availableNotes: { id: string; name: string }[] = [];
+  if (uniqueNoteIds.length > 0) {
+    const { data: notesData } = await supabase
+      .from("notes")
+      .select("id, title")
+      .in("id", uniqueNoteIds);
+
+    if (notesData) {
+      availableNotes = notesData.map((n) => ({ id: n.id, name: n.title }));
+    }
+  }
+
+  // filter if a specific noteId was selected
+  const filteredQuestions = filterNoteId
+    ? allSaved.filter((q) => q.note_id === filterNoteId)
+    : allSaved;
+
+  const formattedQuestions: Question[] = filteredQuestions.map((row) => ({
+    id: row.id,
+    type: row.type as "mcq" | "written",
+    question: row.question,
+    options: row.options || undefined,
+    correctAnswerOrRubric: row.correct_answer_or_rubric,
+  }));
+
+  const savedIds = formattedQuestions.map((q) => q.id);
+
+  return { formattedQuestions, savedIds, availableNotes };
 }

@@ -48,6 +48,14 @@ export type UserSave = {
   created_at?: string;
 };
 
+export type Question = {
+  id: string;
+  type: "mcq" | "written";
+  question: string;
+  options?: string[];
+  correctAnswerOrRubric: string;
+};
+
 export type NoteWithDetails = Note & {
   folders: Pick<Folder, "name" | "public"> | null; // know folder privacy status too
   profiles: Pick<Profile, "full_name" | "avatar_url" | "id"> | null;

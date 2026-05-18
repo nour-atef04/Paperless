@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { CgNotes } from "react-icons/cg";
-import { FaBars, FaRegBookmark, FaTimes } from "react-icons/fa";
+import { FaBars, FaBrain, FaRegBookmark, FaTimes } from "react-icons/fa";
 import { MdOutlineDashboard } from "react-icons/md";
 import NewNoteBtn from "../buttons/NewNoteBtn";
 import Logo from "../ui/Logo";
@@ -24,7 +24,7 @@ export default function Sidebar({ profile }: SidebarProps) {
       dark={true}
       ariaLabel="Main sidebar"
       rounded={false}
-      className={`${isOpen ? "h-44" : "h-20"} md:rounded-r-md md:rounded-bl-none rounded-b-md flex flex-wrap items-center gap-4 overflow-hidden p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:p-6`}
+      className={`${isOpen ? "h-44" : "h-20"} flex flex-wrap items-center gap-4 overflow-hidden rounded-b-md p-4 transition-all duration-300 md:h-full md:flex-col md:flex-nowrap md:items-start md:justify-start md:gap-8 md:rounded-r-md md:rounded-bl-none md:p-6`}
     >
       {/* Toggle and logo */}
       <div className="flex items-center gap-4 md:w-full">
@@ -53,14 +53,14 @@ export default function Sidebar({ profile }: SidebarProps) {
 
       {/* Profile pic */}
       <div className="shrink-0 md:order-last md:mt-auto md:ml-0 md:w-full">
-        <UserAccount profile={profile}/>
+        <UserAccount profile={profile} />
       </div>
 
       {/* Navigation */}
       <nav
         id="sidebar-nav"
         onClick={() => setIsOpen(false)}
-        className={`${isOpen ? "flex" : "hidden"} border-brand/10 order-4 flex w-full flex-row items-center justify-around border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
+        className={`${isOpen ? "flex" : "hidden"} border-brand/10 order-4 flex w-full flex-wrap items-center justify-around gap-2 border-t pt-4 md:flex md:flex-col md:items-start md:justify-start md:gap-6 md:border-none md:pt-0`}
       >
         <NavLink href="/notes">
           <MdOutlineDashboard aria-hidden="true" /> Dashboard
@@ -71,6 +71,9 @@ export default function Sidebar({ profile }: SidebarProps) {
         </NavLink>
         <NavLink href="/saved">
           <FaRegBookmark aria-hidden="true" /> Saved
+        </NavLink>
+        <NavLink href="/review">
+          <FaBrain aria-hidden="true" /> Targeted Review
         </NavLink>
       </nav>
     </Panel>

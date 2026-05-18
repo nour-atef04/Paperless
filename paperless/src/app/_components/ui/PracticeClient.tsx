@@ -2,12 +2,16 @@
 
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
-import { gradeWrittenAnswer } from "@/app/_lib/actions";
-import { useState, useTransition } from "react";
-import { PiGearSixLight } from "react-icons/pi";
-import PracticeSettingsBtn, {
-} from "../buttons/PracticeSettingsBtn";
+import {
+  gradeWrittenAnswer,
+  removeSavedQuestionAction,
+  saveQuestionAction,
+} from "@/app/_lib/actions";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
+import PracticeSettingsBtn from "../buttons/PracticeSettingsBtn";
+import toast from "react-hot-toast";
 
 type Question = {
   id: string;
@@ -22,11 +26,18 @@ const stripPrefix = (s: string) => s.replace(/^[A-D][.)]\s*/i, "").trim();
 export default function PracticeClient({
   questions,
   title,
+  noteId,
+  initialSavedIds = [],
+  mode = "practice-new",
+  notes = [],
 }: {
   questions: Question[];
   title: string;
+  noteId?: string;
+  initialSavedIds?: string[];
+  mode?: "practice-new" | "review";
+  notes?: { id: string; name: string }[];
 }) {
-
   const router = useRouter();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,6 +47,10 @@ export default function PracticeClient({
     text: string;
     isCorrect: boolean;
   } | null>(null);
+
+  const [savedQuestionIds, setSavedQuestionIds] = useState<Set<string>>(
+    new Set(initialSavedIds),
+  );
 
   const [isPending, startTransition] = useTransition();
 
@@ -86,6 +101,46 @@ export default function PracticeClient({
     setCurrentIndex((prev) => prev + 1);
   };
 
+  const handleToggleSave = async () => {
+    if (!currentQ) return;
+
+    const qId = currentQ.id;
+    const isCurrentlySaved = savedQuestionIds.has(qId);
+
+    // optimistic update
+    setSavedQuestionIds((prev) => {
+      const next = new Set(prev); // fresh copy of the set (to avoid mutation)
+      if (isCurrentlySaved) next.delete(qId);
+      else next.add(qId);
+      return next;
+    });
+
+    try {
+      if (isCurrentlySaved) {
+        const result = await removeSavedQuestionAction(qId);
+        if (result?.error) throw new Error(result.error);
+
+        toast.success("Removed from saved questions");
+      } else {
+        const result = await saveQuestionAction(noteId, currentQ);
+        if (result?.error) throw new Error(result.error);
+
+        toast.success("Question saved for review");
+      }
+    } catch (error: any) {
+      // revert UI if the database call fails
+      setSavedQuestionIds((prev) => {
+        const next = new Set(prev);
+        if (isCurrentlySaved) next.add(qId);
+        else next.delete(qId);
+        return next;
+      });
+
+      toast.error(error.message || "Failed to update saved question");
+      console.log(error.message);
+    }
+  };
+
   if (isFinished) {
     return (
       <Panel className="p-8 text-center">
@@ -102,17 +157,44 @@ export default function PracticeClient({
       <div className="mb-6 flex items-start justify-between">
         <div>
           <PanelTitle level={2}>Practice: {title}</PanelTitle>
+          {mode === "review" && (
+            <span className="text-brand-light mt-2 mr-2 text-sm">
+              Master the concepts you previously struggled with.
+            </span>
+          )}
           <span className="text-brand text-sm font-medium">
             Question {currentIndex + 1} of {questions.length}
           </span>
         </div>
-        <PracticeSettingsBtn />
+        <PracticeSettingsBtn mode="review" notes={notes} />
       </div>
 
-      <div className="bg-brand-light/5 mb-6 rounded-lg p-5">
+      <div className="bg-brand-light/5 mb-6 flex items-start justify-between gap-4 rounded-lg p-5">
         <p className="text-brand-dark text-lg font-medium">
           {currentQ.question}
         </p>
+        <button
+          onClick={handleToggleSave}
+          className="mt-1 cursor-pointer"
+          title={
+            savedQuestionIds.has(currentQ.id)
+              ? "Remove from saved"
+              : "Save for review later"
+          }
+          aria-label="Save question"
+        >
+          {savedQuestionIds.has(currentQ.id) ? (
+            <FaStar
+              className="text-yellow-500 transition-colors hover:text-yellow-600"
+              size={20}
+            />
+          ) : (
+            <FaRegStar
+              className="text-brand hover:text-brand-dark transition-colors"
+              size={20}
+            />
+          )}
+        </button>
       </div>
 
       {/* --- MCQ INTERFACE --- */}

@@ -8,7 +8,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { generateObject, generateText } from "ai";
 
 import { MAX_INTERESTS, MAX_TAGS } from "./constants";
-import { ActionResponse, FolderType } from "./types";
+import { ActionResponse, FolderType, Question } from "./types";
 
 import { z } from "zod";
 
@@ -662,4 +662,56 @@ Student's answer: ${userAnswer}`);
   };
 }
 
+export async function saveQuestionAction(
+  noteId: string | undefined,
+  questionData: Question,
+) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "You must be logged in to save questions." };
+  }
+
+  const { error } = await supabase.from("saved_questions").insert({
+    user_id: user.id,
+    note_id: noteId || null,
+    type: questionData.type,
+    question: questionData.question,
+    options: questionData.options || null,
+    correct_answer_or_rubric: questionData.correctAnswerOrRubric,
+  });
+
+  if (error) {
+    return { error: "Error saving question" };
+  }
+
+  revalidatePath("/review");
+  return { success: true };
+}
+
+export async function removeSavedQuestionAction(questionId: string) {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "You must be logged in to remove questions." };
+  }
+
+  const { error } = await supabase
+    .from("saved_questions")
+    .delete()
+    .match({ id: questionId, user_id: user.id });
+
+  if (error) {
+    return { error: "Error removing question" };
+  }
+
+  revalidatePath("/review");
+  return { success: true };
+}
 // TO DO: GOOGLE AUTH
