@@ -43,7 +43,7 @@ export default async function PracticePage({ params, searchParams }) {
 
   return (
     <div className="mx-auto max-w-3xl py-8">
-      <PracticeClient noteId={id} questions={questions} title={title} />
+      <PracticeClient mode="practice-new" noteId={id} questions={questions} title={title} />
     </div>
   );
 }

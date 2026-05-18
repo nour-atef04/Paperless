@@ -166,7 +166,7 @@ export default function PracticeClient({
             Question {currentIndex + 1} of {questions.length}
           </span>
         </div>
-        <PracticeSettingsBtn mode="review" notes={notes} />
+        <PracticeSettingsBtn mode={mode} notes={notes} />
       </div>
 
       <div className="bg-brand-light/5 mb-6 flex items-start justify-between gap-4 rounded-lg p-5">
