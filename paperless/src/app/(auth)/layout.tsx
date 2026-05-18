@@ -3,6 +3,16 @@ import Logo from "../_components/ui/Logo";
 import { createSupabaseServerClient } from "../_lib/supabase";
 import { redirect } from "next/navigation";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Paperless",
+    default: "Paperless - The Smart Study App",
+  },
+  description: "Organize, summarize, and study your markdown notes with AI.",
+};
+
 type AuthLayoutProps = {
   children: React.ReactNode;
 };

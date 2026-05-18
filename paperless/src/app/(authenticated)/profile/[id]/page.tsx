@@ -13,9 +13,28 @@ import {
   getFolderName,
 } from "@/app/_lib/data-service";
 import Image from "next/image";
+import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const user = await getUserProfileById(id);
+
+  if (!user) {
+    return { title: "Profile Not Found" };
+  }
+
+  return {
+    title: `${user.name}'s Profile`,
+    description: `View ${user.name}'s public notes and folders on Paperless.`,
+  };
+}
 
 type ProfilePageProps = {
   params: Promise<{ id: string }>;

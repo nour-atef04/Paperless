@@ -2,6 +2,27 @@ import { generatePracticeQuiz } from "@/app/_lib/actions";
 import { getNoteById } from "@/app/_lib/data-service";
 import PracticeClient from "@/app/_components/ui/PracticeClient";
 
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const note = await getNoteById(id);
+
+  if (!note) {
+    return { title: "Note Not Found" };
+  }
+
+  return {
+    title: `Practice: ${note.title}`,
+    description: `Practice ${note.title} on Paperless.`,
+  };
+}
+
 export default async function PracticePage({ params, searchParams }) {
   // throw new Error("Testing error boundary!");
   const { id } = await params;

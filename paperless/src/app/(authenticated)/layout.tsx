@@ -1,8 +1,17 @@
 import Sidebar from "../_components/sidebar/Sidebar";
 import { getUserProfile } from "../_lib/data-service";
+import type { Metadata } from "next";
 
 type AuthenticatedLayoutProps = {
   children: React.ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Paperless",
+    default: "Paperless - The Smart Study App",
+  },
+  description: "Organize, summarize, and study your markdown notes with AI.",
 };
 
 export default async function AuthenticatedLayout({

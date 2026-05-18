@@ -1,20 +1,37 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import AIToolsPanel from "@/app/_components/notes/AIToolsPanel";
 import NoteActionBar from "@/app/_components/notes/NoteActionBar";
 import Panel from "@/app/_components/ui/Panel";
 import PanelTitle from "@/app/_components/ui/PanelTitle";
+import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
 import { FolderProvider } from "@/app/_context/FolderContext";
-import {
-  getFoldersByUserId,
-  getMyFolders,
-  getNoteById,
-  getUserId,
-} from "@/app/_lib/data-service";
+import { getMyFolders, getNoteById, getUserId } from "@/app/_lib/data-service";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import VisibilityIcon from "@/app/_components/ui/VisibilityIcon";
-import AIToolsPanel from "@/app/_components/notes/AIToolsPanel";
+
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+
+  const note = await getNoteById(id);
+
+  if (!note) {
+    return { title: "Note Not Found" };
+  }
+
+  return {
+    title: `${note.title}`,
+    description: `Read ${note.title} on Paperless.`,
+  };
+}
+
 type NoteProps = {
   params: Promise<{ id: string }>;
 };

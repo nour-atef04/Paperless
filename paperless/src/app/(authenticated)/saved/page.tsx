@@ -1,5 +1,11 @@
 import NotesPageTemplate from "@/app/_components/notes/NotesPageTemplate";
 import { PageSearchParams } from "@/app/_lib/types";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Saved Notes",
+};
+
 
 type SavedNotesPageProps = {
   searchParams: PageSearchParams;
