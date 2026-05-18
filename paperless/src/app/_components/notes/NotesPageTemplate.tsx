@@ -49,10 +49,11 @@ export default async function NotesPageTemplate({
 
   return (
     <div className="flex flex-col gap-6">
-      <SearchBarPanel className="mx-auto w-full max-w-xl" />
+      <SearchBarPanel className="mx-auto w-full max-w-xl px-8 sm:px-0" />
       <Panel ariaLabelledBy={titleId} className="flex flex-col gap-6 p-6">
         {/* --- PAGE TITLE --- */}
-        <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row">
+        {/* <header className="flex flex-col items-center justify-between gap-5 sm:flex-row sm:gap-0 md:flex-col md:gap-5 lg:flex-row"> */}
+        <header className="flex items-center justify-between gap-5">
           <PanelTitle level={1}>{currentTitle}</PanelTitle>
 
           {/* if not "my notes" page -> put buttons next to panel title */}
@@ -79,7 +80,7 @@ export default async function NotesPageTemplate({
         {/* --- NOTES SECTION (IN MY NOTES + SAVED) --- */}
         <section className="mt-10 flex flex-col gap-9">
           {(page === "my-notes" || page === "saved") && (
-            <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <div className="flex items-center justify-between gap-4">
               <h2 className="text-brand-dark text-xl font-semibold">
                 {folderId ? (
                   <>

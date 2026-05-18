@@ -16,12 +16,11 @@ export default function OptionsList({
   closeMenu,
   options,
 }: OptionsListProps) {
-  const ref = useOutsideClick<HTMLDivElement>(closeMenu);
+  const ref = useOutsideClick<HTMLUListElement>(closeMenu);
 
   return (
-    <div
+    <ul
       ref={ref}
-      role="menu"
       className={`${className} bg-surface absolute z-10 flex min-w-40 flex-col rounded-sm border border-gray-200 py-2 text-sm shadow`}
     >
       {options.map((option, index) => (
@@ -38,6 +37,6 @@ export default function OptionsList({
           {option.label}
         </button>
       ))}
-    </div>
+    </ul>
   );
 }

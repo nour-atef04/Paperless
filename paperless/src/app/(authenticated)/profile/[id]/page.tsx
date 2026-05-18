@@ -48,29 +48,29 @@ export default async function ProfilePage({
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="bg-surface border-brand-light/20 overflow-hidden rounded-2xl border shadow-sm">
-        <div className="from-brand to-brand-light h-32 w-full bg-linear-to-r object-cover opacity-80"></div>
-        <div className="px-8 pb-8">
-          <div className="relative -mt-10 flex items-end justify-between">
-            <div className="flex items-end gap-6">
+        <div className="from-brand to-brand-light h-20 w-full bg-linear-to-r object-cover opacity-80 sm:h-32"></div>
+        <div className="px-4 pb-4 sm:px-8 sm:pb-8">
+          <div className="relative -mt-10 flex flex-col items-center justify-between sm:-mt-10 sm:flex-row sm:items-end">
+            <div className="flex w-full flex-col items-center gap-4 sm:flex-row sm:items-end sm:gap-6">
               {user.image ? (
                 <Image
                   src={user.image}
                   alt={user.name}
                   width={128}
                   height={128}
-                  className="bg-surface border-surface h-32 w-32 rounded-full border-4 object-cover shadow-md"
+                  className="bg-surface border-surface z-10 h-24 w-24 rounded-full border-4 object-cover shadow-md sm:h-32 sm:w-32"
                 />
               ) : (
-                <div className="bg-brand border-surface flex h-32 w-32 items-center justify-center rounded-full border-4 text-5xl font-bold text-white shadow-md">
+                <div className="bg-brand border-surface z-10 flex h-24 w-24 items-center justify-center rounded-full border-4 text-4xl font-bold text-white shadow-md sm:h-32 sm:w-32 sm:text-5xl">
                   {user.name.charAt(0).toUpperCase()}
                 </div>
               )}
 
-              <div className="mb-2">
-                <h1 className="text-brand-dark text-3xl font-bold">
+              <div className="mb-2 text-center sm:text-left">
+                <h1 className="text-brand-dark text-2xl font-bold sm:text-3xl">
                   {user.name}
                 </h1>
-                <p className="text-brand-light mt-1 text-sm">
+                <p className="text-brand-light mt-1 text-xs sm:text-sm">
                   Paperless Scholar
                 </p>
               </div>
@@ -79,13 +79,13 @@ export default async function ProfilePage({
         </div>
       </div>
 
-      <SearchBarPanel className="mx-auto w-full max-w-xl" />
+      <SearchBarPanel className="mx-auto w-full px-6 sm:max-w-xl sm:px-0" />
 
       {/* --- PUBLIC FOLDERS SECTION --- */}
       <div className="space-y-4">
         <h2
           id="folders-heading"
-          className="text-brand-dark border-brand-light/20 border-b pb-2 text-xl font-semibold"
+          className="text-brand-dark border-brand-light/20 border-b px-6 pb-2 text-xl font-semibold"
         >
           Public Folders
         </h2>
@@ -102,7 +102,7 @@ export default async function ProfilePage({
 
       {/* --- PUBLIC NOTES SECTION --- */}
       <div className="space-y-4">
-        <div className="border-brand-light/20 flex items-center justify-between border-b pb-2">
+        <div className="border-brand-light/20 flex items-center justify-between border-b px-6 pb-2">
           <h2
             id="notes-heading"
             className="text-brand-dark text-xl font-semibold"
@@ -116,15 +116,6 @@ export default async function ProfilePage({
             )}{" "}
             <span className="text-brand">{folderNameTitle}</span>
           </h2>
-
-          {/* {folderId && (
-            <Link
-              href={`/profile/${id}`}
-              className="text-brand-light hover:text-brand text-sm underline transition-colors"
-            >
-              View all notes
-            </Link>
-          )} */}
           <SortButtons />
         </div>
 

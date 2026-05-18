@@ -82,9 +82,16 @@ export default function NoteCard({
 
       <div className="border-brand-light/20 mt-auto flex w-full items-center justify-between border-t pt-3">
         <div className="text-brand-light flex flex-col text-sm opacity-80">
-          <Link className="hover:underline" href={`/profile/${note.user_id}`}>
-            By: {note.profiles?.full_name}
-          </Link>
+          <div className="flex min-w-0 items-center gap-1">
+            <span className="shrink-0">By:</span>
+            <Link
+              className="hover:underline max-[380px]:inline-block max-[380px]:max-w-[5ch] max-[380px]:truncate max-[380px]:align-bottom"
+              href={`/profile/${note.user_id}`}
+              title={note.profiles?.full_name}
+            >
+              {note.profiles?.full_name}
+            </Link>
+          </div>
           <div className="flex items-center gap-1">
             <time dateTime={note.created_at || ""}>
               {note.created_at

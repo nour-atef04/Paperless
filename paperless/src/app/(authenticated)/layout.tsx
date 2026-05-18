@@ -19,7 +19,7 @@ export default async function AuthenticatedLayout({
         Skip to content
       </a>
       <Sidebar profile={profile} />
-      <main id="main-content" className="overflow-auto p-8">
+      <main id="main-content" className="overflow-auto pt-6 sm:p-8">
         {children}
       </main>
     </div>

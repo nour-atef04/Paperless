@@ -34,12 +34,10 @@ export default function VisibilityModal({
               `This ${variant} will be hidden from your public profile. Only you will be able to view and edit it.`
             ) : (
               <>
-                <p>
-                  This {variant} will be visible on your public profile. Anyone
-                  with the link will be able to read it.
-                </p>
-                <div className="mt-4 text-brand text-sm flex gap-2">
-                  <FaWandMagicSparkles className="shrink-0 mt-0.5" />
+                This {variant} will be visible on your public profile. Anyone
+                with the link will be able to read it.
+                <div className="text-brand mt-4 flex gap-2 text-sm">
+                  <FaWandMagicSparkles className="mt-0.5 shrink-0" />
                   <strong>Bonus:</strong> An AI summary will be automatically
                   generated for public!
                 </div>
