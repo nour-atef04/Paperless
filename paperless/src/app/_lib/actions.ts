@@ -559,26 +559,26 @@ const MODELS = [
   "meta-llama/llama-3.3-70b-instruct:free",
 ];
 
-async function callWithFallback(prompt: string): Promise<string> {
-  let lastError: unknown;
-
-  for (const modelId of MODELS) {
-    try {
-      const { text } = await generateText({
-        model: openrouter(modelId),
-        prompt,
-        maxRetries: 1,
-      });
-      return text;
-    } catch (err) {
-      lastError = err;
-      console.warn(`Model ${modelId} failed, trying next...`, err);
+async function callWithFallback(
+  models: string[],
+  prompt: string,
+): Promise<string> {
+  for (const modelId of models) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const { text } = await generateText({
+          model: openrouter(modelId),
+          prompt,
+          maxRetries: 0,
+        });
+        return text;
+      } catch (err) {
+        console.warn(`Model ${modelId} attempt ${attempt + 1} failed`, err);
+        if (attempt === 1) break;
+      }
     }
   }
-
-  throw new Error(
-    `All models failed. Last error: ${lastError instanceof Error ? lastError.message : String(lastError)}`,
-  );
+  throw new Error("All models failed.");
 }
 
 function extractJSON(text: string, type: "object" | "array"): string {
@@ -593,7 +593,7 @@ function extractJSON(text: string, type: "object" | "array"): string {
 export async function generatePracticeQuiz(
   content: string,
   options: { count: number; type: string; focusArea: string } = {
-    count: 3,
+    count: 6,
     type: "mixed",
     focusArea: "",
   },
@@ -612,8 +612,9 @@ export async function generatePracticeQuiz(
     ? `\nCRITICAL CUSTOM INSTRUCTION: Focus specifically on testing the following area/topic: "${focusArea}"`
     : "";
 
-  const text =
-    await callWithFallback(`You are a quiz generator. Given the following study notes, generate a practice quiz with exactly ${count} questions:
+  const text = await callWithFallback(
+    MODELS,
+    `You are a quiz generator. Given the following study notes, generate a practice quiz with exactly ${count} questions:
 ${typeInstructions}
 ${focusInstruction}
 
@@ -629,19 +630,23 @@ For mcq: options is required, correctAnswerOrRubric is the exact correct option 
 For written: omit options, correctAnswerOrRubric is a grading rubric.
 
 NOTES:
-${content}`);
+${content}`,
+  );
 
   const clean = extractJSON(text, "array");
   return JSON.parse(clean);
 }
+
+const GRADING_MODELS = ["google/gemma-3-4b-it:free", "openrouter/free"];
 
 export async function gradeWrittenAnswer(
   question: string,
   userAnswer: string,
   rubric: string,
 ) {
-  const text =
-    await callWithFallback(`You are a strict but fair grader. Grade the student's answer based on the rubric.
+  const text = await callWithFallback(
+    GRADING_MODELS,
+    `You are a strict but fair grader. Grade the student's answer based on the rubric.
 
 Return ONLY a valid JSON object with no markdown, no explanation, no backticks:
 {
@@ -652,7 +657,8 @@ Return ONLY a valid JSON object with no markdown, no explanation, no backticks:
 
 Question: ${question}
 Rubric: ${rubric}
-Student's answer: ${userAnswer}`);
+Student's answer: ${userAnswer}`,
+  );
 
   const clean = extractJSON(text, "object");
   return JSON.parse(clean) as {

@@ -237,25 +237,31 @@ export default function PracticeClient({
 
       {/* --- FEEDBACK AREA --- */}
       {feedback && (
-        <div
-          className={`mt-6 rounded-lg p-4 ${feedback.isCorrect ? "border border-green-200 bg-green-50" : "border border-red-200 bg-red-50"}`}
-        >
-          <h4
-            className={`font-bold ${feedback.isCorrect ? "text-green-800" : "text-red-800"}`}
-          >
-            {currentQ.type === "written"
-              ? `AI Score: ${feedback.score}/100`
-              : feedback.isCorrect
-                ? "Correct!"
-                : "Needs Review"}
-          </h4>
-          <p
-            className={`mt-1 text-sm ${feedback.isCorrect ? "text-green-700" : "text-red-700"}`}
-          >
-            {feedback.text}
-          </p>
-        </div>
-      )}
+  <div className={`mt-6 rounded-lg p-4 ${feedback.isCorrect 
+    ? "border border-green-200 bg-green-50" 
+    : "border border-red-200 bg-red-50"}`}>
+    <h4 className={`font-bold ${feedback.isCorrect ? "text-green-800" : "text-red-800"}`}>
+      {currentQ.type === "written"
+        ? `AI Score: ${feedback.score}/100`
+        : feedback.isCorrect ? "Correct!" : "Needs Review"}
+    </h4>
+    <p className={`mt-1 text-sm ${feedback.isCorrect ? "text-green-700" : "text-red-700"}`}>
+      {feedback.text}
+    </p>
+    {currentQ.type === "written" && (
+      <details className="mt-3">
+        <summary className={`cursor-pointer text-xs font-medium 
+          ${feedback.isCorrect ? "text-green-700" : "text-red-700"}`}>
+          View model answer
+        </summary>
+        <p className={`mt-2 text-xs leading-relaxed 
+          ${feedback.isCorrect ? "text-green-600" : "text-red-600"}`}>
+          {currentQ.correctAnswerOrRubric}
+        </p>
+      </details>
+    )}
+  </div>
+)}
 
       {/* --- CONTROLS --- */}
       <div className="mt-8 flex justify-end">
