@@ -553,10 +553,24 @@ export async function generateNoteSummary(noteId: string, content: string) {
   }
 }
 
+// const MODELS = [
+//   "openrouter/free",
+//   "deepseek/deepseek-chat-v3-0324:free",
+//   "meta-llama/llama-3.3-70b-instruct:free",
+// ];
+
+// const MODELS = ["openai/gpt-oss-20b:free"];
 const MODELS = [
+  "nvidia/nemotron-3-nano-30b-a3b:free",
+  "openai/gpt-oss-20b:free",
   "openrouter/free",
-  "deepseek/deepseek-chat-v3-0324:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
+];
+
+// const GRADING_MODELS = ["google/gemma-3-4b-it:free", "openrouter/free"];
+const GRADING_MODELS = [
+  "nvidia/nemotron-3-nano-30b-a3b:free",
+  "openai/gpt-oss-20b:free",
+  "openrouter/free",
 ];
 
 async function callWithFallback(
@@ -636,8 +650,6 @@ ${content}`,
   const clean = extractJSON(text, "array");
   return JSON.parse(clean);
 }
-
-const GRADING_MODELS = ["google/gemma-3-4b-it:free", "openrouter/free"];
 
 export async function gradeWrittenAnswer(
   question: string,
