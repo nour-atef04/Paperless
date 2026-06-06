@@ -53,7 +53,11 @@ export default function PracticeSettingsBtn({
       }
 
       if (mode === "practice-new") {
-        params.set("count", count.toString());
+        let safeCount = count;
+        if (isNaN(safeCount) || safeCount < 1) safeCount = 1;
+        if (safeCount > 20) safeCount = 20;
+
+        params.set("count", safeCount.toString());
         params.set("type", type);
         if (focusArea) {
           params.set("focusArea", focusArea);

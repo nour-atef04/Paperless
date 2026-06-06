@@ -613,7 +613,7 @@ export async function generatePracticeQuiz(
   },
 ) {
   const { count, type, focusArea } = options;
-
+  
   // calculate question types
   let typeInstructions = `- ${Math.ceil(count / 2)} multiple-choice questions (type: "mcq")\n- ${Math.floor(count / 2)} short written-answer questions (type: "written")`;
   if (type === "mcq_only")
