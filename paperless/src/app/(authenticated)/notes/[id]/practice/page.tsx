@@ -1,7 +1,5 @@
 import { generatePracticeQuiz } from "@/app/_lib/actions";
 import { getNoteById } from "@/app/_lib/data-service";
-import PracticeClient from "@/app/_components/ui/PracticeClient";
-
 import type { Metadata } from "next";
 import { Question } from "@/app/_lib/types";
 import PracticeClientLoader from "@/app/_components/ui/PracticeClientLoader";
@@ -12,7 +10,6 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-
   const note = await getNoteById(id);
 
   if (!note) {
@@ -30,15 +27,23 @@ export default async function PracticePage({ params, searchParams }) {
   const resolvedSearchParams = await searchParams;
   const { title, content } = await getNoteById(id);
 
+  // extract and clamp the count
+  let safeCount = Number(resolvedSearchParams?.count) || 3; 
+  if (safeCount < 1) safeCount = 1;
+  if (safeCount > 20) safeCount = 20;
+
+  const safeType = (resolvedSearchParams?.type as string) || "mixed";
+  const safeFocusArea = (resolvedSearchParams?.focusArea as string) || "";
+
   return (
     <div className="mx-auto max-w-3xl py-8">
       <PracticeClientLoader
         noteId={id}
         title={title}
         content={content}
-        count={Number(resolvedSearchParams?.count) || 3}
-        type={(resolvedSearchParams?.type as string) || "mixed"}
-        focusArea={(resolvedSearchParams?.focusArea as string) || ""}
+        count={safeCount}
+        type={safeType}
+        focusArea={safeFocusArea}
       />
     </div>
   );
