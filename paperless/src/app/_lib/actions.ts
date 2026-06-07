@@ -613,7 +613,7 @@ export async function generatePracticeQuiz(
   },
 ) {
   const { count, type, focusArea } = options;
-  
+
   // calculate question types
   let typeInstructions = `- ${Math.ceil(count / 2)} multiple-choice questions (type: "mcq")\n- ${Math.floor(count / 2)} short written-answer questions (type: "written")`;
   if (type === "mcq_only")
@@ -648,7 +648,11 @@ ${content}`,
   );
 
   const clean = extractJSON(text, "array");
-  return JSON.parse(clean);
+  const rawQuestions = JSON.parse(clean);
+  return rawQuestions.map((q: any) => ({
+    ...q,
+    id: crypto.randomUUID(),
+  }));
 }
 
 export async function gradeWrittenAnswer(
@@ -694,6 +698,7 @@ export async function saveQuestionAction(
   }
 
   const { error } = await supabase.from("saved_questions").insert({
+    id: questionData.id,
     user_id: user.id,
     note_id: noteId || null,
     type: questionData.type,
@@ -726,6 +731,7 @@ export async function removeSavedQuestionAction(questionId: string) {
     .match({ id: questionId, user_id: user.id });
 
   if (error) {
+    console.log(error);
     return { error: "Error removing question" };
   }
 
